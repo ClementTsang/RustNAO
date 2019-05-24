@@ -2,6 +2,7 @@
 #![allow(unused_variables)]
 #![allow(non_snake_case)]
 #![allow(unused_assignments)]
+#![allow(unused_must_use)]
 
 #[macro_use]
 extern crate serde;
@@ -9,6 +10,9 @@ extern crate serde;
 mod handler;
 
 fn main() {
-	let val = handler::Handler::init("test", 999, [].to_vec(), [].to_vec(), 999);
-	val.get_sauce();
+	let val = handler::Handler::new("test", 999, [].to_vec(), [].to_vec(), 999);
+	let result = val.get_sauce().unwrap();
+	for i in result {
+		println!("{:?}", i);
+	}
 }
