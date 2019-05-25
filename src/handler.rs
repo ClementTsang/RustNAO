@@ -115,6 +115,8 @@ pub struct Handler<'a> {
 	db_mask : Vec<i32>,
 	db_mask_i : Vec<i32>,
 	db : i32,
+	short_limit : i32,
+	long_limit: i32,
 }
 
 impl Handler<'_> {
@@ -125,6 +127,8 @@ impl Handler<'_> {
 			db_mask : db_mask,
 			db_mask_i : db_mask_i,
 			db : db,
+			short_limit : 30,
+			long_limit: 24 * 60 * 60,
 		}
 	}
 

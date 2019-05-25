@@ -11,8 +11,13 @@ mod handler;
 
 fn main() {
 	let val = handler::Handler::new("test", 999, [].to_vec(), [].to_vec(), 999);
-	let result = val.get_sauce().unwrap();
-	for i in result {
-		println!("{:?}", i);
+	let result = val.get_sauce();
+	if (result.is_ok()) {
+		for i in result.unwrap() {
+			println!("{:?}", i);
+		}
+	}
+	else {
+		println!("Failed to make a query.");
 	}
 }
