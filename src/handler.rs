@@ -133,7 +133,7 @@ impl Handler<'_> {
 	}
 
 	pub fn get_sauce(&self) -> Result<Vec<Sauce>, Error> {
-		let request_url = format!("https://saucenao.com/search.php?db={db}&output_type={output_type}&testmode={testmode}&numres={numres}&url={url}", db = "999", output_type = "2", testmode = "1", numres = "16", url="http%3A%2F%2Fsaucenao.com%2Fimages%2Fstatic%2Fbanner.gif");
+		let request_url = format!("https://saucenao.com/search.php?api_key={api_key}db={db}&output_type={output_type}&testmode={testmode}&numres={numres}&url={url}", api_key = self.api_key, db = "999", output_type = "2", testmode = "1", numres = "16", url="http%3A%2F%2Fsaucenao.com%2Fimages%2Fstatic%2Fbanner.gif");
 		println!("Request URL: {}", request_url);
 		let mut response = reqwest::get(&request_url)?;
 
