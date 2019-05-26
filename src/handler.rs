@@ -13,13 +13,14 @@ use url::{Url, ParseError};
 #[derive(Deserialize, Debug)]
 struct Header {
 	similarity: String,
+	thumbnail : String,
 	index_id: i32,
 	index_name : String,
-	thumbnail : String,
 }
 
 #[derive(Deserialize, Debug)]
 struct Data {
+	#[serde(default)]
 	ext_urls: Vec<String>,
 }
 
@@ -73,17 +74,17 @@ impl fmt::Debug for Sauce {
 			result.push_str(i.as_str());
 			result.push_str("  ");
 		}
-		result.push_str("\nsite:");
+		result.push_str("\nsite: ");
 		result.push_str(self.site.as_str());
-		result.push_str("\nindex");
+		result.push_str("\nindex: ");
 		result.push_str(self.index.to_string().as_str());
-		result.push_str("\nsimilarity:");
+		result.push_str("\nsimilarity: ");
 		result.push_str(self.similarity.to_string().as_str());
-		result.push_str("\nthumbnail:");
+		result.push_str("\nthumbnail: ");
 		result.push_str(self.thumbnail.as_str());
-		result.push_str("\nrating:");
+		result.push_str("\nrating: ");
 		result.push_str(self.rating.to_string().as_str());
-		result.push_str("\nauthor_id:");
+		result.push_str("\nauthor_id: ");
 		match self.author_id.clone() {
 			Some(author) => {
 				for i in author {
@@ -144,8 +145,8 @@ impl Handler<'_> {
 		let mut response = reqwest::get(&url_string)?;
 
 		let returnedSauce: SauceResult = response.json()?;
-		println!("{:?}", returnedSauce);
-		println!("-----");
+		//println!("{:?}", returnedSauce);
+		//println!("-----");
 
 		// Actual "returned" value:
 		let mut retSauce : Vec<Sauce> = Vec::new();

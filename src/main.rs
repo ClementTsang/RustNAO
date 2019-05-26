@@ -17,7 +17,7 @@ fn main() {
 	match api_key {
 		Some(key) => {
 			let val = handler::Handler::new(key, 2, 1, 999, [].to_vec(), [].to_vec(), 999);
-			let result = val.get_sauce("https://i.imgur.com/hSzneFY.png");
+			let result = val.get_sauce("https://cdn.discordapp.com/attachments/329966811057618944/581875763028951074/74728875_p0.jpg");
 			if (result.is_ok()) {
 				for i in result.unwrap() {
 					println!("{:?}", i);
