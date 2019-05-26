@@ -1,9 +1,7 @@
 #![crate_name = "rust_nao"]
 
-#![allow(unused_parens)]
 #![allow(unused_variables)]
 #![allow(dead_code)]
-#![allow(while_true)]
 #![allow(unused_attributes)]
 
 extern crate reqwest;
@@ -46,7 +44,7 @@ struct SauceResult {
 }
 
 pub struct Sauce {
-	ext_urls: Vec<String>, // TODO: Might switch this to one string... or make it an option.  Perhaps "getAllURLs"
+	ext_urls: Vec<String>,
 	site: String,
 	index: i32,
 	similarity: f32,
@@ -207,4 +205,11 @@ impl Handler<'_> {
 
 		Ok(ret_sauce)
 	}
+
+	// TODO: Async/promise get_sauce?
+
+	// TODO: Remove all insignificant (no ext_urls) searches?
+
+	// TODO: Make one that only returns the first ext_url?
+
 }
