@@ -4,32 +4,23 @@
 #![allow(while_true)]
 
 extern crate reqwest;
+extern crate serde_json;
+extern crate url;
 use reqwest::Error;
 use std::fmt;
+use url::{Url, ParseError};
 
 #[derive(Deserialize, Debug)]
 struct Header {
 	similarity: String,
 	index_id: i32,
+	index_name : String,
+	thumbnail : String,
 }
 
 #[derive(Deserialize, Debug)]
 struct Data {
 	ext_urls: Vec<String>,
-	#[serde(default)]
-	title: String,
-	#[serde(default)]
-	da_id: u64,
-	#[serde(default)]
-	author_name: String,
-	#[serde(default)]
-	author_url: String,
-	#[serde(default)]
-	pixiv_id: u64,
-	#[serde(default)]
-	member_name: String,
-	#[serde(default)]
-	member_id: u64,
 }
 
 #[derive(Deserialize, Debug)]
@@ -40,8 +31,6 @@ struct SauceJSON {
 
 #[derive(Deserialize, Debug)]
 struct ResultHeader {
-	results_requested: i32,
-	results_returned: i32,
 	long_remaining: i32,
 	short_remaining: i32,
 }
@@ -82,7 +71,7 @@ impl fmt::Debug for Sauce {
 		result.push_str("ext_urls: ");
 		for i in self.ext_urls.clone() {
 			result.push_str(i.as_str());
-			result.push_str(", ");
+			result.push_str("  ");
 		}
 		result.push_str("\nsite:");
 		result.push_str(self.site.as_str());
@@ -99,7 +88,7 @@ impl fmt::Debug for Sauce {
 			Some(author) => {
 				for i in author {
 					result.push_str(i.as_str());
-					result.push_str(", ");
+					result.push_str("  ");
 				}
 			},
 			None =>(),
@@ -109,8 +98,11 @@ impl fmt::Debug for Sauce {
 	}
 }
 
+
 pub struct Handler<'a> {
 	api_key : &'a str,
+	output_type : i32,
+	testmode : i32,
 	num_results : i32,
 	db_mask : Vec<i32>,
 	db_mask_i : Vec<i32>,
@@ -120,9 +112,11 @@ pub struct Handler<'a> {
 }
 
 impl Handler<'_> {
-	pub fn new(api_key : &str, num_results : i32, db_mask : Vec<i32>, db_mask_i : Vec<i32>, db : i32) -> Handler {
+	pub fn new(api_key : &str, output_type : i32, testmode : i32, num_results : i32, db_mask : Vec<i32>, db_mask_i : Vec<i32>, db : i32) -> Handler {
 		Handler {
 			api_key : api_key,
+			output_type : output_type,
+			testmode : testmode,
 			num_results : num_results,
 			db_mask : db_mask,
 			db_mask_i : db_mask_i,
@@ -132,10 +126,22 @@ impl Handler<'_> {
 		}
 	}
 
-	pub fn get_sauce(&self) -> Result<Vec<Sauce>, Error> {
-		let request_url = format!("https://saucenao.com/search.php?api_key={api_key}db={db}&output_type={output_type}&testmode={testmode}&numres={numres}&url={url}", api_key = self.api_key, db = "999", output_type = "2", testmode = "1", numres = "16", url="http%3A%2F%2Fsaucenao.com%2Fimages%2Fstatic%2Fbanner.gif");
-		println!("Request URL: {}", request_url);
-		let mut response = reqwest::get(&request_url)?;
+	fn generate_url(&self, file : &str) -> Result<String, ParseError> {
+		let mut request_url = Url::parse("https://saucenao.com/search.php")?;
+		request_url.query_pairs_mut().append_pair("api_key", self.api_key);
+		request_url.query_pairs_mut().append_pair("output_type", self.output_type.to_string().as_str());
+		request_url.query_pairs_mut().append_pair("db", self.db.to_string().as_str());
+		request_url.query_pairs_mut().append_pair("testmode", self.testmode.to_string().as_str());
+		request_url.query_pairs_mut().append_pair("url", file);
+
+		Ok(request_url.into_string())
+	}
+
+	pub fn get_sauce(&self, file : &str) -> Result<Vec<Sauce>, Error> {
+		let url_string = self.generate_url(file).unwrap();
+
+		println!("Request URL: {}", url_string);
+		let mut response = reqwest::get(&url_string)?;
 
 		let returnedSauce: SauceResult = response.json()?;
 		println!("{:?}", returnedSauce);
@@ -146,10 +152,10 @@ impl Handler<'_> {
 		for sauce in returnedSauce.results {
 			retSauce.push(Sauce::new(
 				sauce.data.ext_urls,
-				"SITE".to_string(),
+				sauce.header.index_name,
 				sauce.header.index_id,
 				sauce.header.similarity.parse().unwrap(),
-				"THUMBNAIL".to_string(),
+				sauce.header.thumbnail.to_string(),
 				5,
 				None,
 			));

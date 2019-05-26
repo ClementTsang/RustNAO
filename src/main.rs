@@ -6,7 +6,6 @@
 
 #[macro_use]
 extern crate serde;
-extern crate serde_json;
 
 mod handler;
 
@@ -17,15 +16,15 @@ fn main() {
 
 	match api_key {
 		Some(key) => {
-			let val = handler::Handler::new(key, 999, [].to_vec(), [].to_vec(), 999);
-			let result = val.get_sauce();
+			let val = handler::Handler::new(key, 2, 1, 999, [].to_vec(), [].to_vec(), 999);
+			let result = val.get_sauce("https://i.imgur.com/hSzneFY.png");
 			if (result.is_ok()) {
 				for i in result.unwrap() {
 					println!("{:?}", i);
 				}
 			}
 			else {
-				println!("Failed to make a query.");
+				println!("Failed to make a query."); //TODO: More robust errors
 			}
 		},
 		None => (),
