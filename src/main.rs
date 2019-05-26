@@ -1,13 +1,13 @@
 #![allow(unused_parens)]
 #![allow(unused_variables)]
-#![allow(non_snake_case)]
-#![allow(unused_assignments)]
-#![allow(unused_must_use)]
+#![allow(dead_code)]
+#![allow(while_true)]
 
 #[macro_use]
 extern crate serde;
 
 mod handler;
+use handler::Handler;
 
 fn main() {
 	let data = std::fs::read_to_string("config.json").expect("Couldn't read file.");
@@ -16,7 +16,7 @@ fn main() {
 
 	match api_key {
 		Some(key) => {
-			let val = handler::Handler::new(key, 2, 1, 999, [].to_vec(), [].to_vec(), 999);
+			let val = Handler::new(key, 0, [].to_vec(), [].to_vec(), 999, 999);
 			let result = val.get_sauce("https://cdn.discordapp.com/attachments/329966811057618944/581875763028951074/74728875_p0.jpg");
 			if (result.is_ok()) {
 				for i in result.unwrap() {
