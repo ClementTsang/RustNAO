@@ -36,6 +36,8 @@ struct SauceJSON {
 
 #[derive(Deserialize, Debug)]
 struct ResultHeader {
+	long_limit: String,
+	short_limit: String,
 	long_remaining: i32,
 	short_remaining: i32,
 }
@@ -127,6 +129,9 @@ pub struct Handler<'a> {
 	db : i32,
 	short_limit : i32,
 	long_limit: i32,
+	short_left : i32,
+	long_left : i32,
+	min_similarity : f64,
 }
 
 impl Handler<'_> {
@@ -154,20 +159,48 @@ impl Handler<'_> {
 			db_mask : db_mask,
 			db_mask_i : db_mask_i,
 			db : db,
-			short_limit : 30,
-			long_limit: 24 * 360,
+			short_limit : 12,
+			long_limit: 200,
+			short_left : 12,
+			long_left: 200,
+			min_similarity : 0.0,
 		}
 	}
 
-	/// TODO: May be useless
-	pub fn set_short_limit(&mut self, seconds : i32, minutes : i32, hours : i32) {
-		self.short_limit = seconds + minutes * 60 + hours * 360;
+	/// Sets the minimum similarity threshold for ``get_sauce``.  
+	/// ## Arguments
+	/// * `similarity` - Represents the minimum similarity threshold you wish to set.  It can be any value that can convert to a f64.  This includes f32s, i16s, i32s, and i8s.
+	/// 
+	/// ## Example
+	/// ```
+	/// use handler::Handler;
+	/// let mut handle = Handler::new(...);
+	/// handler.set_min_similarity(50);
+	/// ```
+	pub fn set_min_similarity<T : Into<f64>>(&mut self, similarity : T) {
+		self.min_similarity = similarity.into();
 	}
 
-	/// TODO: May be useless
-	pub fn set_long_limit(&mut self, seconds : i32, minutes : i32, hours : i32) {
-		self.short_limit = seconds + minutes * 60 + hours * 360;
+	/// 
+	pub fn get_short_limit(&self) -> i32 {
+		self.short_limit
 	}
+
+	/// 
+	pub fn get_long_limit(&self) -> i32 {
+		self.long_limit
+	}
+
+	/// 
+	pub fn get_current_short_limit(&self) -> i32 {
+		self.short_left
+	}
+
+	/// 
+	pub fn get_current_long_limit(&self) -> i32 {
+		self.long_left
+	}
+
 
 	fn generate_url(&self, file : &str) -> Result<String, ParseError> {
 		let mut request_url = Url::parse("https://saucenao.com/search.php")?;
@@ -185,32 +218,40 @@ impl Handler<'_> {
 	/// * ``file`` - A string slice that contains the path to the file you wish to look up.
 	/// ## Example
 	/// 
-	pub fn get_sauce(&self, file : &str) -> Result<Vec<Sauce>, Error> {
+	pub fn get_sauce(&mut self, file : &str) -> Result<Vec<Sauce>, Error> {
 		let url_string = self.generate_url(file).unwrap();
 
 		println!("DEBUG: Request URL: {}\n", url_string);
 		let mut response = reqwest::get(&url_string)?;
-
 		let returned_sauce: SauceResult = response.json()?;
+
+		// Update non-sauce fields
+		self.short_left = returned_sauce.header.short_remaining;
+		self.long_left = returned_sauce.header.long_remaining;
+		self.short_limit = returned_sauce.header.short_limit.parse().unwrap();
+		self.long_limit = returned_sauce.header.long_limit.parse().unwrap();
 
 		// Actual "returned" value:
 		let mut ret_sauce : Vec<Sauce> = Vec::new();
 		for sauce in returned_sauce.results {
-			ret_sauce.push(Sauce::init(
-				sauce.data.ext_urls,
-				sauce.header.index_name,
-				sauce.header.index_id,
-				sauce.header.similarity.parse().unwrap(),
-				sauce.header.thumbnail.to_string(),
-				5,
-				None,
-			));
+			let sauce_min_sim : f64 = sauce.header.similarity.parse().unwrap();
+			if sauce_min_sim >= self.min_similarity {
+				ret_sauce.push(Sauce::init(
+					sauce.data.ext_urls,
+					sauce.header.index_name,
+					sauce.header.index_id,
+					sauce.header.similarity.parse().unwrap(),
+					sauce.header.thumbnail.to_string(),
+					5,
+					None,
+				));
+			}
 		}
 
 		Ok(ret_sauce)
 	}
 
-	pub fn get_sauce_as_json(&self, file : &str) -> Result<String, serde_json::Error> {
+	pub fn get_sauce_as_json(&mut self, file : &str) -> Result<String, serde_json::Error> {
 		let result = String::new();
 		let ret_sauce = self.get_sauce(file);
 
@@ -222,5 +263,9 @@ impl Handler<'_> {
 	// TODO: Remove all insignificant (no ext_urls) searches?
 
 	// TODO: Make one that only returns the first ext_url?
+
+	// TODO: Organize the interface to look nicer... refactoring pls.
+
+	// TODO: See if you can do anything about the mutability... ugh
 
 }

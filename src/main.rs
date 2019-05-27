@@ -9,7 +9,8 @@ fn main() {
 
 	match api_key {
 		Some(key) => {
-			let handle = Handler::new(key, 0, [].to_vec(), [].to_vec(), 999, 999);
+			let mut handle = Handler::new(key, 0, [].to_vec(), [].to_vec(), 999, 999);
+			handle.set_min_similarity(45);
 			let result = handle.get_sauce(file);
 			if result.is_ok() {
 				for i in result.unwrap() {
