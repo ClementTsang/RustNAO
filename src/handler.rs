@@ -5,8 +5,11 @@
 #![allow(unused_attributes)]
 
 extern crate reqwest;
+extern crate serde;
 extern crate serde_json;
 extern crate url;
+
+use serde::{Deserialize, Serialize};
 use reqwest::Error;
 use std::fmt;
 use url::{Url, ParseError};
@@ -43,6 +46,7 @@ struct SauceResult {
 	results: Vec<SauceJSON>,
 }
 
+#[derive(Serialize)]
 pub struct Sauce {
 	ext_urls: Vec<String>,
 	site: String,
@@ -204,6 +208,13 @@ impl Handler<'_> {
 		}
 
 		Ok(ret_sauce)
+	}
+
+	pub fn get_sauce_as_json(&self, file : &str) -> Result<String, serde_json::Error> {
+		let result = String::new();
+		let ret_sauce = self.get_sauce(file);
+
+		serde_json::to_string(&ret_sauce.unwrap()) // TODO: Error catching
 	}
 
 	// TODO: Async/promise get_sauce?
