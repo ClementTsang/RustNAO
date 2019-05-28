@@ -181,22 +181,38 @@ impl Handler<'_> {
 		self.min_similarity = similarity.into();
 	}
 
+	/// Gets the current short limit as an i32.  By default this is 12.
 	/// 
+	/// ## Example
+	/// ```
+	/// ```
 	pub fn get_short_limit(&self) -> i32 {
 		self.short_limit
 	}
 
+	/// Gets the current long limit as an i32.  By default this is 200.
 	/// 
+	/// ## Example
+	/// ```
+	/// ```
 	pub fn get_long_limit(&self) -> i32 {
 		self.long_limit
 	}
 
+	/// Gets the current remaining short limit as an i32.
 	/// 
+	/// ## Example
+	/// ```
+	/// ```
 	pub fn get_current_short_limit(&self) -> i32 {
 		self.short_left
 	}
 
+	/// Gets the current remaining long limit as an i32.
 	/// 
+	/// ## Example
+	/// ```
+	/// ``` 
 	pub fn get_current_long_limit(&self) -> i32 {
 		self.long_left
 	}
@@ -261,6 +277,11 @@ impl Handler<'_> {
 	// TODO: Async/promise get_sauce?
 
 	// TODO: Remove all insignificant (no ext_urls) searches?
+	pub fn remove_empty_urls(&self, vec : Vec<Sauce>) -> Vec<Sauce> {
+		let result : Vec<Sauce> = vec.into_iter().filter(|v| v.ext_urls.len() > 0).collect();
+
+		result
+	}
 
 	// TODO: Make one that only returns the first ext_url?
 

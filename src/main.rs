@@ -13,7 +13,9 @@ fn main() {
 			handle.set_min_similarity(45);
 			let result = handle.get_sauce(file);
 			if result.is_ok() {
-				for i in result.unwrap() {
+				let vec : Vec<handler::Sauce> = result.unwrap();
+				let res = handle.remove_empty_urls(vec);
+				for i in res {
 					println!("{:?}", i);
 				}
 			}
@@ -22,6 +24,11 @@ fn main() {
 			}
 			println!("------");
 			println!("JSON Representation: {}", handle.get_sauce_as_json(file).unwrap());
+			println!("------");
+			println!("{}", handle.get_current_long_limit());
+			println!("{}", handle.get_current_short_limit());
+			println!("{}", handle.get_long_limit());
+			println!("{}", handle.get_short_limit());
 		},
 		None => (),
 	}
