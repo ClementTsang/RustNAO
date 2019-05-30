@@ -91,26 +91,21 @@ impl Sauce {
 	/// ```
 	/// use rust_nao::{Handler, Sauce};
 	/// let data = std::fs::read_to_string("config.json").expect("Couldn't read file.");
-	/// let json : serde_json::Value = serde_json::from_str(data.as_str()).expect("JSON not well formatted.");
-	/// let api_key = json["api_key"].as_str();
+	/// let api_key = "your_saucenao_api_key";
 	/// let file = "https://i.imgur.com/W42kkKS.jpg";
-	/// match api_key {
-	///		Some(key) => {
-	///			let mut handle = Handler::new(key, 0, [].to_vec(), [].to_vec(), 999, 999);
-	///			handle.set_min_similarity(45);
-	///			let result = handle.get_sauce(file);
-	///			if result.is_ok() {
-	///				let res : Vec<Sauce> = result.unwrap().into_iter().filter(|sauce| sauce.has_empty_url()).collect();
-	///				for i in res {
-	///					println!("{:?}", i);
-	///				}
-	///			}
-	///			else {
-	///				println!("Failed to make a query."); //TODO: More robust errors
-	///			}
-	///		},
-	///		None => (),
+	///	let mut handle = Handler::new(api_key, 0, [].to_vec(), [].to_vec(), 999, 999);
+	///	handle.set_min_similarity(45);
+	///	let result = handle.get_sauce(file);
+	///	if result.is_ok() {
+	///		let res : Vec<Sauce> = result.unwrap().into_iter().filter(|sauce| sauce.has_empty_url()).collect();
+	///		for i in res {
+	///			println!("{:?}", i);
+	///		}
 	///	}
+	///	else {
+	///		println!("Failed to make a query."); //TODO: More robust errors
+	///	}
+	///	
 	/// ```
 	pub fn has_empty_url(&self) -> bool {
 		self.ext_urls.len() <= 0
@@ -206,7 +201,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rust_nao::Handler;
-	/// let mut handle = Handler::new("abcd1234", 0, Vec::new(), Vec::new(), 999, 5);
+	/// let mut handle = Handler::new("your_saucenao_api_key", 0, Vec::new(), Vec::new(), 999, 5);
 	/// handle.set_min_similarity(50);
 	/// ```
 	pub fn set_min_similarity<T : Into<f64>>(&mut self, similarity : T) {
