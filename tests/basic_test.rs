@@ -9,12 +9,12 @@ fn create_handler() -> Handler {
 }
 
 #[test]
-fn check_handler_creation() {
+fn test_check_handler_creation() {
 	create_handler();
 }
 
 #[test]
-fn try_get_sauce() {
+fn test_get_sauce() {
 	let mut handle = create_handler();
 	let vec = handle.get_sauce(FILE).unwrap();
 	for v in vec {
@@ -23,33 +23,27 @@ fn try_get_sauce() {
 }
 
 #[test]
-fn try_get_sauce_as_json() {
+fn test_get_sauce_as_json() {
 	let mut handle = create_handler();
 	handle.get_sauce_as_json(FILE).unwrap();
 }
 
 #[test]
-fn get_short_limits() {
+fn test_get_short_and_long_limits() {
 	let mut handle = create_handler();
 	handle.get_short_limit();
 	handle.get_current_short_limit();
-	handle.get_sauce(FILE).unwrap();
-	handle.get_short_limit();
-	handle.get_current_short_limit();
-}
-
-#[test]
-fn get_long_limits() {
-	let mut handle = create_handler();
 	handle.get_long_limit();
 	handle.get_current_long_limit();
 	handle.get_sauce(FILE).unwrap();
+	handle.get_short_limit();
+	handle.get_current_short_limit();
 	handle.get_long_limit();
 	handle.get_current_long_limit();
 }
 
 #[test]
-fn filter_empty_sauce() {
+fn test_filter_empty_sauce() {
 	let mut handle = create_handler();
 	let vec : Vec<Sauce> = handle.get_sauce(FILE).unwrap();
 	let _only_empty : Vec<Sauce> = vec.into_iter().filter(|sauce| !sauce.has_empty_url()).collect();
