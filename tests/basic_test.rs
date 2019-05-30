@@ -5,18 +5,7 @@ use rust_nao::{Handler, Sauce};
 const FILE : &str = "https://i.imgur.com/W42kkKS.jpg";
 
 fn create_handler() -> Handler {
-	let data = std::fs::read_to_string("config.json").expect("Couldn't read file.");
-	let json : serde_json::Value = serde_json::from_str(data.as_str()).expect("JSON not well formatted.");
-	let api_key = json["api_key"].as_str();
-
-	match api_key {
-		Some(key) => {
-			Handler::new(key, 0, [].to_vec(), [].to_vec(), 999, 999)
-		},
-		None => {
-			Handler::new("", 0, [].to_vec(), [].to_vec(), 999, 999)
-		}
-	}
+	Handler::new("", 0, [].to_vec(), [].to_vec(), 999, 999)
 }
 
 #[test]
