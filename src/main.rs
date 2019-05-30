@@ -1,11 +1,11 @@
-mod handler;
-use handler::Handler;
+mod lib;
+use lib::{Handler, Sauce};
 
 fn main() {
 	let data = std::fs::read_to_string("config.json").expect("Couldn't read file.");
 	let json : serde_json::Value = serde_json::from_str(data.as_str()).expect("JSON not well formatted.");
 	let api_key = json["api_key"].as_str();
-	let file = "https://cdn.discordapp.com/attachments/329966811057618944/581875763028951074/74728875_p0.jpg";
+	let file = "https://i.imgur.com/W42kkKS.jpg";
 
 	match api_key {
 		Some(key) => {
@@ -13,8 +13,7 @@ fn main() {
 			handle.set_min_similarity(45);
 			let result = handle.get_sauce(file);
 			if result.is_ok() {
-				let vec : Vec<handler::Sauce> = result.unwrap();
-				let res = handle.remove_empty_urls(vec);
+				let res : Vec<Sauce> = result.unwrap().into_iter().filter(|sauce| !sauce.has_empty_url()).collect();
 				for i in res {
 					println!("{:?}", i);
 				}

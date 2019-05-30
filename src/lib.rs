@@ -48,6 +48,8 @@ struct SauceResult {
 	results: Vec<SauceJSON>,
 }
 
+/// A Sauce struct returns one result from a API call made by the Handler
+/// ## Examples
 #[derive(Serialize)]
 pub struct Sauce {
 	ext_urls: Vec<String>,
@@ -82,6 +84,36 @@ impl Sauce {
 			rating : rating, 
 			author_id : author_id,
 		}
+	}
+
+	/// Returns whether the Sauce struct contains an empty ext_url field.
+	/// ## Example
+	/// ```
+	/// use rust_nao::{Handler, Sauce};
+	/// let data = std::fs::read_to_string("config.json").expect("Couldn't read file.");
+	/// let json : serde_json::Value = serde_json::from_str(data.as_str()).expect("JSON not well formatted.");
+	/// let api_key = json["api_key"].as_str();
+	/// let file = "https://i.imgur.com/W42kkKS.jpg";
+	/// match api_key {
+	///		Some(key) => {
+	///			let mut handle = Handler::new(key, 0, [].to_vec(), [].to_vec(), 999, 999);
+	///			handle.set_min_similarity(45);
+	///			let result = handle.get_sauce(file);
+	///			if result.is_ok() {
+	///				let res : Vec<Sauce> = result.unwrap().into_iter().filter(|sauce| sauce.has_empty_url()).collect();
+	///				for i in res {
+	///					println!("{:?}", i);
+	///				}
+	///			}
+	///			else {
+	///				println!("Failed to make a query."); //TODO: More robust errors
+	///			}
+	///		},
+	///		None => (),
+	///	}
+	/// ```
+	pub fn has_empty_url(&self) -> bool {
+		self.ext_urls.len() <= 0
 	}
 }
 
@@ -118,9 +150,10 @@ impl fmt::Debug for Sauce {
 	}
 }
 
-
-pub struct Handler<'a> {
-	api_key : &'a str,
+/// A handler struct to make SauceNAO API calls.
+/// ## Examples
+pub struct Handler {
+	api_key : String,
 	output_type : i32,
 	testmode : i32,
 	num_results : i32,
@@ -134,7 +167,7 @@ pub struct Handler<'a> {
 	min_similarity : f64,
 }
 
-impl Handler<'_> {
+impl Handler {
 	/// Creates a new Handler object.  By default, the short limit is set to 30 seconds, and the long limit is set to 24 hours.
 	/// ## Arguments
 	/// * `api_key` - A string slice holding your api key.
@@ -146,13 +179,12 @@ impl Handler<'_> {
 	/// 
 	/// ## Example
 	/// ```
-	/// use handler::Handler;
 	/// ```
 	pub fn new(api_key : &str, testmode : i32, db_mask : Vec<i32>, db_mask_i : Vec<i32>, db : i32, num_results : i32) -> Handler {
 		assert!(testmode == 1 || testmode == 0, "testmode must be 0 or 1.");
 
 		Handler {
-			api_key : api_key,
+			api_key : api_key.to_string(),
 			output_type : 2,
 			testmode : testmode,
 			num_results : num_results,
@@ -173,9 +205,9 @@ impl Handler<'_> {
 	/// 
 	/// ## Example
 	/// ```
-	/// use handler::Handler;
-	/// let mut handle = Handler::new(...);
-	/// handler.set_min_similarity(50);
+	/// use rust_nao::Handler;
+	/// let mut handle = Handler::new("abcd1234", 0, Vec::new(), Vec::new(), 999, 5);
+	/// handle.set_min_similarity(50);
 	/// ```
 	pub fn set_min_similarity<T : Into<f64>>(&mut self, similarity : T) {
 		self.min_similarity = similarity.into();
@@ -220,7 +252,7 @@ impl Handler<'_> {
 
 	fn generate_url(&self, file : &str) -> Result<String, ParseError> {
 		let mut request_url = Url::parse("https://saucenao.com/search.php")?;
-		request_url.query_pairs_mut().append_pair("api_key", self.api_key);
+		request_url.query_pairs_mut().append_pair("api_key", self.api_key.as_str());
 		request_url.query_pairs_mut().append_pair("output_type", self.output_type.to_string().as_str());
 		request_url.query_pairs_mut().append_pair("db", self.db.to_string().as_str());
 		request_url.query_pairs_mut().append_pair("testmode", self.testmode.to_string().as_str());
@@ -271,22 +303,13 @@ impl Handler<'_> {
 		let result = String::new();
 		let ret_sauce = self.get_sauce(file);
 
-		serde_json::to_string(&ret_sauce.unwrap()) // TODO: Error catching
+		serde_json::to_string_pretty(&ret_sauce.unwrap()) // TODO: Error catching
 	}
 
 	// TODO: Async/promise get_sauce?
 
-	// TODO: Remove all insignificant (no ext_urls) searches?
-	pub fn remove_empty_urls(&self, vec : Vec<Sauce>) -> Vec<Sauce> {
-		let result : Vec<Sauce> = vec.into_iter().filter(|v| v.ext_urls.len() > 0).collect();
-
-		result
-	}
-
-	// TODO: Make one that only returns the first ext_url?
-
 	// TODO: Organize the interface to look nicer... refactoring pls.
 
 	// TODO: See if you can do anything about the mutability... ugh
-
 }
+
