@@ -2,6 +2,8 @@
 
 A Rust implementation of a wrapper for the SauceNAO API.
 
+[![Build Status](https://travis-ci.com/ClementTsang/RustNAO.svg?token=1wvzVgp94E1TZyPNs8JF&branch=master)](https://travis-ci.com/ClementTsang/RustNAO)
+
 ## Installation
 
 ## Examples
