@@ -1,4 +1,4 @@
-#![crate_name = "rust_nao"]
+#![crate_name = "rustnao"]
 
 #![allow(unused_variables)]
 #![allow(dead_code)]
@@ -9,9 +9,15 @@ extern crate serde;
 extern crate serde_json;
 extern crate url;
 
-use serde::{Deserialize, Serialize};
-use reqwest::Error;
-use std::fmt;
+mod error;
+use error::SauceError;
+
+mod constants;
+
+mod sauce;
+pub use sauce::Sauce;
+
+use serde::Deserialize;
 use url::{Url, ParseError};
 
 #[derive(Deserialize, Debug)]
@@ -46,101 +52,6 @@ struct ResultHeader {
 struct SauceResult {
 	header: ResultHeader,
 	results: Vec<SauceJSON>,
-}
-
-/// A Sauce struct returns one result from a API call made by the Handler
-/// ## Examples
-#[derive(Serialize)]
-pub struct Sauce {
-	ext_urls: Vec<String>,
-	site: String,
-	index: i32,
-	similarity: f32,
-	thumbnail: String,
-	rating: i32,
-	author_id: Option<Vec<String>>,
-}
-
-impl Sauce {
-	fn new() -> Sauce {
-		Sauce {
-			ext_urls : Vec::new(),
-			site: "".to_string(),
-			index: -1,
-			similarity: 0.0,
-			thumbnail : "".to_string(),
-			rating: -1,
-			author_id: None, 
-		}
-	}
-
-	fn init(ext_urls : Vec<String>, site : String, index : i32, similarity : f32, thumbnail : String, rating : i32, author_id : Option<Vec<String>>) -> Sauce {
-		Sauce {
-			ext_urls : ext_urls,
-			site : site,
-			index : index,
-			similarity : similarity,
-			thumbnail : thumbnail,
-			rating : rating, 
-			author_id : author_id,
-		}
-	}
-
-	/// Returns whether the Sauce struct contains an empty ext_url field.
-	/// ## Example
-	/// ```
-	/// use rust_nao::{Handler, Sauce};
-	/// let file = "https://i.imgur.com/W42kkKS.jpg";
-	///	let mut handle = Handler::new("your_saucenao_api_key", 0, [].to_vec(), [].to_vec(), 999, 999);
-	///	handle.set_min_similarity(45);
-	///	let result = handle.get_sauce(file);
-	///	if result.is_ok() {
-	///		let res : Vec<Sauce> = result.unwrap().into_iter().filter(|sauce| sauce.has_empty_url()).collect();
-	///		for i in res {
-	///			println!("{:?}", i);
-	///		}
-	///	}
-	///	else {
-	///		println!("Failed to make a query."); //TODO: More robust errors
-	///	}
-	///	
-	/// ```
-	pub fn has_empty_url(&self) -> bool {
-		self.ext_urls.len() <= 0
-	}
-}
-
-impl fmt::Debug for Sauce {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		let mut result : String = String::new();
-		result.push_str("ext_urls: ");
-		for i in self.ext_urls.clone() {
-			result.push_str(i.as_str());
-			result.push_str("  ");
-		}
-		result.push_str("\nsite: ");
-		result.push_str(self.site.as_str());
-		result.push_str("\nindex: ");
-		result.push_str(self.index.to_string().as_str());
-		result.push_str("\nsimilarity: ");
-		result.push_str(self.similarity.to_string().as_str());
-		result.push_str("\nthumbnail: ");
-		result.push_str(self.thumbnail.as_str());
-		result.push_str("\nrating: ");
-		result.push_str(self.rating.to_string().as_str());
-		result.push_str("\nauthor_id: ");
-		match self.author_id.clone() {
-			Some(author) => {
-				for i in author {
-					result.push_str(i.as_str());
-					result.push_str("  ");
-				}
-			},
-			None =>(),
-		}
-
-		write!(f, "{}", result)
-	}
 }
 
 /// A handler struct to make SauceNAO API calls.
@@ -198,7 +109,7 @@ impl Handler {
 	/// 
 	/// ## Example
 	/// ```
-	/// use rust_nao::Handler;
+	/// use rustnao::Handler;
 	/// let mut handle = Handler::new("your_saucenao_api_key", 0, Vec::new(), Vec::new(), 999, 5);
 	/// handle.set_min_similarity(50);
 	/// ```
@@ -242,29 +153,28 @@ impl Handler {
 		self.long_left
 	}
 
-
-	fn generate_url(&self, file : &str) -> Result<String, ParseError> {
-		let mut request_url = Url::parse("https://saucenao.com/search.php")?;
+	/// Generates a url from the given image url
+	/// 
+	fn generate_url(&self, image_url : &str) -> Result<String, ParseError> {
+		let mut request_url = Url::parse(constants::API_URL)?;
 		request_url.query_pairs_mut().append_pair("api_key", self.api_key.as_str());
 		request_url.query_pairs_mut().append_pair("output_type", self.output_type.to_string().as_str());
 		request_url.query_pairs_mut().append_pair("db", self.db.to_string().as_str());
 		request_url.query_pairs_mut().append_pair("testmode", self.testmode.to_string().as_str());
-		request_url.query_pairs_mut().append_pair("url", file);
+		request_url.query_pairs_mut().append_pair("url", image_url);
 
 		Ok(request_url.into_string())
 	}
 
-	/// Returns a Result of either a vector of Sauce objects, which contain potential sources for the input ``file``, or an Error.
+	/// Returns a Result of either a vector of Sauce objects, which contain potential sources for the input ``file``, or a SauceError.
 	/// ## Arguments
-	/// * ``file`` - A string slice that contains the path to the file you wish to look up.
+	/// * ``url`` - A string slice that contains the url of the image you wish to look up.
 	/// ## Example
-	/// 
-	pub fn get_sauce(&mut self, file : &str) -> Result<Vec<Sauce>, Error> {
-		let url_string = self.generate_url(file).unwrap();
-
-		println!("DEBUG: Request URL: {}\n", url_string);
-		let mut response = reqwest::get(&url_string)?;
-		let returned_sauce: SauceResult = response.json()?;
+	/// ```
+	/// ```
+	pub fn get_sauce(&mut self, url : &str) -> Result<Vec<Sauce>, SauceError> {
+		let url_string = self.generate_url(url)?;
+		let returned_sauce: SauceResult = reqwest::get(&url_string)?.json()?;
 
 		// Update non-sauce fields
 		self.short_left = returned_sauce.header.short_remaining;
@@ -292,17 +202,29 @@ impl Handler {
 		Ok(ret_sauce)
 	}
 
-	pub fn get_sauce_as_json(&mut self, file : &str) -> Result<String, serde_json::Error> {
+	/// Returns a string representing a vector of Sauce objects as a serialized JSON, or an error.
+	/// ## Arguments
+	/// * ``url`` - A string slice that contains the url of the image you wish to look up
+	/// ## Example
+	/// ```
+	/// ```
+	pub fn get_sauce_as_json(&mut self, url : &str) -> Result<String, SauceError> {
 		let result = String::new();
-		let ret_sauce = self.get_sauce(file);
+		let ret_sauce = self.get_sauce(url)?;
 
-		serde_json::to_string_pretty(&ret_sauce.unwrap()) // TODO: Error catching
+		Ok(serde_json::to_string_pretty(&ret_sauce)?)
 	}
 
-	// TODO: Async/promise get_sauce?
+	///
+	pub fn get_sauce_async(&mut self, url : &str) {
+
+	}
+
+	///
+	pub fn get_sauce_as_json_async(&mut self, url : &str) {
+
+	}
 
 	// TODO: Organize the interface to look nicer... refactoring pls.
-
-	// TODO: See if you can do anything about the mutability... ugh
 }
 

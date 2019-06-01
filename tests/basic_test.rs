@@ -1,6 +1,6 @@
-extern crate rust_nao;
+extern crate rustnao;
 
-use rust_nao::{Handler, Sauce};
+use rustnao::{Handler, Sauce};
 
 const FILE : &str = "https://i.imgur.com/W42kkKS.jpg";
 
