@@ -8,6 +8,28 @@ A Rust implementation of a wrapper for the SauceNAO API.
 
 ## Examples
 Here's a simple example:
+```rust
+extern crate rustnao;
+use rustnao::{Handler, Sauce};
+
+fn main() {
+	let api_key = "your_api_key";
+	let file = "https://i.imgur.com/W42kkKS.jpg";
+
+	let mut handle = Handler::new(key, 0, [].to_vec(), [].to_vec(), 999, 999);
+	handle.set_min_similarity(45);
+	let result = handle.get_sauce(file);
+	if result.is_ok() {
+		let res : Vec<Sauce> = result.unwrap().into_iter().filter(|sauce| !sauce.has_empty_url()).collect();
+		for i in res {
+			println!("{:?}", i);
+		}
+	}
+	else {
+		println!("Failed to make a query.");
+	}
+}
+```
 
 ## Documentation
 Documentation can be found here.
