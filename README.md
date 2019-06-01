@@ -20,10 +20,7 @@ fn main() {
 	handle.set_min_similarity(45);
 	let result = handle.get_sauce(file);
 	if result.is_ok() {
-		let res : Vec<Sauce> = result.unwrap().into_iter().filter(|sauce| !sauce.has_empty_url()).collect();
-		for i in res {
-			println!("{:?}", i);
-		}
+		let res : Vec<Sauce> = result.unwrap();
 	}
 	else {
 		println!("Failed to make a query.");
