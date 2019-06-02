@@ -1,4 +1,4 @@
-//! A simple example, assuming you had a config.json file that had your api key.
+//! Similar to the simple example, except now we only want to get results from Pixiv
 
 extern crate rustnao;
 use rustnao::{Handler, Sauce};
@@ -11,7 +11,7 @@ fn main() {
 
 	match api_key {
 		Some(key) => {
-			let mut handle = Handler::new(key, 0, [].to_vec(), [].to_vec(), 999, 999);
+			let mut handle = Handler::new(key, 0, [Handler::PIXIV].to_vec(), [].to_vec(), -1, 999);
 			let result : Vec<Sauce> = handle.get_sauce(file).unwrap();
 			for i in result {
 				println!("{:?}", i);

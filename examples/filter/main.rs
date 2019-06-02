@@ -1,4 +1,4 @@
-//! A simple example, assuming you had a config.json file that had your api key.
+//! Now, we wish to filter out our results such that we have a minimum similarity and we reject any empty sources
 
 extern crate rustnao;
 use rustnao::{Handler, Sauce};
@@ -12,7 +12,8 @@ fn main() {
 	match api_key {
 		Some(key) => {
 			let mut handle = Handler::new(key, 0, [].to_vec(), [].to_vec(), 999, 999);
-			let result : Vec<Sauce> = handle.get_sauce(file).unwrap();
+			handle.set_min_similarity(61.31);
+			let result : Vec<Sauce> = handle.get_sauce(file).unwrap().into_iter().filter(|sauce| !sauce.has_empty_url()).collect();  // Remove empty results
 			for i in result {
 				println!("{:?}", i);
 			}
