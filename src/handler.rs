@@ -38,6 +38,12 @@ pub struct Handler {
 }
 
 impl Handler {
+	pub const H_MAGAZINES : u32 = constants::H_MAGAZINES.index;
+	pub const H_GAME_CG : u32 = constants::H_GAME_CG.index;
+	pub const DOUJINSHI_DB : u32 = constants::DOUJINSHI_DB.index;
+	pub const PIXIV : u32 = constants::PIXIV.index;
+
+
 	/// Creates a new Handler object.  By default, the short limit is set to 30 seconds, and the long limit is set to 24 hours.
 	/// ## Arguments
 	/// * `api_key` - A string slice holding your api key.
@@ -185,6 +191,7 @@ impl Handler {
 					for sauce in res {
 						let sauce_min_sim : f64 = sauce.header.similarity.parse().unwrap();
 						if sauce_min_sim >= self.min_similarity {
+							// TODO: We have to add a way of grabbing the correct constant Source to fill in some of the slots!  This will also be the same for when we try to grab author id credentials when deserializing
 							ret_sauce.push(Sauce::init(
 								sauce.data.ext_urls,
 								sauce.header.index_name,
