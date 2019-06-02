@@ -33,9 +33,7 @@ fn test_check_handler_creation() {
 #[test]
 fn test_get_short_and_long_limits() {
 	let mut handle = create_handler([].to_vec(), [].to_vec(), 999, 999);
-	let short_before = handle.get_short_limit();
 	let cur_short_before = handle.get_current_short_limit();
-	let long_before = handle.get_long_limit();
 	let cur_long_before = handle.get_current_long_limit();
 	handle.get_sauce(FILE).unwrap();
 	assert!(cur_short_before > handle.get_current_short_limit(), format!("{} vs {}", cur_short_before, handle.get_current_short_limit()));
