@@ -7,13 +7,13 @@ use std::fmt;
 /// ## Examples
 #[derive(Serialize)]
 pub struct Sauce {
-	ext_urls: Vec<String>,
-	site: String,
-	index: i32,
-	similarity: f32,
-	thumbnail: String,
-	rating: i32,
-	author_id: Option<Vec<String>>,
+	pub ext_urls: Vec<String>,
+	pub site: String,
+	pub index: i32,
+	pub similarity: f32,
+	pub thumbnail: String,
+	pub rating: i32,
+	pub author_id: Option<Vec<String>>,
 }
 
 impl Sauce {

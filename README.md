@@ -29,7 +29,7 @@ fn main() {
 ```
 
 ## Documentation
-Documentation can be found [here]().
+Documentation can be found [here](./documentation.md).
 
 ## Development
 Interested in helping?  Found a problem/bug?  Let me know!

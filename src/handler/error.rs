@@ -32,18 +32,18 @@ impl Error for SauceError {
 
 impl From<serde_json::Error> for SauceError {
 	fn from(err : serde_json::Error) -> Self {
-		SauceError::new(err.description())
+		SauceError::new(format!("serde_json Error: {}", err.description()).as_str())
 	}
 }
 
 impl From<reqwest::Error> for SauceError {
 	fn from(err : reqwest::Error) -> Self {
-		SauceError::new(err.description())
+		SauceError::new(format!("reqwest Error: {}", err.description()).as_str())
 	}
 }
 
 impl From<reqwest::UrlError> for SauceError {
 	fn from(err : reqwest::UrlError) -> Self {
-		SauceError::new(err.description())
+		SauceError::new(format!("reqwest UrlError: {}", err.description()).as_str())
 	}
 }
