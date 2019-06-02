@@ -169,37 +169,41 @@ impl Handler {
 		let url_string = self.generate_url(url)?;
 		//println!("{:?}", url_string);
 		let returned_sauce: SauceResult = reqwest::get(&url_string)?.json()?;
-		assert!(returned_sauce.header.status <= 0, "Invalid status.");
-
-		// Update non-sauce fields
-		self.short_left = returned_sauce.header.short_remaining;
-		self.long_left = returned_sauce.header.long_remaining;
-		self.short_limit = returned_sauce.header.short_limit.parse().unwrap();
-		self.long_limit = returned_sauce.header.long_limit.parse().unwrap();
-
-		// Actual "returned" value:
 		let mut ret_sauce : Vec<Sauce> = Vec::new();
-		match returned_sauce.results {
-			Some(res) => {
-				for sauce in res {
-					let sauce_min_sim : f64 = sauce.header.similarity.parse().unwrap();
-					if sauce_min_sim >= self.min_similarity {
-						ret_sauce.push(Sauce::init(
-							sauce.data.ext_urls,
-							sauce.header.index_name,
-							sauce.header.index_id,
-							sauce.header.similarity.parse().unwrap(),
-							sauce.header.thumbnail.to_string(),
-							5,
-							None,
-						));
+		if returned_sauce.header.status >= 0 {
+			// Update non-sauce fields
+			self.short_left = returned_sauce.header.short_remaining;
+			self.long_left = returned_sauce.header.long_remaining;
+			self.short_limit = returned_sauce.header.short_limit.parse().unwrap();
+			self.long_limit = returned_sauce.header.long_limit.parse().unwrap();
+
+			// Actual "returned" value:
+
+			match returned_sauce.results {
+				Some(res) => {
+					for sauce in res {
+						let sauce_min_sim : f64 = sauce.header.similarity.parse().unwrap();
+						if sauce_min_sim >= self.min_similarity {
+							ret_sauce.push(Sauce::init(
+								sauce.data.ext_urls,
+								sauce.header.index_name,
+								sauce.header.index_id,
+								sauce.header.similarity.parse().unwrap(),
+								sauce.header.thumbnail.to_string(),
+								5,
+								None,
+							));
+						}
 					}
 				}
+				None => (),
 			}
-			None => (),
+			Ok(ret_sauce)
 		}
-
-		Ok(ret_sauce)
+		else {
+			Err(SauceError::new("Invalid status"))
+		}
+		
 	}
 
 	/// Returns a string representing a vector of Sauce objects as a serialized JSON, or an error.

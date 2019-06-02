@@ -9,7 +9,7 @@ pub struct SauceError {
 }
 
 impl SauceError {
-	fn new(msg : &str) -> SauceError { 
+	pub fn new(msg : &str) -> SauceError { 
 		SauceError {
 			details: msg.to_string(),
 		}
