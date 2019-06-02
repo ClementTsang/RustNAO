@@ -62,7 +62,7 @@ fn test_db_bit_mask() {
 	let mut handle = create_handler([27].to_vec(), [].to_vec(), -1, 999);
 	let vec = handle.get_sauce(FILE).unwrap();
 	for v in vec {
-		assert!(v.index >= 30);
+		assert!(v.index >= 27, "saw {}", v.index);
 	}
 }
 #[test]

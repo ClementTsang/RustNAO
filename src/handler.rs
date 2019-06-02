@@ -27,13 +27,13 @@ pub struct Handler {
 	output_type : i32,
 	testmode : i32,
 	num_results : i32,
-	db_mask : Vec<u32>,
-	db_mask_i : Vec<u32>,
-	db : i32,
-	short_limit : i32,
-	long_limit: i32,
-	short_left : i32,
-	long_left : i32,
+	db_mask : Vec<u32>,		// TODO: Might change this to a Some(Vec<u32>) instead...
+	db_mask_i : Vec<u32>,	// TODO: Might change this to a Some(Vec<u32>) instead...
+	db : i32,				// TODO: Might change this to a Some(u32) instead... hell, all of it might become Some values instead except for stuff like api_key...
+	short_limit : u32,
+	long_limit: u32,
+	short_left : u32,
+	long_left : u32,
 	min_similarity : f64,
 }
 
@@ -42,7 +42,81 @@ impl Handler {
 	pub const H_GAME_CG : u32 = constants::H_GAME_CG.index;
 	pub const DOUJINSHI_DB : u32 = constants::DOUJINSHI_DB.index;
 	pub const PIXIV : u32 = constants::PIXIV.index;
+	pub const NICO_NICO_SEIGA : u32 = constants::NICO_NICO_SEIGA.index;
+	pub const DANBOORU : u32 = constants::DANBOORU.index;
+	pub const DRAWR : u32 = constants::DRAWR.index;
+	pub const NIJIE : u32 = constants::NIJIE.index;
+	pub const YANDE_RE : u32 = constants::YANDE_RE.index;
+	pub const SHUTTERSTOCK : u32 = constants::SHUTTERSTOCK.index;
+	pub const FAKKU : u32 = constants::FAKKU.index;
+	pub const H_MISC : u32 = constants::H_MISC.index;
+	pub const TWO_D_MARKET : u32 = constants::TWO_D_MARKET.index;
+	pub const MEDIBANG : u32 = constants::MEDIBANG.index;
+	pub const ANIME : u32 = constants::ANIME.index;
+	pub const H_ANIME : u32 = constants::H_ANIME.index;
+	pub const MOVIES : u32 = constants::MOVIES.index;
+	pub const SHOWS : u32 = constants::SHOWS.index;
+	pub const GELBOORU : u32 = constants::GELBOORU.index;
+	pub const KONACHAN : u32 = constants::KONACHAN.index;
+	pub const SANKAKU_CHANNEL : u32 = constants::SANKAKU_CHANNEL.index;
+	pub const ANIME_PICTURES_NET : u32 = constants::ANIME_PICTURES_NET.index;
+	pub const E621_NET : u32 = constants::E621_NET.index;
+	pub const IDOL_COMPLEX : u32 = constants::IDOL_COMPLEX.index;
+	pub const BCY_NET_ILLUST : u32 = constants::BCY_NET_ILLUST.index;
+	pub const BCY_NET_COSPLAY : u32 = constants::BCY_NET_COSPLAY.index;
+	pub const PORTALGRAPHICS_NET : u32 = constants::PORTALGRAPHICS_NET.index;
+	pub const DEVIANTART : u32 = constants::DEVIANTART.index;
+	pub const PAWOO_NET : u32 = constants::PAWOO_NET.index;
+	pub const MADOKAMI : u32 = constants::MADOKAMI.index;
+	pub const MANGADEX : u32 = constants::MANGADEX.index;
 
+	/// Grabs the appropriate Source data given an index
+	fn get_source(&self, index : u32) -> Option<constants::Source<'_>> {
+		let mut result : Option<constants::Source<'_>> = None;
+		for src in constants::LIST_OF_SOURCES.iter() {
+			if src.index == index {
+				result = Some(src.clone());
+			}
+		}
+		result
+	}
+
+	/// Generates a bitmask from a given vector.
+	fn generate_bitmask(&self, mask : Vec<u32>) -> u32 {
+		let mut res : u32 = 0;
+		for m in mask {
+			let mut offset = 0;
+			if m >= 18 {
+				offset = 1;	// This seems to be some required fix...
+			}
+			res ^= u32::pow(2, m - offset);
+		}
+		res
+	}
+
+	/// Generates a url from the given image url
+	/// 
+	fn generate_url(&self, image_url : &str) -> Result<String, ParseError> {
+		let mut request_url = Url::parse(constants::API_URL)?;
+		request_url.query_pairs_mut().append_pair("api_key", self.api_key.as_str());
+		request_url.query_pairs_mut().append_pair("output_type", self.output_type.to_string().as_str());
+		if self.db <= -1 {
+			if self.db_mask.len() > 0 {
+				request_url.query_pairs_mut().append_pair("dbmask", self.generate_bitmask(self.db_mask.clone()).to_string().as_str());
+			}
+			if self.db_mask_i.len() > 0 {
+				request_url.query_pairs_mut().append_pair("dbmaski", self.generate_bitmask(self.db_mask_i.clone()).to_string().as_str());
+			}
+		}
+		else {
+			request_url.query_pairs_mut().append_pair("db", self.db.to_string().as_str());
+		}
+		request_url.query_pairs_mut().append_pair("testmode", self.testmode.to_string().as_str());
+		request_url.query_pairs_mut().append_pair("numres", self.num_results.to_string().as_str());
+		request_url.query_pairs_mut().append_pair("url", image_url);
+
+		Ok(request_url.into_string())
+	}
 
 	/// Creates a new Handler object.  By default, the short limit is set to 30 seconds, and the long limit is set to 24 hours.
 	/// ## Arguments
@@ -94,7 +168,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// ```
-	pub fn get_short_limit(&self) -> i32 {
+	pub fn get_short_limit(&self) -> u32 {
 		self.short_limit
 	}
 
@@ -103,7 +177,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// ```
-	pub fn get_long_limit(&self) -> i32 {
+	pub fn get_long_limit(&self) -> u32 {
 		self.long_limit
 	}
 
@@ -112,7 +186,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// ```
-	pub fn get_current_short_limit(&self) -> i32 {
+	pub fn get_current_short_limit(&self) -> u32 {
 		self.short_left
 	}
 
@@ -121,45 +195,8 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// ``` 
-	pub fn get_current_long_limit(&self) -> i32 {
+	pub fn get_current_long_limit(&self) -> u32 {
 		self.long_left
-	}
-
-	/// Generates a bitmask from a given vector.
-	fn generate_bitmask(&self, mask : Vec<u32>) -> u32 {
-		let mut res : u32 = 0;
-		for m in mask {
-			let mut offset = 0;
-			if m >= 18 {
-				offset = 1;	// This seems to be some required fix...
-			}
-			res ^= u32::pow(2, m - offset);
-		}
-		res
-	}
-
-	/// Generates a url from the given image url
-	/// 
-	fn generate_url(&self, image_url : &str) -> Result<String, ParseError> {
-		let mut request_url = Url::parse(constants::API_URL)?;
-		request_url.query_pairs_mut().append_pair("api_key", self.api_key.as_str());
-		request_url.query_pairs_mut().append_pair("output_type", self.output_type.to_string().as_str());
-		if self.db == -1 {
-			if self.db_mask.len() > 0 {
-				request_url.query_pairs_mut().append_pair("dbmask", self.generate_bitmask(self.db_mask.clone()).to_string().as_str());
-			}
-			if self.db_mask_i.len() > 0 {
-				request_url.query_pairs_mut().append_pair("dbmaski", self.generate_bitmask(self.db_mask_i.clone()).to_string().as_str());
-			}
-		}
-		else {
-			request_url.query_pairs_mut().append_pair("db", self.db.to_string().as_str());
-		}
-		request_url.query_pairs_mut().append_pair("testmode", self.testmode.to_string().as_str());
-		request_url.query_pairs_mut().append_pair("numres", self.num_results.to_string().as_str());
-		request_url.query_pairs_mut().append_pair("url", image_url);
-
-		Ok(request_url.into_string())
 	}
 
 	/// Returns a Result of either a vector of Sauce objects, which contain potential sources for the input ``file``, or a SauceError.
@@ -192,15 +229,35 @@ impl Handler {
 						let sauce_min_sim : f64 = sauce.header.similarity.parse().unwrap();
 						if sauce_min_sim >= self.min_similarity {
 							// TODO: We have to add a way of grabbing the correct constant Source to fill in some of the slots!  This will also be the same for when we try to grab author id credentials when deserializing
-							ret_sauce.push(Sauce::init(
-								sauce.data.ext_urls,
-								sauce.header.index_name,
-								sauce.header.index_id,
-								sauce.header.similarity.parse().unwrap(),
-								sauce.header.thumbnail.to_string(),
-								5,
-								None,
-							));
+
+							let actual_index : u32 = sauce.header.index_name.split(":").collect::<Vec<&str>>()[0].to_string().split("#").collect::<Vec<&str>>()[1].to_string().parse::<u32>().unwrap();
+							let source : Option<constants::Source> = self.get_source(actual_index);
+							match source {
+								Some(src) => {
+									ret_sauce.push(Sauce::init(
+										sauce.data.ext_urls,
+										sauce.data.title,
+										src.name.to_string(),
+										actual_index,
+										sauce.header.index_id,
+										sauce.header.similarity.parse().unwrap(),
+										sauce.header.thumbnail.to_string(),
+										None,
+									));
+								}
+								None => {
+									ret_sauce.push(Sauce::init(
+										sauce.data.ext_urls,
+										sauce.data.title,
+										sauce.header.index_name,
+										actual_index,
+										sauce.header.index_id,
+										sauce.header.similarity.parse().unwrap(),
+										sauce.header.thumbnail.to_string(),
+										None,
+									));
+								}
+							}
 						}
 					}
 				}
@@ -246,16 +303,16 @@ impl Handler {
 
 	/*
 	///
-	fn get_sauce_async(&mut self, url : &str) {
+	async fn get_sauce_async(&mut self, url : &str) -> Result<Sauce, SauceError> {
 
 	}
 
 	///
-	fn get_sauce_as_json_async(&mut self, url : &str) {
+	async fn get_sauce_as_json_async(&mut self, url : &str) -> Result<String, SauceError> {
 
-	}
-	*/
+	}*/
+	
 
-	// TODO: Organize the interface to look nicer... refactoring pls.
+	// TODO: Organize the interface to look nicer...
 }
 

@@ -8,11 +8,12 @@ use std::fmt;
 #[derive(Serialize)]
 pub struct Sauce {
 	pub ext_urls: Vec<String>,
+	pub title: Option<String>,
 	pub site: String,
-	pub index: i32,
+	pub index: u32,
+	pub index_id: u32,
 	pub similarity: f32,
 	pub thumbnail: String,
-	pub rating: i32,
 	pub author_id: Option<Vec<String>>,
 }
 
@@ -20,23 +21,25 @@ impl Sauce {
 	pub fn new() -> Sauce {
 		Sauce {
 			ext_urls : Vec::new(),
+			title: None,
 			site: "".to_string(),
-			index: -1,
+			index: 999,
+			index_id: 999,
 			similarity: 0.0,
 			thumbnail : "".to_string(),
-			rating: -1,
 			author_id: None, 
 		}
 	}
 
-	pub fn init(ext_urls : Vec<String>, site : String, index : i32, similarity : f32, thumbnail : String, rating : i32, author_id : Option<Vec<String>>) -> Sauce {
+	pub fn init(ext_urls : Vec<String>, title : Option<String>, site : String, index : u32, index_id : u32, similarity : f32, thumbnail : String, author_id : Option<Vec<String>>) -> Sauce {
 		Sauce {
 			ext_urls : ext_urls,
+			title: title,
 			site : site,
 			index : index,
+			index_id : index_id,
 			similarity : similarity,
 			thumbnail : thumbnail,
-			rating : rating, 
 			author_id : author_id,
 		}
 	}
@@ -70,19 +73,26 @@ impl fmt::Debug for Sauce {
 		let mut result : String = String::new();
 		result.push_str("ext_urls: ");
 		for i in self.ext_urls.clone() {
-			result.push_str(i.as_str());
+			result.push_str(format!("\"{}\"", i.as_str()).as_str());
 			result.push_str("  ");
 		}
 		result.push_str("\nsite: ");
 		result.push_str(self.site.as_str());
+		match &self.title {
+			Some(x) => {
+				result.push_str("\ntitle: ");
+				result.push_str(x.as_str());
+			}
+			None => (),
+		}
 		result.push_str("\nindex: ");
 		result.push_str(self.index.to_string().as_str());
+		result.push_str("\nindex_id: ");
+		result.push_str(self.index_id.to_string().as_str());
 		result.push_str("\nsimilarity: ");
 		result.push_str(self.similarity.to_string().as_str());
 		result.push_str("\nthumbnail: ");
-		result.push_str(self.thumbnail.as_str());
-		result.push_str("\nrating: ");
-		result.push_str(self.rating.to_string().as_str());
+		result.push_str(format!("\"{}\"", self.thumbnail.as_str()).as_str());
 		result.push_str("\nauthor_id: ");
 		match self.author_id.clone() {
 			Some(author) => {
