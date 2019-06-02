@@ -167,8 +167,9 @@ impl Handler {
 	/// ```
 	pub fn get_sauce(&mut self, url : &str) -> Result<Vec<Sauce>, SauceError> {
 		let url_string = self.generate_url(url)?;
-		println!("{:?}", url_string);
+		//println!("{:?}", url_string);
 		let returned_sauce: SauceResult = reqwest::get(&url_string)?.json()?;
+		assert!(returned_sauce.header.status <= 0, "Invalid status.");
 
 		// Update non-sauce fields
 		self.short_left = returned_sauce.header.short_remaining;

@@ -65,11 +65,15 @@ fn test_limiting() {
 fn test_db_bit_mask() {
 	let mut handle = create_handler([27].to_vec(), [].to_vec(), -1, 999);
 	let vec = handle.get_sauce(FILE).unwrap();
-	assert!(vec.len() == 1);
+	for v in vec {
+		assert!(v.index >= 30);
+	}
 }
 #[test]
 fn test_db_bit_mask_i() {
 	let mut handle = create_handler([].to_vec(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].to_vec(), -1, 999);
 	let vec = handle.get_sauce(FILE).unwrap();
-	assert!(vec.len() == 1);
+	for v in vec {
+		assert!(v.index >= 11);
+	}
 }
