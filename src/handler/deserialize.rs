@@ -33,6 +33,8 @@ pub struct ResultHeader {
 	pub long_remaining: i32,
 	#[serde(default)]
 	pub short_remaining: i32,
+	#[serde(default)]
+	pub message: String,
 	pub status: i32,
 }
 

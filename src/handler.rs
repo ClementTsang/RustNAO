@@ -201,7 +201,7 @@ impl Handler {
 			Ok(ret_sauce)
 		}
 		else {
-			Err(SauceError::new("Invalid status"))
+			Err(SauceError::new(format!("Invalid status code: {}: {}", returned_sauce.header.status, returned_sauce.header.message).as_str()))
 		}
 		
 	}
