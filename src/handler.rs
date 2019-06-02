@@ -159,6 +159,7 @@ impl Handler {
 	/// Returns a Result of either a vector of Sauce objects, which contain potential sources for the input ``file``, or a SauceError.
 	/// ## Arguments
 	/// * ``url`` - A string slice that contains the url of the image you wish to look up.
+	/// 
 	/// ## Example
 	/// ```
 	/// use rustnao::Handler;
@@ -209,6 +210,7 @@ impl Handler {
 	/// Returns a string representing a vector of Sauce objects as a serialized JSON, or an error.
 	/// ## Arguments
 	/// * ``url`` - A string slice that contains the url of the image you wish to look up
+	/// 
 	/// ## Example
 	/// ```
 	/// use rustnao::Handler;
@@ -223,6 +225,7 @@ impl Handler {
 	/// Returns a string representing a vector of Sauce objects as a serialized JSON, or an error.
 	/// ## Arguments
 	/// * ``url`` - A string slice that contains the url of the image you wish to look up
+	/// 
 	/// ## Example
 	/// ```
 	/// use rustnao::Handler;
