@@ -38,6 +38,7 @@ pub struct Data {
 	pub konachan_id : Option<u32>,
 	pub sankaku_id : Option<u32>,
 	pub danbooru_id : Option<u32>,
+	pub creator : Option<serde_json::Value>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -70,3 +71,4 @@ pub struct SauceResult {
 	#[serde(default)]
 	pub results: Option<Vec<SauceJSON>>,
 }
+

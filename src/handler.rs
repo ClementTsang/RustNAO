@@ -70,6 +70,29 @@ impl Handler {
 	pub const MADOKAMI : u32 = constants::MADOKAMI.index;
 	pub const MANGADEX : u32 = constants::MANGADEX.index;
 
+	/// Gets the appropriate author data based on an index
+	fn get_author_data(&self, index : u32, data : deserialize::Data) -> Option<Vec<String>> {
+		let mut ret_val : Vec<String> = Vec::new();
+		match index {
+			Handler::PIXIV => {
+				match data.pixiv_id {
+					Some(x) => ret_val.push(x.to_string()),
+					None => (),
+				}
+				match data.member_name {
+					Some(x) => ret_val.push(x),
+					None => (),
+				}
+				match data.member_id {
+					Some(x) => ret_val.push(x.to_string()),
+					None => (),
+				}
+				Some(ret_val)
+			}
+			_ => None,
+		}
+	}
+
 	/// Grabs the appropriate Source data given an index
 	fn get_source(&self, index : u32) -> Option<constants::Source<'_>> {
 		let mut result : Option<constants::Source<'_>> = None;
@@ -232,7 +255,9 @@ impl Handler {
 
 							let actual_index : u32 = sauce.header.index_name.split(":").collect::<Vec<&str>>()[0].to_string().split("#").collect::<Vec<&str>>()[1].to_string().parse::<u32>().unwrap();
 							let source : Option<constants::Source> = self.get_source(actual_index);
-							match source {
+							let author_details : Option<Vec<String>> = self.get_author_data(actual_index, sauce.data.clone());
+							
+							match source {								
 								Some(src) => {
 									ret_sauce.push(Sauce::init(
 										sauce.data.ext_urls,
@@ -242,7 +267,7 @@ impl Handler {
 										sauce.header.index_id,
 										sauce.header.similarity.parse().unwrap(),
 										sauce.header.thumbnail.to_string(),
-										None,
+										author_details,
 									));
 								}
 								None => {
