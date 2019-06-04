@@ -14,7 +14,7 @@ pub struct Sauce {
 	pub index_id: u32,
 	pub similarity: f32,
 	pub thumbnail: String,
-	pub author_id: Option<Vec<String>>,
+	pub author_id: Option<serde_json::Value>,
 }
 
 impl Sauce {
@@ -31,7 +31,7 @@ impl Sauce {
 		}
 	}
 
-	pub fn init(ext_urls : Vec<String>, title : Option<String>, site : String, index : u32, index_id : u32, similarity : f32, thumbnail : String, author_id : Option<Vec<String>>) -> Sauce {
+	pub fn init(ext_urls : Vec<String>, title : Option<String>, site : String, index : u32, index_id : u32, similarity : f32, thumbnail : String, author_id : Option<serde_json::Value>) -> Sauce {
 		Sauce {
 			ext_urls : ext_urls,
 			title: title,
@@ -96,10 +96,7 @@ impl fmt::Debug for Sauce {
 		result.push_str("\nauthor_id: ");
 		match self.author_id.clone() {
 			Some(author) => {
-				for i in author {
-					result.push_str(i.as_str());
-					result.push_str("  ");
-				}
+				result.push_str(author.to_string().as_str());
 			},
 			None =>(),
 		}

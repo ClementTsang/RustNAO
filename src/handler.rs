@@ -70,26 +70,15 @@ impl Handler {
 	pub const MADOKAMI : u32 = constants::MADOKAMI.index;
 	pub const MANGADEX : u32 = constants::MANGADEX.index;
 
-	/// Gets the appropriate author data based on an index
-	fn get_author_data(&self, index : u32, data : deserialize::Data) -> Option<Vec<String>> {
-		let mut ret_val : Vec<String> = Vec::new();
-		match index {
-			Handler::PIXIV => {
-				match data.pixiv_id {
-					Some(x) => ret_val.push(x.to_string()),
-					None => (),
-				}
-				match data.member_name {
-					Some(x) => ret_val.push(x),
-					None => (),
-				}
-				match data.member_id {
-					Some(x) => ret_val.push(x.to_string()),
-					None => (),
-				}
-				Some(ret_val)
+	/// Gets the appropriate author data
+	fn get_author_data(&self, data : deserialize::Data) -> Option<serde_json::Value> {
+		match data.author_fields {
+			Some(af) => {
+				Some(
+					serde_json::json!(serde_json::to_string(&af).unwrap())
+				)
 			}
-			_ => None,
+			None => None,
 		}
 	}
 
@@ -255,7 +244,7 @@ impl Handler {
 
 							let actual_index : u32 = sauce.header.index_name.split(":").collect::<Vec<&str>>()[0].to_string().split("#").collect::<Vec<&str>>()[1].to_string().parse::<u32>().unwrap();
 							let source : Option<constants::Source> = self.get_source(actual_index);
-							let author_details : Option<Vec<String>> = self.get_author_data(actual_index, sauce.data.clone());
+							let author_details : Option<serde_json::Value> = self.get_author_data(sauce.data.clone());
 							
 							match source {								
 								Some(src) => {
