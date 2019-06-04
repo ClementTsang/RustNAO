@@ -1,5 +1,6 @@
 extern crate serde;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize};
+use std::collections::HashMap;
 
 #[derive(Deserialize, Debug, Default, Clone)]
 pub struct Header {
@@ -9,59 +10,6 @@ pub struct Header {
 	pub index_name : String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Default, Clone)]
-pub struct AuthorFields {
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub da_id : Option<u32>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub author_name : Option<String>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub author_url : Option<String>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub pixiv_id: Option<u32>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub member_name : Option<String>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub member_id : Option<u32>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub bcy_id: Option<u32>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub member_link_id : Option<u32>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub md_id : Option<u32>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub mu_id : Option<u32>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub mal_id : Option<u32>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub source : Option<String>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub part : Option<String>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub anidb_aid : Option<u32>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub pawoo_id : Option<u32>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub pawoo_user_acct : Option<String>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub pawoo_user_username : Option<String>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub pawoo_user_display_name : Option<String>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub drawr_id : Option<u32>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub seiga_id : Option<u32>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub nijie_id : Option<u32>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub konachan_id : Option<u32>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub sankaku_id : Option<u32>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub danbooru_id : Option<u32>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub creator : Option<serde_json::Value>,
-}
 
 #[derive(Deserialize, Debug, Default, Clone)]
 pub struct Data {
@@ -69,8 +17,8 @@ pub struct Data {
 	pub ext_urls: Vec<String>,
 	pub title: Option<String>,
 
-	#[serde(flatten)]
-	pub author_fields: Option<AuthorFields>,
+	#[serde(flatten, skip_serializing_if = "HashMap::is_empty")]
+	pub additional_fields: HashMap<String, serde_json::Value>
 }
 
 #[derive(Deserialize, Debug, Clone)]

@@ -70,18 +70,6 @@ impl Handler {
 	pub const MADOKAMI : u32 = constants::MADOKAMI.index;
 	pub const MANGADEX : u32 = constants::MANGADEX.index;
 
-	/// Gets the appropriate author data
-	fn get_author_data(&self, data : deserialize::Data) -> Option<serde_json::Value> {
-		match data.author_fields {
-			Some(af) => {
-				Some(
-					serde_json::json!(serde_json::to_string(&af).unwrap())
-				)
-			}
-			None => None,
-		}
-	}
-
 	/// Grabs the appropriate Source data given an index
 	fn get_source(&self, index : u32) -> Option<constants::Source<'_>> {
 		let mut result : Option<constants::Source<'_>> = None;
@@ -223,7 +211,6 @@ impl Handler {
 	/// ```
 	pub fn get_sauce(&mut self, url : &str) -> Result<Vec<Sauce>, SauceError> {
 		let url_string = self.generate_url(url)?;
-		//println!("{:?}", url_string);
 		let returned_sauce: SauceResult = reqwest::get(&url_string)?.json()?;
 		let mut ret_sauce : Vec<Sauce> = Vec::new();
 		if returned_sauce.header.status >= 0 {
@@ -244,7 +231,6 @@ impl Handler {
 
 							let actual_index : u32 = sauce.header.index_name.split(":").collect::<Vec<&str>>()[0].to_string().split("#").collect::<Vec<&str>>()[1].to_string().parse::<u32>().unwrap();
 							let source : Option<constants::Source> = self.get_source(actual_index);
-							let author_details : Option<serde_json::Value> = self.get_author_data(sauce.data.clone());
 							
 							match source {								
 								Some(src) => {
@@ -256,7 +242,10 @@ impl Handler {
 										sauce.header.index_id,
 										sauce.header.similarity.parse().unwrap(),
 										sauce.header.thumbnail.to_string(),
-										author_details,
+										match serde_json::to_value(&sauce.data.additional_fields){
+											Ok(x) => Some(x),
+											Err(_x) => None,
+										},
 									));
 								}
 								None => {

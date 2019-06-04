@@ -14,7 +14,7 @@ pub struct Sauce {
 	pub index_id: u32,
 	pub similarity: f32,
 	pub thumbnail: String,
-	pub author_id: Option<serde_json::Value>,
+	pub additional_fields: Option<serde_json::Value>,
 }
 
 impl Sauce {
@@ -27,11 +27,11 @@ impl Sauce {
 			index_id: 999,
 			similarity: 0.0,
 			thumbnail : "".to_string(),
-			author_id: None, 
+			additional_fields: None, 
 		}
 	}
 
-	pub fn init(ext_urls : Vec<String>, title : Option<String>, site : String, index : u32, index_id : u32, similarity : f32, thumbnail : String, author_id : Option<serde_json::Value>) -> Sauce {
+	pub fn init(ext_urls : Vec<String>, title : Option<String>, site : String, index : u32, index_id : u32, similarity : f32, thumbnail : String, additional_fields : Option<serde_json::Value>) -> Sauce {
 		Sauce {
 			ext_urls : ext_urls,
 			title: title,
@@ -40,7 +40,7 @@ impl Sauce {
 			index_id : index_id,
 			similarity : similarity,
 			thumbnail : thumbnail,
-			author_id : author_id,
+			additional_fields : additional_fields,
 		}
 	}
 
@@ -94,7 +94,7 @@ impl fmt::Debug for Sauce {
 		result.push_str("\nthumbnail: ");
 		result.push_str(format!("\"{}\"", self.thumbnail.as_str()).as_str());
 		result.push_str("\nauthor_id: ");
-		match self.author_id.clone() {
+		match self.additional_fields.clone() {
 			Some(author) => {
 				result.push_str(author.to_string().as_str());
 			},
