@@ -11,7 +11,7 @@ fn main() {
 
 	match api_key {
 		Some(key) => {
-			let mut handle = Handler::new(key, 0, [Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec(), [].to_vec(), -1, 999);
+			let mut handle = Handler::new(key, Some(0), Some([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()), Some([].to_vec()), None, Some(999));
 			let result = handle.get_sauce_as_pretty_json(file).unwrap();
 			println!("{}", result);
 		},

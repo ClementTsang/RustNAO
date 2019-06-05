@@ -11,7 +11,7 @@ fn main() {
 
 	match api_key {
 		Some(key) => {
-			let mut handle = Handler::new(key, 0, [Handler::PIXIV].to_vec(), [].to_vec(), -1, 999);
+			let mut handle = Handler::new(key, Some(0), Some([Handler::PIXIV].to_vec()), None, None, Some(999));
 			let result : Vec<Sauce> = handle.get_sauce(file).unwrap();
 			for i in result {
 				println!("{:?}", i);

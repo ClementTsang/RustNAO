@@ -11,7 +11,7 @@ fn main() {
 
 	match api_key {
 		Some(key) => {
-			let mut handle = Handler::new(key, 0, [].to_vec(), [].to_vec(), 999, 999);
+			let mut handle = Handler::new(key, Some(0), None, None, Some(999), Some(999));
 			handle.set_min_similarity(61.31);
 			let result : Vec<Sauce> = handle.get_sauce(file).unwrap().into_iter().filter(|sauce| !sauce.has_empty_url()).collect();  // Remove empty results
 			for i in result {

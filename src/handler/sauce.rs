@@ -49,7 +49,7 @@ impl Sauce {
 	/// ```
 	/// use rustnao::{Handler, Sauce};
 	/// let file = "https://i.imgur.com/W42kkKS.jpg";
-	///	let mut handle = Handler::new("your_saucenao_api_key", 0, [].to_vec(), [].to_vec(), 999, 999);
+	///	let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	///	handle.set_min_similarity(45);
 	///	let result = handle.get_sauce(file);
 	///	if result.is_ok() {

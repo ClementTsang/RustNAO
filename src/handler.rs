@@ -25,11 +25,11 @@ use url::{Url, ParseError};
 pub struct Handler {
 	api_key : String,
 	output_type : i32,
-	testmode : i32,
-	num_results : i32,
-	db_mask : Vec<u32>,		// TODO: Might change this to a Some(Vec<u32>) instead...
-	db_mask_i : Vec<u32>,	// TODO: Might change this to a Some(Vec<u32>) instead...
-	db : i32,				// TODO: Might change this to a Some(u32) instead... hell, all of it might become Some values instead except for stuff like api_key...
+	testmode : Option<i32>,
+	num_results : Option<i32>,
+	db_mask : Option<Vec<u32>>,
+	db_mask_i : Option<Vec<u32>>,
+	db : Option<u32>,
 	short_limit : u32,
 	long_limit: u32,
 	short_left : u32,
@@ -100,19 +100,59 @@ impl Handler {
 		let mut request_url = Url::parse(constants::API_URL)?;
 		request_url.query_pairs_mut().append_pair("api_key", self.api_key.as_str());
 		request_url.query_pairs_mut().append_pair("output_type", self.output_type.to_string().as_str());
-		if self.db <= -1 {
-			if self.db_mask.len() > 0 {
-				request_url.query_pairs_mut().append_pair("dbmask", self.generate_bitmask(self.db_mask.clone()).to_string().as_str());
+
+		match self.db {
+			Some(val) => {
+				request_url.query_pairs_mut().append_pair("db", val.to_string().as_str());
 			}
-			if self.db_mask_i.len() > 0 {
-				request_url.query_pairs_mut().append_pair("dbmaski", self.generate_bitmask(self.db_mask_i.clone()).to_string().as_str());
+			None => (),
+		}
+
+		match &self.db_mask {
+			Some(val) => {
+				if val.len() > 0 {
+					request_url.query_pairs_mut().append_pair("dbmask", self.generate_bitmask(val.clone()).to_string().as_str());
+				}
+				else if self.db.is_none() {
+					// Set to 999.
+					request_url.query_pairs_mut().append_pair("db", "999");
+				}
+			}
+			None => {
+				if self.db.is_none() {
+					// Set to 999.
+					request_url.query_pairs_mut().append_pair("db", "999");
+				}
+			},
+		}
+			
+		match &self.db_mask_i {
+			Some(val) => {
+				if val.len() > 0 {
+					request_url.query_pairs_mut().append_pair("dbmaski", self.generate_bitmask(val.clone()).to_string().as_str());
+				}
+			}
+			None => (),
+		}
+
+		match self.testmode {
+			Some(val) => {
+				request_url.query_pairs_mut().append_pair("testmode", val.to_string().as_str());
+			}
+			None => {
+				request_url.query_pairs_mut().append_pair("testmode", "0");
 			}
 		}
-		else {
-			request_url.query_pairs_mut().append_pair("db", self.db.to_string().as_str());
+
+		match self.num_results {
+			Some(val) => {
+				request_url.query_pairs_mut().append_pair("numres", val.to_string().as_str());
+			}
+			None => {
+				request_url.query_pairs_mut().append_pair("numres", "999");
+			}
 		}
-		request_url.query_pairs_mut().append_pair("testmode", self.testmode.to_string().as_str());
-		request_url.query_pairs_mut().append_pair("numres", self.num_results.to_string().as_str());
+			
 		request_url.query_pairs_mut().append_pair("url", image_url);
 
 		Ok(request_url.into_string())
@@ -121,18 +161,16 @@ impl Handler {
 	/// Creates a new Handler object.  By default, the short limit is set to 30 seconds, and the long limit is set to 24 hours.
 	/// ## Arguments
 	/// * `api_key` - A string slice holding your api key.
-	/// * `testmode` - An i32, either 0 or 1.  Causes each index which has to output at most 1 for testing.
-	/// * `db_mask` - A vector of i32 values representing a mask for which database indices you wish to have enabled.
-	/// * `db_mask_i` - A vector of i32 values representing a mask for which database indices you wish to have disabled.
-	/// * `db` - An i32 value to search for a specific index, -1 to rely on the bitmasks instead, or 999 for all.
-	/// * `num_results` - An i32 representing the number of results you wish returned.
+	/// * `testmode` - An Option for a i32, either 0 or 1.  Causes each index which has to output at most 1 for testing.  If this is None, this is by default 0.
+	/// * `db_mask` - A Option for a vector of i32 values representing a mask for which database indices you wish to have enabled.
+	/// * `db_mask_i` - A Option for a vector of i32 values representing a mask for which database indices you wish to have disabled.
+	/// * `db` - An Option for a u32 value to search for a specific index.  Set to 999 for all.  If this and ``db_mask`` are both empty/None, by default it searches all before ``dbmaski`` is applied.
+	/// * `num_results` - An Option for a i32 representing the number of results you wish returned.  If this is None, this is by default 999.
 	/// 
 	/// ## Example
 	/// ```
 	/// ```
-	pub fn new(api_key : &str, testmode : i32, db_mask : Vec<u32>, db_mask_i : Vec<u32>, db : i32, num_results : i32) -> Handler {
-		assert!(testmode == 1 || testmode == 0, "testmode must be 0 or 1.");
-
+	pub fn new(api_key : &str, testmode : Option<i32>, db_mask : Option<Vec<u32>>, db_mask_i : Option<Vec<u32>>, db : Option<u32>, num_results : Option<i32>) -> Handler {
 		Handler {
 			api_key : api_key.to_string(),
 			output_type : 2,
@@ -156,7 +194,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::Handler;
-	/// let mut handle = Handler::new("your_saucenao_api_key", 0, Vec::new(), Vec::new(), 999, 5);
+	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	/// handle.set_min_similarity(50);
 	/// ```
 	pub fn set_min_similarity<T : Into<f64>>(&mut self, similarity : T) {
@@ -206,7 +244,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::Handler;
-	/// let mut handle = Handler::new("your_saucenao_api_key", 0, Vec::new(), Vec::new(), 999, 5);
+	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	/// handle.get_sauce("https://i.imgur.com/W42kkKS.jpg");
 	/// ```
 	pub fn get_sauce(&mut self, url : &str) -> Result<Vec<Sauce>, SauceError> {
@@ -281,7 +319,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::Handler;
-	/// let mut handle = Handler::new("your_saucenao_api_key", 0, Vec::new(), Vec::new(), 999, 5);
+	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	/// handle.get_sauce_as_pretty_json("https://i.imgur.com/W42kkKS.jpg");
 	/// ```
 	pub fn get_sauce_as_pretty_json(&mut self, url : &str) -> Result<String, SauceError> {
@@ -296,7 +334,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::Handler;
-	/// let mut handle = Handler::new("your_saucenao_api_key", 0, Vec::new(), Vec::new(), 999, 5);
+	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(5));
 	/// handle.get_sauce_as_json("https://i.imgur.com/W42kkKS.jpg");
 	/// ```
 	pub fn get_sauce_as_json(&mut self, url : &str) -> Result<String, SauceError> {
