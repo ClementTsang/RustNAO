@@ -20,7 +20,9 @@ use url::{Url, ParseError};
 /// A handler struct to make SauceNAO API calls.
 /// ## Examples
 /// ```
-/// ```
+/// use rustnao::Handler;
+/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+/// ``` 
 #[derive(Debug, Clone)]
 pub struct Handler {
 	api_key : String,
@@ -205,7 +207,10 @@ impl Handler {
 	/// 
 	/// ## Example
 	/// ```
-	/// ```
+	/// use rustnao::Handler;
+	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// println!("{}", handle.get_short_limit());
+	/// ``` 
 	pub fn get_short_limit(&self) -> u32 {
 		self.short_limit
 	}
@@ -214,7 +219,10 @@ impl Handler {
 	/// 
 	/// ## Example
 	/// ```
-	/// ```
+	/// use rustnao::Handler;
+	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// println!("{}", handle.get_long_limit());
+	/// ``` 
 	pub fn get_long_limit(&self) -> u32 {
 		self.long_limit
 	}
@@ -223,7 +231,10 @@ impl Handler {
 	/// 
 	/// ## Example
 	/// ```
-	/// ```
+	/// use rustnao::Handler;
+	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// println!("{}", handle.get_current_short_limit());
+	/// ``` 
 	pub fn get_current_short_limit(&self) -> u32 {
 		self.short_left
 	}
@@ -232,6 +243,9 @@ impl Handler {
 	/// 
 	/// ## Example
 	/// ```
+	/// use rustnao::Handler;
+	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// println!("{}", handle.get_current_long_limit());
 	/// ``` 
 	pub fn get_current_long_limit(&self) -> u32 {
 		self.long_left
