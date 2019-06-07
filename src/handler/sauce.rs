@@ -3,8 +3,20 @@ extern crate serde;
 use serde::Serialize;
 use std::fmt;
 
-/// A Sauce struct returns one result from a API call made by the Handler
-/// ## Examples
+/// A Sauce struct contains one result from a API call made by the Handler.  
+/// ## Explaination of fields
+/// * ``ext_urls`` - A Vec of Strings representing the external URLs for the image
+/// * ``title`` - An optional String to represent the title of the image
+/// * ``site`` - A string to represent the site the image is from
+/// * ``index`` - The official index on sauceNAO for the index the site corresponds to
+/// * ``index_id`` - The index rerturned by the sauceNAO API.  Usually this is equal to the ``index`` but sometimes it is different (see Sankaku, for example)
+/// * ``similarity`` - The similarity the image has with the guess
+/// ## Example
+/// ```
+/// use rustnao::{Sauce, Handler};
+/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+/// let result : Vec<Sauce> = handle.get_sauce("https://i.pximg.net/img-master/img/2019/02/10/03/11/39/73095123_p0_master1200.jpg").unwrap();
+/// ```
 #[derive(Serialize)]
 pub struct Sauce {
 	pub ext_urls: Vec<String>,
@@ -18,20 +30,8 @@ pub struct Sauce {
 }
 
 impl Sauce {
-	pub fn new() -> Sauce {
-		Sauce {
-			ext_urls : Vec::new(),
-			title: None,
-			site: "".to_string(),
-			index: 999,
-			index_id: 999,
-			similarity: 0.0,
-			thumbnail : "".to_string(),
-			additional_fields: None, 
-		}
-	}
-
-	pub fn init(ext_urls : Vec<String>, title : Option<String>, site : String, index : u32, index_id : u32, similarity : f32, thumbnail : String, additional_fields : Option<serde_json::Value>) -> Sauce {
+	/// Creates a new Sauce object. 
+	pub(in crate::handler) fn new(ext_urls : Vec<String>, title : Option<String>, site : String, index : u32, index_id : u32, similarity : f32, thumbnail : String, additional_fields : Option<serde_json::Value>) -> Sauce {
 		Sauce {
 			ext_urls : ext_urls,
 			title: title,

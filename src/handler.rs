@@ -170,8 +170,8 @@ impl Handler {
 	/// * `num_results` - An Option for a i32 representing the number of results you wish returned.  If this is None, this is by default 999.
 	/// 
 	/// ## Example
-	/// ```
-	/// ```
+	/// use rustnao::Handler;
+	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	pub fn new(api_key : &str, testmode : Option<i32>, db_mask : Option<Vec<u32>>, db_mask_i : Option<Vec<u32>>, db : Option<u32>, num_results : Option<i32>) -> Handler {
 		Handler {
 			api_key : api_key.to_string(),
@@ -286,7 +286,7 @@ impl Handler {
 							
 							match source {								
 								Some(src) => {
-									ret_sauce.push(Sauce::init(
+									ret_sauce.push(Sauce::new(
 										sauce.data.ext_urls,
 										sauce.data.title,
 										src.name.to_string(),
@@ -301,7 +301,7 @@ impl Handler {
 									));
 								}
 								None => {
-									ret_sauce.push(Sauce::init(
+									ret_sauce.push(Sauce::new(
 										sauce.data.ext_urls,
 										sauce.data.title,
 										sauce.header.index_name,
@@ -336,7 +336,7 @@ impl Handler {
 	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	/// handle.get_sauce_as_pretty_json("https://i.imgur.com/W42kkKS.jpg");
 	/// ```
-	pub fn get_sauce_as_pretty_json(&mut self, url : &str) -> Result<String, SauceError> {
+	pub fn get_sauce_as_pretty_json(&mut self, url : &str) -> Result<String, SauceError> {	// TODO: Might rename this.
 		let ret_sauce = self.get_sauce(url)?;
 		Ok(serde_json::to_string_pretty(&ret_sauce)?)
 	}

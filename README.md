@@ -16,15 +16,15 @@ fn main() {
 	let api_key = "your_api_key";
 	let file = "https://i.imgur.com/W42kkKS.jpg";
 
-	let mut handle = Handler::new(key, 0, [].to_vec(), [].to_vec(), 999, 999);
+	// Specifying our key, testmode set to 0, only want to see Pixiv and Sankaku using a mask, nothing excluded, no one specific source, and 999 results at most
+	let mut handle = Handler::new(key, Some(0), Some([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()), Some([].to_vec()), None, Some(999));
 	handle.set_min_similarity(45);
-	let result = handle.get_sauce(file);
-	if result.is_ok() {
-		let res : Vec<Sauce> = result.unwrap();
-	}
-	else {
-		println!("Failed to make a query.");
-	}
+
+	// Returns a vector of Sauce objects if successful
+	let result : Vec<Sauce> = handle.get_sauce(file).unwrap();
+
+	// Or perhaps you prefer a JSON output
+	let result_json : String = handle.get_sauce_as_pretty_json(file).unwrap();
 }
 ```
 
