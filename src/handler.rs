@@ -1,10 +1,5 @@
-extern crate reqwest;
-extern crate serde;
-extern crate serde_json;
-extern crate url;
-
 mod error;
-use error::SauceError;
+use error::Error;
 
 mod constants;
 
@@ -261,7 +256,7 @@ impl Handler {
 	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	/// handle.get_sauce("https://i.imgur.com/W42kkKS.jpg");
 	/// ```
-	pub fn get_sauce(&mut self, url : &str) -> Result<Vec<Sauce>, SauceError> {
+	pub fn get_sauce(&mut self, url : &str) -> error::Result<Vec<Sauce>> {
 		let url_string = self.generate_url(url)?;
 		let returned_sauce: SauceResult = reqwest::get(&url_string)?.json()?;
 		let mut ret_sauce : Vec<Sauce> = Vec::new();
@@ -279,7 +274,7 @@ impl Handler {
 					for sauce in res {
 						let sauce_min_sim : f64 = sauce.header.similarity.parse().unwrap();
 						if sauce_min_sim >= self.min_similarity {
-							// TODO: We have to add a way of grabbing the correct constant Source to fill in some of the slots!  This will also be the same for when we try to grab author id credentials when deserializing
+							// TODO: 2.  We have to add a way of grabbing the correct constant Source to fill in some of the slots!  This will also be the same for when we try to grab author id credentials when deserializing
 
 							let actual_index : u32 = sauce.header.index_name.split(":").collect::<Vec<&str>>()[0].to_string().split("#").collect::<Vec<&str>>()[1].to_string().parse::<u32>().unwrap();
 							let source : Option<constants::Source> = self.get_source(actual_index);
@@ -321,7 +316,7 @@ impl Handler {
 			Ok(ret_sauce)
 		}
 		else {
-			Err(SauceError::new(format!("Invalid status code: {}: {}", returned_sauce.header.status, returned_sauce.header.message).as_str()))
+			Err(Error::invalid_code(returned_sauce.header.status, returned_sauce.header.message))
 		}
 		
 	}
@@ -336,7 +331,7 @@ impl Handler {
 	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	/// handle.get_sauce_as_pretty_json("https://i.imgur.com/W42kkKS.jpg");
 	/// ```
-	pub fn get_sauce_as_pretty_json(&mut self, url : &str) -> Result<String, SauceError> {	// TODO: Might rename this.
+	pub fn get_sauce_as_pretty_json(&mut self, url : &str) -> error::Result<String> {
 		let ret_sauce = self.get_sauce(url)?;
 		Ok(serde_json::to_string_pretty(&ret_sauce)?)
 	}
@@ -351,7 +346,7 @@ impl Handler {
 	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(5));
 	/// handle.get_sauce_as_json("https://i.imgur.com/W42kkKS.jpg");
 	/// ```
-	pub fn get_sauce_as_json(&mut self, url : &str) -> Result<String, SauceError> {
+	pub fn get_sauce_as_json(&mut self, url : &str) -> error::Result<String> {
 		let ret_sauce = self.get_sauce(url)?;
 		Ok(serde_json::to_string(&ret_sauce)?)
 	}
@@ -368,6 +363,6 @@ impl Handler {
 	}*/
 	
 
-	// TODO: Organize the interface to look nicer...
+	// TODO: 4.  Organize the interface to look nicer...
 }
 

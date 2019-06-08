@@ -1,5 +1,3 @@
-extern crate serde;
-
 use serde::Serialize;
 use std::fmt;
 
@@ -59,7 +57,7 @@ impl Sauce {
 	///		}
 	///	}
 	///	else {
-	///		println!("Failed to make a query."); //TODO: More robust errors
+	///		println!("Failed to make a query.");
 	///	}
 	///	
 	/// ```
