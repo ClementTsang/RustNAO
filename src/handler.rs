@@ -286,7 +286,7 @@ impl Handler {
 							
 							match source {								
 								Some(src) => {
-									ret_sauce.push(Sauce::new(
+									ret_sauce.push(sauce::new_sauce(
 										sauce.data.ext_urls,
 										sauce.data.title,
 										src.name.to_string(),
@@ -301,7 +301,7 @@ impl Handler {
 									));
 								}
 								None => {
-									ret_sauce.push(Sauce::new(
+									ret_sauce.push(sauce::new_sauce(
 										sauce.data.ext_urls,
 										sauce.data.title,
 										sauce.header.index_name,

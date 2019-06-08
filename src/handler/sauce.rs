@@ -29,21 +29,21 @@ pub struct Sauce {
 	pub additional_fields: Option<serde_json::Value>,
 }
 
-impl Sauce {
-	/// Creates a new Sauce object. 
-	pub(in crate::handler) fn new(ext_urls : Vec<String>, title : Option<String>, site : String, index : u32, index_id : u32, similarity : f32, thumbnail : String, additional_fields : Option<serde_json::Value>) -> Sauce {
-		Sauce {
-			ext_urls : ext_urls,
-			title: title,
-			site : site,
-			index : index,
-			index_id : index_id,
-			similarity : similarity,
-			thumbnail : thumbnail,
-			additional_fields : additional_fields,
-		}
+/// Creates a new Sauce object. 
+pub(in crate::handler) fn new_sauce(ext_urls : Vec<String>, title : Option<String>, site : String, index : u32, index_id : u32, similarity : f32, thumbnail : String, additional_fields : Option<serde_json::Value>) -> Sauce {
+	Sauce {
+		ext_urls : ext_urls,
+		title: title,
+		site : site,
+		index : index,
+		index_id : index_id,
+		similarity : similarity,
+		thumbnail : thumbnail,
+		additional_fields : additional_fields,
 	}
+}
 
+impl Sauce {
 	/// Returns whether the Sauce struct contains an empty ext_url field.
 	/// ## Example
 	/// ```
