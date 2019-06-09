@@ -3,7 +3,17 @@
 //! A Rust implementation of a wrapper for the SauceNAO API.
 //! 
 //! ## Installation
-//! 
+//! Add the following to your ``Cargo.toml`` file:
+//! ```
+//! [dependencies]
+//! rustnao = "0.1"
+//! ```
+//!
+//! Then, add the following to your ``main.rs`` file:
+//! ```
+//! extern crate rustnao;
+//! ```
+//!
 //! ## Examples
 //! Here's a simple example:
 //! ```rust
