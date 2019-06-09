@@ -2,13 +2,6 @@ use serde::Serialize;
 use std::fmt;
 
 /// A Sauce struct contains one result from a API call made by the Handler.  
-/// ## Explaination of fields
-/// * ``ext_urls`` - A Vec of Strings representing the external URLs for the image
-/// * ``title`` - An optional String to represent the title of the image
-/// * ``site`` - A string to represent the site the image is from
-/// * ``index`` - The official index on sauceNAO for the index the site corresponds to
-/// * ``index_id`` - The index rerturned by the sauceNAO API.  Usually this is equal to the ``index`` but sometimes it is different (see Sankaku, for example)
-/// * ``similarity`` - The similarity the image has with the guess
 /// ## Example
 /// ```
 /// use rustnao::{Sauce, Handler};
@@ -17,13 +10,21 @@ use std::fmt;
 /// ```
 #[derive(Serialize)]
 pub struct Sauce {
+	/// A Vec of Strings representing the external URLs for the image
 	pub ext_urls: Vec<String>,
+	/// An optional String to represent the title of the image
 	pub title: Option<String>,
+	/// A string to represent the site the image is from
 	pub site: String,
+	/// The official index on sauceNAO for the index the site corresponds to
 	pub index: u32,
+	/// The index rerturned by the sauceNAO API.  Usually this is equal to the ``index`` but sometimes it is different (see Sankaku, for example)
 	pub index_id: u32,
+	/// The similarity the image has with the guess
 	pub similarity: f32,
+	/// A string representing the URL of the thumbnail
 	pub thumbnail: String,
+	/// Any additional fields that are specific to the source
 	pub additional_fields: Option<serde_json::Value>,
 }
 

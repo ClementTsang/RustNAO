@@ -6,14 +6,17 @@ use std::fmt;
 use std::result;
 use failure::{Backtrace, Context, Fail};
 
+/// A type alias for handling errors related to rustnao
 pub type Result<T> = result::Result<T, Error>;
 
+/// An error that can occur while interacting to the sauceNAO API
 #[derive(Debug)]
 pub struct Error {
 	context : Context<ErrType>,
 }
 
 impl Error {
+	/// Return the kind of error
 	pub fn kind(&self) -> &ErrType {
 		self.context.get_context()
 	}
@@ -51,13 +54,29 @@ impl fmt::Display for Error {
 	}
 }
 
+/// The specific type of error that can occur
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum ErrType {
+	/// An error when forming the URL for the API.  
+	/// 
+	/// The data provided is the error found
 	InvalidURL(String),
+	/// An error when trying to deserialize the resulting JSON from the API
+	/// 
+	/// The data provided is the error found
 	InvalidSerde(String),
+	/// An error when receiving an unsuccessful code from the sauceNAO API.
+	/// 
+	/// The data provided is the error code and message
 	InvalidCode {
-		code : i32, message : String,
+		/// The error code from sauceNAO
+		code : i32, 
+		/// The message showing the cause of the error from sauceNAO
+		message : String,
 	},
+	/// An error when trying to send an invalid request to the API.
+	/// 
+	/// The data provided is the error code and message
 	InvalidRequest(String),
 }
 

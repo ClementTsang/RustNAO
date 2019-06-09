@@ -1,5 +1,5 @@
 mod error;
-use error::Error;
+pub use error::{Error, Result, ErrType};
 
 mod constants;
 
@@ -9,7 +9,7 @@ pub use sauce::Sauce;
 mod deserialize;
 use deserialize::SauceResult;
 
-use url::{Url, ParseError};
+use url::Url;
 
 
 /// A handler struct to make SauceNAO API calls.
@@ -35,36 +35,67 @@ pub struct Handler {
 }
 
 impl Handler {
+	/// Associated index for H-Magazines
 	pub const H_MAGAZINES : u32 = constants::H_MAGAZINES.index;
+	/// Associated index for H-Game CG
 	pub const H_GAME_CG : u32 = constants::H_GAME_CG.index;
+	/// Associated index for DoujinshiDB
 	pub const DOUJINSHI_DB : u32 = constants::DOUJINSHI_DB.index;
+	/// Associated index for Pixiv
 	pub const PIXIV : u32 = constants::PIXIV.index;
+	/// Associated index for Nico Nico Seiga
 	pub const NICO_NICO_SEIGA : u32 = constants::NICO_NICO_SEIGA.index;
+	/// Associated index for Danbooru
 	pub const DANBOORU : u32 = constants::DANBOORU.index;
+	/// Associated index for drawr Images
 	pub const DRAWR : u32 = constants::DRAWR.index;
+	/// Associated index for Nijie Images
 	pub const NIJIE : u32 = constants::NIJIE.index;
+	/// Associated index for Yand.ere
 	pub const YANDE_RE : u32 = constants::YANDE_RE.index;
+	/// Associated index for Shutterstock
 	pub const SHUTTERSTOCK : u32 = constants::SHUTTERSTOCK.index;
+	/// Associated index for Fakku
 	pub const FAKKU : u32 = constants::FAKKU.index;
+	/// Associated index for H-Misc
 	pub const H_MISC : u32 = constants::H_MISC.index;
+	/// Associated index for 2D-Market
 	pub const TWO_D_MARKET : u32 = constants::TWO_D_MARKET.index;
+	/// Associated index for MediBang
 	pub const MEDIBANG : u32 = constants::MEDIBANG.index;
+	/// Associated index for Anime
 	pub const ANIME : u32 = constants::ANIME.index;
+	/// Associated index for H-Anime
 	pub const H_ANIME : u32 = constants::H_ANIME.index;
+	/// Associated index for Movies
 	pub const MOVIES : u32 = constants::MOVIES.index;
+	/// Associated index for Shows
 	pub const SHOWS : u32 = constants::SHOWS.index;
+	/// Associated index for Gelbooru
 	pub const GELBOORU : u32 = constants::GELBOORU.index;
+	/// Associated index for Konachan
 	pub const KONACHAN : u32 = constants::KONACHAN.index;
+	/// Associated index for Sankaku Channel
 	pub const SANKAKU_CHANNEL : u32 = constants::SANKAKU_CHANNEL.index;
+	/// Associated index for Anime-Pictures.net
 	pub const ANIME_PICTURES_NET : u32 = constants::ANIME_PICTURES_NET.index;
+	/// Associated index for e621.net
 	pub const E621_NET : u32 = constants::E621_NET.index;
+	/// Associated index for Idol Complex
 	pub const IDOL_COMPLEX : u32 = constants::IDOL_COMPLEX.index;
+	/// Associated index for bcy.net Illust
 	pub const BCY_NET_ILLUST : u32 = constants::BCY_NET_ILLUST.index;
+	/// Associated index for bcy.net Cosplay
 	pub const BCY_NET_COSPLAY : u32 = constants::BCY_NET_COSPLAY.index;
+	/// Associated index for PortalGraphics.net
 	pub const PORTALGRAPHICS_NET : u32 = constants::PORTALGRAPHICS_NET.index;
+	/// Associated index for deviantArt
 	pub const DEVIANTART : u32 = constants::DEVIANTART.index;
+	/// Associated index for Pawoo.net
 	pub const PAWOO_NET : u32 = constants::PAWOO_NET.index;
+	/// Associated index for Madokami
 	pub const MADOKAMI : u32 = constants::MADOKAMI.index;
+	/// Associated index for Mangadex
 	pub const MANGADEX : u32 = constants::MANGADEX.index;
 
 	/// Grabs the appropriate Source data given an index
@@ -93,7 +124,7 @@ impl Handler {
 
 	/// Generates a url from the given image url
 	/// 
-	fn generate_url(&self, image_url : &str) -> Result<String, ParseError> {
+	fn generate_url(&self, image_url : &str) -> Result<String> {
 		let mut request_url = Url::parse(constants::API_URL)?;
 		request_url.query_pairs_mut().append_pair("api_key", self.api_key.as_str());
 		request_url.query_pairs_mut().append_pair("output_type", self.output_type.to_string().as_str());
@@ -274,8 +305,6 @@ impl Handler {
 					for sauce in res {
 						let sauce_min_sim : f64 = sauce.header.similarity.parse().unwrap();
 						if sauce_min_sim >= self.min_similarity {
-							// TODO: 2.  We have to add a way of grabbing the correct constant Source to fill in some of the slots!  This will also be the same for when we try to grab author id credentials when deserializing
-
 							let actual_index : u32 = sauce.header.index_name.split(":").collect::<Vec<&str>>()[0].to_string().split("#").collect::<Vec<&str>>()[1].to_string().parse::<u32>().unwrap();
 							let source : Option<constants::Source> = self.get_source(actual_index);
 							
@@ -351,7 +380,7 @@ impl Handler {
 		Ok(serde_json::to_string(&ret_sauce)?)
 	}
 
-	/*
+	/* TODO: Async
 	///
 	async fn get_sauce_async(&mut self, url : &str) -> Result<Sauce, SauceError> {
 
@@ -361,8 +390,5 @@ impl Handler {
 	async fn get_sauce_as_json_async(&mut self, url : &str) -> Result<String, SauceError> {
 
 	}*/
-	
-
-	// TODO: 4.  Organize the interface to look nicer...
 }
 
