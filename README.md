@@ -5,6 +5,16 @@ A Rust implementation of a wrapper for the SauceNAO API.
 [![Build Status](https://travis-ci.com/ClementTsang/RustNAO.svg?token=1wvzVgp94E1TZyPNs8JF&branch=master)](https://travis-ci.com/ClementTsang/RustNAO) [![crates.io link](https://img.shields.io/crates/v/rustnao.svg)](https://crates.io/crates/rustnao)
 
 ## Installation
+Add the following to your ``Cargo.toml`` file:
+```
+[dependencies]
+rustnao = "0.1"
+```
+
+Then, add the following to your ``main.rs`` file:
+```
+extern crate rustnao;
+```
 
 ## Examples
 Here's a simple example:
@@ -30,7 +40,7 @@ fn main() {
 }
 ```
 
-See more examples in [the examples directory](./examples/).
+See more examples [here](./examples/).
 
 ## Documentation
 Further documentation can be found [here](https://docs.rs/rustnao/0.1.0/rustnao/).  You can also see SauceNAO's API documentation [here](https://saucenao.com/user.php?page=search-api).
