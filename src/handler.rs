@@ -402,7 +402,5 @@ impl Handler {
 	async fn get_sauce_as_json_async(&mut self, url : &str) -> Result<String, SauceError> {
 
 	}*/
-
-	// TODO: 
 }
 

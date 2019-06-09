@@ -15,7 +15,7 @@
 //! 	let file = "https://i.imgur.com/W42kkKS.jpg";
 //! 
 //! 	// Specifying our key, only want to see Pixiv and Sankaku using a mask, and 15 results at most
-//! 	let mut handle = Handler::new(key, None, Some([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()), None, None, Some(15));
+//! 	let mut handle = Handler::new(api_key, None, Some([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()), None, None, Some(15));
 //! 
 //!     // Set the minimum similiarity to 45.
 //! 	handle.set_min_similarity(45);
@@ -27,6 +27,9 @@
 //! 	let result_json : String = handle.get_sauce_as_pretty_json(file).unwrap();
 //! }
 //! ```
+
+
+// TODO: further docs on use-case (see sagiri)
 
 #![deny(missing_docs)]
 

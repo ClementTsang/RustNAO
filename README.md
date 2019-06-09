@@ -2,7 +2,7 @@
 
 A Rust implementation of a wrapper for the SauceNAO API.
 
-[![Build Status](https://travis-ci.com/ClementTsang/RustNAO.svg?token=1wvzVgp94E1TZyPNs8JF&branch=master)](https://travis-ci.com/ClementTsang/RustNAO)
+[![Build Status](https://travis-ci.com/ClementTsang/RustNAO.svg?token=1wvzVgp94E1TZyPNs8JF&branch=master)](https://travis-ci.com/ClementTsang/RustNAO) [![crates.io link](https://img.shields.io/crates/v/rustnao.svg)](https://crates.io/crates/rustnao)
 
 ## Installation
 
@@ -17,7 +17,7 @@ fn main() {
 	let file = "https://i.imgur.com/W42kkKS.jpg";
 
 	// Specifying our key, testmode set to 0, only want to see Pixiv and Sankaku using a mask, nothing excluded, no one specific source, and 15 results at most
-	let mut handle = Handler::new(key, Some(0), Some([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()), None, None, Some(15));
+	let mut handle = Handler::new(api_key, Some(0), Some([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()), None, None, Some(15));
 
 	// Set the minimum similiarity to 45.
 	handle.set_min_similarity(45);
@@ -33,7 +33,7 @@ fn main() {
 See more examples in [the examples directory](./examples/).
 
 ## Documentation
-Further documentation can be found [here]().  You can also see SauceNAO's API documentation [here](https://saucenao.com/user.php?page=search-api).
+Further documentation can be found [here](https://docs.rs/rustnao/0.1.0/rustnao/).  You can also see SauceNAO's API documentation [here](https://saucenao.com/user.php?page=search-api).
 
 ## Development
 Interested in helping?  Found a problem/bug?  Let me know!
