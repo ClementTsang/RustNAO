@@ -43,7 +43,7 @@ fn main() {
 See more examples [here](./examples/).
 
 ## Documentation
-Further documentation can be found [here](https://docs.rs/rustnao/0.1.0/rustnao/).  You can also see SauceNAO's API documentation [here](https://saucenao.com/user.php?page=search-api).
+Further documentation can be found [here](https://docs.rs/rustnao/).  You can also see SauceNAO's API documentation [here](https://saucenao.com/user.php?page=search-api).
 
 ## Development
 Interested in helping?  Found a problem/bug?  Let me know!
