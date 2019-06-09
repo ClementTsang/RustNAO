@@ -1,15 +1,15 @@
 //! Error components for the library.
 //! Much thanks to Andrew Gallant for the basis of this part of the library... followed the following
-//! code for this: https://github.com/BurntSushi/imdb-rename/blob/master/imdb-index/src/error.rs
+//! code for this: https://github.com/BurntSushi/imdb-rename/blob/master/imdb-index/src/error.rs.
 
 use std::fmt;
 use std::result;
 use failure::{Backtrace, Context, Fail};
 
-/// A type alias for handling errors related to rustnao
+/// A type alias for handling errors related to rustnao.
 pub type Result<T> = result::Result<T, Error>;
 
-/// An error that can occur while interacting to the sauceNAO API
+/// An error that can occur while interacting to the SauceNAO API.
 #[derive(Debug)]
 pub struct Error {
 	context : Context<ErrType>,
@@ -54,7 +54,7 @@ impl fmt::Display for Error {
 	}
 }
 
-/// The specific type of error that can occur
+/// The specific type of error that can occur.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum ErrType {
 	/// An error when forming the URL for the API.  
@@ -65,13 +65,13 @@ pub enum ErrType {
 	/// 
 	/// The data provided is the error found
 	InvalidSerde(String),
-	/// An error when receiving an unsuccessful code from the sauceNAO API.
+	/// An error when receiving an unsuccessful code from the SauceNAO API.
 	/// 
 	/// The data provided is the error code and message
 	InvalidCode {
-		/// The error code from sauceNAO
+		/// The error code from SauceNAO
 		code : i32, 
-		/// The message showing the cause of the error from sauceNAO
+		/// The message showing the cause of the error from SauceNAO
 		message : String,
 	},
 	/// An error when trying to send an invalid request to the API.

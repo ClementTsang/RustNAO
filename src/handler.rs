@@ -1,3 +1,5 @@
+//! Handler module of rustnao.  The handler for the SauceNAO API calls.
+
 mod error;
 pub use error::{Error, Result, ErrType};
 
@@ -35,67 +37,67 @@ pub struct Handler {
 }
 
 impl Handler {
-	/// Associated index for H-Magazines
+	/// Associated index for H-Magazines.
 	pub const H_MAGAZINES : u32 = constants::H_MAGAZINES.index;
-	/// Associated index for H-Game CG
+	/// Associated index for H-Game CG.
 	pub const H_GAME_CG : u32 = constants::H_GAME_CG.index;
-	/// Associated index for DoujinshiDB
+	/// Associated index for DoujinshiDB.
 	pub const DOUJINSHI_DB : u32 = constants::DOUJINSHI_DB.index;
-	/// Associated index for Pixiv
+	/// Associated index for Pixiv.
 	pub const PIXIV : u32 = constants::PIXIV.index;
-	/// Associated index for Nico Nico Seiga
+	/// Associated index for Nico Nico Seiga.
 	pub const NICO_NICO_SEIGA : u32 = constants::NICO_NICO_SEIGA.index;
-	/// Associated index for Danbooru
+	/// Associated index for Danbooru.
 	pub const DANBOORU : u32 = constants::DANBOORU.index;
-	/// Associated index for drawr Images
+	/// Associated index for drawr Images.
 	pub const DRAWR : u32 = constants::DRAWR.index;
-	/// Associated index for Nijie Images
+	/// Associated index for Nijie Images.
 	pub const NIJIE : u32 = constants::NIJIE.index;
-	/// Associated index for Yand.ere
+	/// Associated index for Yand.ere.
 	pub const YANDE_RE : u32 = constants::YANDE_RE.index;
-	/// Associated index for Shutterstock
+	/// Associated index for Shutterstock.
 	pub const SHUTTERSTOCK : u32 = constants::SHUTTERSTOCK.index;
-	/// Associated index for Fakku
+	/// Associated index for Fakku.
 	pub const FAKKU : u32 = constants::FAKKU.index;
-	/// Associated index for H-Misc
+	/// Associated index for H-Misc.
 	pub const H_MISC : u32 = constants::H_MISC.index;
-	/// Associated index for 2D-Market
+	/// Associated index for 2D-Market.
 	pub const TWO_D_MARKET : u32 = constants::TWO_D_MARKET.index;
-	/// Associated index for MediBang
+	/// Associated index for MediBang.
 	pub const MEDIBANG : u32 = constants::MEDIBANG.index;
-	/// Associated index for Anime
+	/// Associated index for Anime.
 	pub const ANIME : u32 = constants::ANIME.index;
-	/// Associated index for H-Anime
+	/// Associated index for H-Anime.
 	pub const H_ANIME : u32 = constants::H_ANIME.index;
-	/// Associated index for Movies
+	/// Associated index for Movies.
 	pub const MOVIES : u32 = constants::MOVIES.index;
-	/// Associated index for Shows
+	/// Associated index for Shows.
 	pub const SHOWS : u32 = constants::SHOWS.index;
-	/// Associated index for Gelbooru
+	/// Associated index for Gelbooru.
 	pub const GELBOORU : u32 = constants::GELBOORU.index;
-	/// Associated index for Konachan
+	/// Associated index for Konachan.
 	pub const KONACHAN : u32 = constants::KONACHAN.index;
-	/// Associated index for Sankaku Channel
+	/// Associated index for Sankaku Channel.
 	pub const SANKAKU_CHANNEL : u32 = constants::SANKAKU_CHANNEL.index;
-	/// Associated index for Anime-Pictures.net
+	/// Associated index for Anime-Pictures.net.
 	pub const ANIME_PICTURES_NET : u32 = constants::ANIME_PICTURES_NET.index;
-	/// Associated index for e621.net
+	/// Associated index for e621.net.
 	pub const E621_NET : u32 = constants::E621_NET.index;
-	/// Associated index for Idol Complex
+	/// Associated index for Idol Complex.
 	pub const IDOL_COMPLEX : u32 = constants::IDOL_COMPLEX.index;
-	/// Associated index for bcy.net Illust
+	/// Associated index for bcy.net Illust.
 	pub const BCY_NET_ILLUST : u32 = constants::BCY_NET_ILLUST.index;
-	/// Associated index for bcy.net Cosplay
+	/// Associated index for bcy.net Cosplay.
 	pub const BCY_NET_COSPLAY : u32 = constants::BCY_NET_COSPLAY.index;
-	/// Associated index for PortalGraphics.net
+	/// Associated index for PortalGraphics.net.
 	pub const PORTALGRAPHICS_NET : u32 = constants::PORTALGRAPHICS_NET.index;
-	/// Associated index for deviantArt
+	/// Associated index for deviantArt.
 	pub const DEVIANTART : u32 = constants::DEVIANTART.index;
-	/// Associated index for Pawoo.net
+	/// Associated index for Pawoo.net.
 	pub const PAWOO_NET : u32 = constants::PAWOO_NET.index;
-	/// Associated index for Madokami
+	/// Associated index for Madokami.
 	pub const MADOKAMI : u32 = constants::MADOKAMI.index;
-	/// Associated index for Mangadex
+	/// Associated index for Mangadex.
 	pub const MANGADEX : u32 = constants::MANGADEX.index;
 
 	/// Grabs the appropriate Source data given an index
@@ -123,7 +125,6 @@ impl Handler {
 	}
 
 	/// Generates a url from the given image url
-	/// 
 	fn generate_url(&self, image_url : &str) -> Result<String> {
 		let mut request_url = Url::parse(constants::API_URL)?;
 		request_url.query_pairs_mut().append_pair("api_key", self.api_key.as_str());
@@ -287,7 +288,11 @@ impl Handler {
 	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	/// handle.get_sauce("https://i.imgur.com/W42kkKS.jpg");
 	/// ```
-	pub fn get_sauce(&mut self, url : &str) -> error::Result<Vec<Sauce>> {
+	/// 
+	/// ## Errors
+	/// If there was a problem forming a URL, making a request, or parsing the returned JSON, an error will be returned.
+	/// Furthermore, if you pass a link in which SauceNAO returns an error code, an error containing the code and message will be returned.
+	pub fn get_sauce(&mut self, url : &str) -> Result<Vec<Sauce>> {
 		let url_string = self.generate_url(url)?;
 		let returned_sauce: SauceResult = reqwest::get(&url_string)?.json()?;
 		let mut ret_sauce : Vec<Sauce> = Vec::new();
@@ -299,7 +304,6 @@ impl Handler {
 			self.long_limit = returned_sauce.header.long_limit.parse().unwrap();
 
 			// Actual "returned" value:
-
 			match returned_sauce.results {
 				Some(res) => {
 					for sauce in res {
@@ -352,7 +356,7 @@ impl Handler {
 
 	/// Returns a string representing a vector of Sauce objects as a serialized JSON, or an error.
 	/// ## Arguments
-	/// * ``url`` - A string slice that contains the url of the image you wish to look up
+	/// * ``url`` - A string slice that contains the url of the image you wish to look up.
 	/// 
 	/// ## Example
 	/// ```
@@ -360,14 +364,18 @@ impl Handler {
 	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	/// handle.get_sauce_as_pretty_json("https://i.imgur.com/W42kkKS.jpg");
 	/// ```
-	pub fn get_sauce_as_pretty_json(&mut self, url : &str) -> error::Result<String> {
+	/// 
+	/// ## Errors
+	/// If there was a problem forming a URL, making a request, or parsing the returned JSON, an error will be returned.
+	/// Furthermore, if you pass a link in which SauceNAO returns an error code, an error containing the code and message will be returned.
+	pub fn get_sauce_as_pretty_json(&mut self, url : &str) -> Result<String> {
 		let ret_sauce = self.get_sauce(url)?;
 		Ok(serde_json::to_string_pretty(&ret_sauce)?)
 	}
 
 	/// Returns a string representing a vector of Sauce objects as a serialized JSON, or an error.
 	/// ## Arguments
-	/// * ``url`` - A string slice that contains the url of the image you wish to look up
+	/// * ``url`` - A string slice that contains the url of the image you wish to look up.
 	/// 
 	/// ## Example
 	/// ```
@@ -375,7 +383,11 @@ impl Handler {
 	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(5));
 	/// handle.get_sauce_as_json("https://i.imgur.com/W42kkKS.jpg");
 	/// ```
-	pub fn get_sauce_as_json(&mut self, url : &str) -> error::Result<String> {
+	/// 
+	/// ## Errors
+	/// If there was a problem forming a URL, making a request, or parsing the returned JSON, an error will be returned.
+	/// Furthermore, if you pass a link in which SauceNAO returns an error code, an error containing the code and message will be returned.
+	pub fn get_sauce_as_json(&mut self, url : &str) -> Result<String> {
 		let ret_sauce = self.get_sauce(url)?;
 		Ok(serde_json::to_string(&ret_sauce)?)
 	}
@@ -390,5 +402,7 @@ impl Handler {
 	async fn get_sauce_as_json_async(&mut self, url : &str) -> Result<String, SauceError> {
 
 	}*/
+
+	// TODO: 
 }
 

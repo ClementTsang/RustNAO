@@ -16,8 +16,10 @@ fn main() {
 	let api_key = "your_api_key";
 	let file = "https://i.imgur.com/W42kkKS.jpg";
 
-	// Specifying our key, testmode set to 0, only want to see Pixiv and Sankaku using a mask, nothing excluded, no one specific source, and 999 results at most
-	let mut handle = Handler::new(key, Some(0), Some([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()), Some([].to_vec()), None, Some(999));
+	// Specifying our key, testmode set to 0, only want to see Pixiv and Sankaku using a mask, nothing excluded, no one specific source, and 15 results at most
+	let mut handle = Handler::new(key, Some(0), Some([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()), None, None, Some(15));
+
+	// Set the minimum similiarity to 45.
 	handle.set_min_similarity(45);
 
 	// Returns a vector of Sauce objects if successful
@@ -28,11 +30,13 @@ fn main() {
 }
 ```
 
+See more examples in [the examples directory](./examples/).
+
 ## Documentation
-Documentation can be found [here]().
+Further documentation can be found [here]().  You can also see SauceNAO's API documentation [here](https://saucenao.com/user.php?page=search-api).
 
 ## Development
 Interested in helping?  Found a problem/bug?  Let me know!
 
 ## Thanks
-I was mostly inspired by [Sagiri](https://github.com/ClarityCafe/Sagiri), so a huge shoutout to that project.  Furthermore, thanks to [SauceNAO](https://saucenao.com/) which provides this amazing functionality for free.
+I was inspired by [Sagiri](https://github.com/ClarityCafe/Sagiri), so a huge shoutout to that project.  Furthermore, thanks to [SauceNAO](https://saucenao.com/) which provides this amazing functionality for free.

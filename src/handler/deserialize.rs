@@ -1,3 +1,5 @@
+//! Collection of structs used to deserialize the API JSON results, upon which it is further processed.
+
 use serde::Deserialize;
 use std::collections::HashMap;
 

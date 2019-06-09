@@ -16,9 +16,9 @@ pub struct Sauce {
 	pub title: Option<String>,
 	/// A string to represent the site the image is from
 	pub site: String,
-	/// The official index on sauceNAO for the index the site corresponds to
+	/// The official index on SauceNAO for the index the site corresponds to
 	pub index: u32,
-	/// The index rerturned by the sauceNAO API.  Usually this is equal to the ``index`` but sometimes it is different (see Sankaku, for example)
+	/// The index rerturned by the SauceNAO API.  Usually this is equal to the ``index`` but sometimes it is different (see Sankaku, for example)
 	pub index_id: u32,
 	/// The similarity the image has with the guess
 	pub similarity: f32,
