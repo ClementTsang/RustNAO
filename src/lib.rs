@@ -4,7 +4,7 @@
 //! 
 //! ## Installation
 //! Add the following to your ``Cargo.toml`` file:
-//! ```
+//! ```toml
 //! [dependencies]
 //! rustnao = "0.1"
 //! ```
@@ -16,7 +16,7 @@
 //!
 //! ## Examples
 //! Here's a simple example:
-//! ```rust
+//! ```no_run
 //! extern crate rustnao;
 //! use rustnao::{Handler, Sauce};
 //! 
