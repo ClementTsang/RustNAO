@@ -20,3 +20,5 @@ Cargo.lock
 
 #/target
 #**/*.rs.bk
+
+*.code-workspace
