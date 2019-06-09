@@ -8,7 +8,6 @@ repository = "https://github.com/ClementTsang/RustNAO"
 license = "MIT"
 description = "A Rust implementation of a wrapper for the SauceNAO API."
 keywords = ["saucenao", "saucenao-api", "wrapper"]
-documentation = ""
 
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
