@@ -187,7 +187,7 @@ impl Handler {
 		Ok(request_url.into_string())
 	}
 
-	// TODO: Make min similarity a field in new...
+	// TODO: Make min similarity a field in new... this will break so let's move this to v1?
 
 	/// Creates a new Handler object.  By default, the short limit is set to 30 seconds, and the long limit is set to 24 hours.
 	/// ## Arguments
