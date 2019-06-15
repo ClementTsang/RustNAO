@@ -12,13 +12,13 @@ mod deserialize;
 use deserialize::SauceResult;
 
 use url::Url;
-
+use std::cell::Cell;
 
 /// A handler struct to make SauceNAO API calls.
 /// ## Examples
 /// ```
 /// use rustnao::Handler;
-/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 /// ``` 
 #[derive(Debug, Clone)]
 pub struct Handler {
@@ -29,11 +29,11 @@ pub struct Handler {
 	db_mask : Option<Vec<u32>>,
 	db_mask_i : Option<Vec<u32>>,
 	db : Option<u32>,
-	short_limit : u32,
-	long_limit: u32,
-	short_left : u32,
-	long_left : u32,
-	min_similarity : f64,
+	short_limit : Cell<u32>,
+	long_limit: Cell<u32>,
+	short_left : Cell<u32>,
+	long_left : Cell<u32>,
+	min_similarity : Cell<f64>,
 }
 
 impl Handler {
@@ -187,6 +187,8 @@ impl Handler {
 		Ok(request_url.into_string())
 	}
 
+	// TODO: Make min similarity a field in new...
+
 	/// Creates a new Handler object.  By default, the short limit is set to 30 seconds, and the long limit is set to 24 hours.
 	/// ## Arguments
 	/// * `api_key` - A string slice holding your api key.
@@ -198,7 +200,7 @@ impl Handler {
 	/// 
 	/// ## Example
 	/// use rustnao::Handler;
-	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	pub fn new(api_key : &str, testmode : Option<i32>, db_mask : Option<Vec<u32>>, db_mask_i : Option<Vec<u32>>, db : Option<u32>, num_results : Option<i32>) -> Handler {
 		Handler {
 			api_key : api_key.to_string(),
@@ -208,11 +210,11 @@ impl Handler {
 			db_mask : db_mask,
 			db_mask_i : db_mask_i,
 			db : db,
-			short_limit : 12,
-			long_limit: 200,
-			short_left : 12,
-			long_left: 200,
-			min_similarity : 0.0,
+			short_limit : Cell::new(12),
+			long_limit: Cell::new(200),
+			short_left : Cell::new(12),
+			long_left: Cell::new(200),
+			min_similarity : Cell::new(0.0),
 		}
 	}
 
@@ -223,11 +225,11 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::Handler;
-	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	/// handle.set_min_similarity(50);
 	/// ```
-	pub fn set_min_similarity<T : Into<f64>>(&mut self, similarity : T) {
-		self.min_similarity = similarity.into();
+	pub fn set_min_similarity<T : Into<f64>>(&self, similarity : T) {
+		self.min_similarity.set(similarity.into());
 	}
 
 	/// Gets the current short limit as an i32.  By default this is 12.
@@ -235,11 +237,11 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::Handler;
-	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	/// println!("{}", handle.get_short_limit());
 	/// ``` 
 	pub fn get_short_limit(&self) -> u32 {
-		self.short_limit
+		self.short_limit.get()
 	}
 
 	/// Gets the current long limit as an i32.  By default this is 200.
@@ -247,11 +249,11 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::Handler;
-	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	/// println!("{}", handle.get_long_limit());
 	/// ``` 
 	pub fn get_long_limit(&self) -> u32 {
-		self.long_limit
+		self.long_limit.get()
 	}
 
 	/// Gets the current remaining short limit as an i32.
@@ -259,11 +261,11 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::Handler;
-	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	/// println!("{}", handle.get_current_short_limit());
 	/// ``` 
 	pub fn get_current_short_limit(&self) -> u32 {
-		self.short_left
+		self.short_left.get()
 	}
 
 	/// Gets the current remaining long limit as an i32.
@@ -271,11 +273,11 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::Handler;
-	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	/// println!("{}", handle.get_current_long_limit());
 	/// ``` 
 	pub fn get_current_long_limit(&self) -> u32 {
-		self.long_left
+		self.long_left.get()
 	}
 
 	/// Returns a Result of either a vector of Sauce objects, which contain potential sources for the input ``file``, or a SauceError.
@@ -285,30 +287,30 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::Handler;
-	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	/// handle.get_sauce("https://i.imgur.com/W42kkKS.jpg");
 	/// ```
 	/// 
 	/// ## Errors
 	/// If there was a problem forming a URL, making a request, or parsing the returned JSON, an error will be returned.
 	/// Furthermore, if you pass a link in which SauceNAO returns an error code, an error containing the code and message will be returned.
-	pub fn get_sauce(&mut self, url : &str) -> Result<Vec<Sauce>> {
+	pub fn get_sauce(&self, url : &str) -> Result<Vec<Sauce>> {
 		let url_string = self.generate_url(url)?;
 		let returned_sauce: SauceResult = reqwest::get(&url_string)?.json()?;
 		let mut ret_sauce : Vec<Sauce> = Vec::new();
 		if returned_sauce.header.status >= 0 {
 			// Update non-sauce fields
-			self.short_left = returned_sauce.header.short_remaining;
-			self.long_left = returned_sauce.header.long_remaining;
-			self.short_limit = returned_sauce.header.short_limit.parse().unwrap();
-			self.long_limit = returned_sauce.header.long_limit.parse().unwrap();
+			self.short_left.set(returned_sauce.header.short_remaining);
+			self.long_left.set(returned_sauce.header.long_remaining);
+			self.short_limit.set(returned_sauce.header.short_limit.parse().unwrap());
+			self.long_limit.set(returned_sauce.header.long_limit.parse().unwrap());
 
 			// Actual "returned" value:
 			match returned_sauce.results {
 				Some(res) => {
 					for sauce in res {
 						let sauce_min_sim : f64 = sauce.header.similarity.parse().unwrap();
-						if sauce_min_sim >= self.min_similarity {
+						if sauce_min_sim >= self.min_similarity.get() {
 							let actual_index : u32 = sauce.header.index_name.split(":").collect::<Vec<&str>>()[0].to_string().split("#").collect::<Vec<&str>>()[1].to_string().parse::<u32>().unwrap();
 							let source : Option<constants::Source> = self.get_source(actual_index);
 							
@@ -361,14 +363,14 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::Handler;
-	/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	/// handle.get_sauce_as_pretty_json("https://i.imgur.com/W42kkKS.jpg");
 	/// ```
 	/// 
 	/// ## Errors
 	/// If there was a problem forming a URL, making a request, or parsing the returned JSON, an error will be returned.
 	/// Furthermore, if you pass a link in which SauceNAO returns an error code, an error containing the code and message will be returned.
-	pub fn get_sauce_as_pretty_json(&mut self, url : &str) -> Result<String> {
+	pub fn get_sauce_as_pretty_json(&self, url : &str) -> Result<String> {
 		let ret_sauce = self.get_sauce(url)?;
 		Ok(serde_json::to_string_pretty(&ret_sauce)?)
 	}
@@ -387,19 +389,19 @@ impl Handler {
 	/// ## Errors
 	/// If there was a problem forming a URL, making a request, or parsing the returned JSON, an error will be returned.
 	/// Furthermore, if you pass a link in which SauceNAO returns an error code, an error containing the code and message will be returned.
-	pub fn get_sauce_as_json(&mut self, url : &str) -> Result<String> {
+	pub fn get_sauce_as_json(&self, url : &str) -> Result<String> {
 		let ret_sauce = self.get_sauce(url)?;
 		Ok(serde_json::to_string(&ret_sauce)?)
 	}
 
 	/* TODO: Async
 	///
-	async fn get_sauce_async(&mut self, url : &str) -> Result<Sauce, SauceError> {
+	async fn get_sauce_async(&self, url : &str) -> Result<Sauce, SauceError> {
 
 	}
 
 	///
-	async fn get_sauce_as_json_async(&mut self, url : &str) -> Result<String, SauceError> {
+	async fn get_sauce_as_json_async(&self, url : &str) -> Result<String, SauceError> {
 
 	}*/
 

@@ -12,7 +12,7 @@ fn main() {
 	match api_key {
 		Some(key) => {
 			// Specifying our key, testmode set to 0, only want to see Pixiv and Sankaku using a mask, nothing excluded, no one specific source, and 999 results at most
-			let mut handle = Handler::new(key, Some(0), Some([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()), Some([].to_vec()), None, Some(999));
+			let handle = Handler::new(key, Some(0), Some([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()), Some([].to_vec()), None, Some(999));
 			let result = handle.get_sauce_as_pretty_json(file).unwrap();
 			println!("{}", result);
 		},

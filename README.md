@@ -27,7 +27,7 @@ fn main() {
 	let file = "https://i.imgur.com/W42kkKS.jpg";
 
 	// Specifying our key, testmode set to 0, only want to see Pixiv and Sankaku using a mask, nothing excluded, no one specific source, and 15 results at most
-	let mut handle = Handler::new(api_key, Some(0), Some([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()), None, None, Some(15));
+	let handle = Handler::new(api_key, Some(0), Some([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()), None, None, Some(15));
 
 	// Set the minimum similiarity to 45.
 	handle.set_min_similarity(45);

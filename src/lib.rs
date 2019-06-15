@@ -25,9 +25,9 @@
 //! 	let file = "https://i.imgur.com/W42kkKS.jpg";
 //! 
 //! 	// Specifying our key, only want to see Pixiv and Sankaku using a mask, and 15 results at most
-//! 	let mut handle = Handler::new(api_key, None, Some([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()), None, None, Some(15));
+//! 	let handle = Handler::new(api_key, None, Some([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()), None, None, Some(15));
 //! 
-//!     // Set the minimum similiarity to 45.
+//!		// Set the minimum similiarity to 45.
 //! 	handle.set_min_similarity(45);
 //! 
 //! 	// Returns a vector of Sauce objects if successful

@@ -11,7 +11,7 @@ fn main() {
 
 	match api_key {
 		Some(key) => {
-			let mut handle = Handler::new(key, None, None, None, None, None);
+			let handle = Handler::new(key, None, None, None, None, None);
 			let result : Vec<Sauce> = handle.get_sauce(file).unwrap();
 			for i in result {
 				println!("{:?}", i);
