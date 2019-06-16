@@ -25,6 +25,10 @@ impl Error {
 		Error::from(ErrType::InvalidURL(unk.as_ref().to_string()))
 	}
 
+	pub(crate) fn invalid_path<T: AsRef<str>>(unk: T) -> Error {
+		Error::from(ErrType::InvalidFile(unk.as_ref().to_string()))
+	}
+
 	pub(crate) fn invalid_serde<T: AsRef<str>>(unk: T) -> Error {
 		Error::from(ErrType::InvalidSerde(unk.as_ref().to_string()))
 	}
@@ -61,6 +65,10 @@ pub enum ErrType {
 	/// 
 	/// The data provided is the error found
 	InvalidURL(String),
+	/// An error when getting the file path of a file for the API.  
+	/// 
+	/// The data provided is the error found
+	InvalidFile(String),
 	/// An error when trying to deserialize the resulting JSON from the API
 	/// 
 	/// The data provided is the error found
@@ -83,10 +91,11 @@ pub enum ErrType {
 impl fmt::Display for ErrType {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		match self {
-			ErrType::InvalidURL(ref unk) => write!(f, "Could not properly form URL from the given settings: {}", unk),
+			ErrType::InvalidURL(ref unk) => write!(f, "URL was invalid, error was due to: {}", unk),
+			ErrType::InvalidFile(ref unk) => write!(f, "File path was invalid, error was due to: {}", unk),
 			ErrType::InvalidSerde(ref unk) => write!(f, "Could not properly serde results: {}", unk),
 			ErrType::InvalidCode {code, message} => write!(f, "Recieved an invalid status code {} after API call with message: \"{}\"", code, message),
-			ErrType::InvalidRequest(ref unk) => write!(f, "Failed to make a request from the given settings: {}", unk),
+			ErrType::InvalidRequest(ref unk) => write!(f, "Failed to make the request, error was due to: {}", unk),
 		}
 	}
 }
@@ -118,5 +127,11 @@ impl From<reqwest::Error> for Error {
 impl From<reqwest::UrlError> for Error {
 	fn from(err : reqwest::UrlError) -> Self {
 		Error::invalid_url(err.to_string())
+	}
+}
+
+impl From<std::io::Error> for Error {
+	fn from(err : std::io::Error) -> Self {
+		Error::invalid_path(err.to_string())
 	}
 }

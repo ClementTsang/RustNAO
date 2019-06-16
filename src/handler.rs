@@ -125,7 +125,7 @@ impl Handler {
 	}
 
 	/// Generates a url from the given image url
-	fn generate_url(&self, image_url : &str) -> Result<String> {
+	fn generate_url(&self, image_path : &str) -> Result<String> {
 		let mut request_url = Url::parse(constants::API_URL)?;
 		request_url.query_pairs_mut().append_pair("api_key", self.api_key.as_str());
 		request_url.query_pairs_mut().append_pair("output_type", self.output_type.to_string().as_str());
@@ -182,7 +182,10 @@ impl Handler {
 			}
 		}
 			
-		request_url.query_pairs_mut().append_pair("url", image_url);
+		if image_path.starts_with("https://") || image_path.starts_with("http://") {
+			// Link
+			request_url.query_pairs_mut().append_pair("url", image_path);
+		}
 
 		Ok(request_url.into_string())
 	}
@@ -282,21 +285,27 @@ impl Handler {
 
 	/// Returns a Result of either a vector of Sauce objects, which contain potential sources for the input ``file``, or a SauceError.
 	/// ## Arguments
-	/// * ``url`` - A string slice that contains the url of the image you wish to look up.
+	/// * ``image_path`` - A string slice that contains the url of the image you wish to look up.
 	/// 
 	/// ## Example
 	/// ```
 	/// use rustnao::Handler;
 	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
-	/// handle.get_sauce("https://i.imgur.com/W42kkKS.jpg");
+	/// handle.get_sauce("./tests/test.jpg");
 	/// ```
 	/// 
 	/// ## Errors
-	/// If there was a problem forming a URL, making a request, or parsing the returned JSON, an error will be returned.
+	/// If there was a problem forming a URL, reading a file, making a request, or parsing the returned JSON, an error will be returned.
 	/// Furthermore, if you pass a link in which SauceNAO returns an error code, an error containing the code and message will be returned.
-	pub fn get_sauce(&self, url : &str) -> Result<Vec<Sauce>> {
-		let url_string = self.generate_url(url)?;
-		let returned_sauce: SauceResult = reqwest::get(&url_string)?.json()?;
+	pub fn get_sauce(&self, image_path : &str) -> Result<Vec<Sauce>> {
+		let url_string = self.generate_url(image_path)?;
+		let mut form_param = reqwest::multipart::Form::new();
+		if !(image_path.starts_with("https://") || image_path.starts_with("http://")) {
+			form_param = reqwest::multipart::Form::new().file("file", image_path)?;
+		}
+
+		let client = reqwest::Client::new();
+		let returned_sauce: SauceResult = client.post(&url_string).multipart(form_param).send()?.json()?;
 		let mut ret_sauce : Vec<Sauce> = Vec::new();
 		if returned_sauce.header.status >= 0 {
 			// Update non-sauce fields
@@ -358,7 +367,7 @@ impl Handler {
 
 	/// Returns a string representing a vector of Sauce objects as a serialized JSON, or an error.
 	/// ## Arguments
-	/// * ``url`` - A string slice that contains the url of the image you wish to look up.
+	/// * ``image_path`` - A string slice that contains the url of the image you wish to look up.
 	/// 
 	/// ## Example
 	/// ```
@@ -368,16 +377,16 @@ impl Handler {
 	/// ```
 	/// 
 	/// ## Errors
-	/// If there was a problem forming a URL, making a request, or parsing the returned JSON, an error will be returned.
+	/// If there was a problem forming a URL, reading a file, making a request, or parsing the returned JSON, an error will be returned.
 	/// Furthermore, if you pass a link in which SauceNAO returns an error code, an error containing the code and message will be returned.
-	pub fn get_sauce_as_pretty_json(&self, url : &str) -> Result<String> {
-		let ret_sauce = self.get_sauce(url)?;
+	pub fn get_sauce_as_pretty_json(&self, image_path : &str) -> Result<String> {
+		let ret_sauce = self.get_sauce(image_path)?;
 		Ok(serde_json::to_string_pretty(&ret_sauce)?)
 	}
 
 	/// Returns a string representing a vector of Sauce objects as a serialized JSON, or an error.
 	/// ## Arguments
-	/// * ``url`` - A string slice that contains the url of the image you wish to look up.
+	/// * ``image_path`` - A string slice that contains the url of the image you wish to look up.
 	/// 
 	/// ## Example
 	/// ```
@@ -387,10 +396,10 @@ impl Handler {
 	/// ```
 	/// 
 	/// ## Errors
-	/// If there was a problem forming a URL, making a request, or parsing the returned JSON, an error will be returned.
+	/// If there was a problem forming a URL, reading a file, making a request, or parsing the returned JSON, an error will be returned.
 	/// Furthermore, if you pass a link in which SauceNAO returns an error code, an error containing the code and message will be returned.
-	pub fn get_sauce_as_json(&self, url : &str) -> Result<String> {
-		let ret_sauce = self.get_sauce(url)?;
+	pub fn get_sauce_as_json(&self, image_path : &str) -> Result<String> {
+		let ret_sauce = self.get_sauce(image_path)?;
 		Ok(serde_json::to_string(&ret_sauce)?)
 	}
 

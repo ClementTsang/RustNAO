@@ -3,6 +3,7 @@ extern crate rustnao;
 use rustnao::{Handler, Sauce};
 
 const FILE : &str = "https://i.imgur.com/W42kkKS.jpg";
+const LOCAL_FILE: &str = "./tests/test.jpg";
 
 fn create_handler(dbmask : Vec<u32>, dbmaski : Vec<u32>, db : Option<u32>, numres : i32) -> Handler {
 	let data = std::fs::read_to_string("config.json");
@@ -51,6 +52,16 @@ fn test_filter_empty_sauce() {
 		for o in only_empty {
 			assert!(o.ext_urls.len() > 0);
 		}
+	}
+}
+
+#[test]
+fn test_local() {
+	let handle = create_handler([].to_vec(), [].to_vec(), Some(999), 2);
+	let vec = handle.get_sauce_as_json(LOCAL_FILE);
+	match vec {
+		Ok(result) => println!("Passed, {}", result),
+		Err(result) => println!("Errored out, {}", result),
 	}
 }
 
