@@ -15,7 +15,7 @@ use url::Url;
 use std::cell::Cell;
 
 /// A handler struct to make SauceNAO API calls.
-/// ## Examples
+/// ## Example
 /// ```
 /// use rustnao::Handler;
 /// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
@@ -202,8 +202,10 @@ impl Handler {
 	/// * `num_results` - An Option for a i32 representing the number of results you wish returned.  If this is None, this is by default 999.
 	/// 
 	/// ## Example
+	/// ```
 	/// use rustnao::Handler;
 	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// ```
 	pub fn new(api_key : &str, testmode : Option<i32>, db_mask : Option<Vec<u32>>, db_mask_i : Option<Vec<u32>>, db : Option<u32>, num_results : Option<i32>) -> Handler {
 		Handler {
 			api_key : api_key.to_string(),
