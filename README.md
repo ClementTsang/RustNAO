@@ -40,7 +40,7 @@ fn main() {
 }
 ```
 
-See more examples [here](./examples/).
+See more examples [here](./examples/).  Or to see an actual project where it's used, you can look at [this Discord bot](https://github.com/ClementTsang/elementaru-bot) that uses it.
 
 ## Documentation
 Further documentation can be found [here](https://docs.rs/rustnao/).  You can also see SauceNAO's API documentation [here](https://saucenao.com/user.php?page=search-api).
