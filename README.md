@@ -37,9 +37,6 @@ fn main() {
 
 	// Or perhaps you prefer a JSON output
 	let result_json : String = handle.get_sauce_as_pretty_json(file, None, None).unwrap();
-
-	// Or maybe you wish to only get 5 results with a min similarity of 50.0
-	let result_json_filtered : String = handle.get_sauce_as_pretty_json(file, Some(5), Some(50 as f64)).unwrap();
 }
 ```
 

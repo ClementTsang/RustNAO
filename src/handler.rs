@@ -453,7 +453,6 @@ impl Handler {
 
 	}*/
 
-    // TODO: Direct file tests
     // TODO: Tests documentation
 }
 
