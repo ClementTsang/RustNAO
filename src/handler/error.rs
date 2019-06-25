@@ -40,6 +40,10 @@ impl Error {
 	pub(crate) fn invalid_request<T: AsRef<str>>(unk: T) -> Error {
 		Error::from(ErrType::InvalidRequest(unk.as_ref().to_string()))
 	}
+
+	pub(crate) fn invalid_parameter(message : String) -> Error {
+		Error::from(ErrType::InvalidParameters(message))
+	}
 }
 
 impl Fail for Error {
@@ -63,19 +67,19 @@ impl fmt::Display for Error {
 pub enum ErrType {
 	/// An error when forming the URL for the API.  
 	/// 
-	/// The data provided is the error found
+	/// The data provided is the error found.
 	InvalidURL(String),
 	/// An error when getting the file path of a file for the API.  
 	/// 
-	/// The data provided is the error found
+	/// The data provided is the error found.
 	InvalidFile(String),
 	/// An error when trying to deserialize the resulting JSON from the API
 	/// 
-	/// The data provided is the error found
+	/// The data provided is the error found.
 	InvalidSerde(String),
 	/// An error when receiving an unsuccessful code from the SauceNAO API.
 	/// 
-	/// The data provided is the error code and message
+	/// The data provided is the error code and message.
 	InvalidCode {
 		/// The error code from SauceNAO
 		code : i32, 
@@ -84,18 +88,23 @@ pub enum ErrType {
 	},
 	/// An error when trying to send an invalid request to the API.
 	/// 
-	/// The data provided is the error code and message
+	/// The data provided is the error code and message.
 	InvalidRequest(String),
+	/// An error with some data that is passed in by the user.
+	/// 
+	/// The data provided is an error message.
+	InvalidParameters(String),
 }
 
 impl fmt::Display for ErrType {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		match self {
-			ErrType::InvalidURL(ref unk) => write!(f, "URL was invalid, error was due to: {}", unk),
-			ErrType::InvalidFile(ref unk) => write!(f, "File path was invalid, error was due to: {}", unk),
-			ErrType::InvalidSerde(ref unk) => write!(f, "Could not properly serde results: {}", unk),
-			ErrType::InvalidCode {code, message} => write!(f, "Recieved an invalid status code {} after API call with message: \"{}\"", code, message),
-			ErrType::InvalidRequest(ref unk) => write!(f, "Failed to make the request, error was due to: {}", unk),
+			ErrType::InvalidURL(ref unk) => write!(f, "ERROR: URL was invalid, error was due to: {}", unk),
+			ErrType::InvalidFile(ref unk) => write!(f, "ERROR: File path was invalid, error was due to: {}", unk),
+			ErrType::InvalidSerde(ref unk) => write!(f, "ERROR: Could not properly serde results: {}", unk),
+			ErrType::InvalidCode {code, message} => write!(f, "ERROR: Recieved an invalid status code {} after API call with message: \"{}\"", code, message),
+			ErrType::InvalidRequest(ref unk) => write!(f, "ERROR: Failed to make the request, error was due to: {}", unk),
+			ErrType::InvalidParameters(message) => write!(f, "ERROR: An invalid parameter was passed, error was due to: {}", message),
 		}
 	}
 }

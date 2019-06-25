@@ -2,6 +2,7 @@ extern crate rustnao;
 
 use rustnao::{Handler};
 
+const FILE : &str = "https://i.imgur.com/W42kkKS.jpg";
 const INVALID_URL : &str = "https://j.jmgur.com";
 const INVALID_FILE : &str = "./fake_file.png";
 
@@ -52,4 +53,25 @@ fn test_invalid_file_json() {
 	let handler = create_handler([].to_vec(), [].to_vec(), Some(999), 999);
 	let result = handler.get_sauce(INVALID_FILE, None, None);
 	assert!(result.is_err());
+}
+
+#[test]
+fn test_invalid_num_results() {
+	let handle = create_handler([].to_vec(), [].to_vec(), Some(999), 2);
+	let vec = handle.get_sauce(FILE, Some(1000), None);
+	assert!(vec.is_err());
+}
+
+#[test]
+fn test_invalid_min_similarity_upper() {
+	let handle = create_handler([].to_vec(), [].to_vec(), Some(999), 2);
+	let vec_two = handle.get_sauce(FILE, None, Some(100.1));
+	assert!(vec_two.is_err());
+}
+
+#[test]
+fn test_invalid_min_similarity_lower() {
+	let handle = create_handler([].to_vec(), [].to_vec(), Some(999), 2);
+	let vec_two = handle.get_sauce(FILE, None, Some(-0.1));
+	assert!(vec_two.is_err());
 }

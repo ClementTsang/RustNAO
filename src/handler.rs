@@ -295,7 +295,7 @@ impl Handler {
 	/// Returns a Result of either a vector of Sauce objects, which contain potential sources for the input ``file``, or a SauceError.
 	/// ## Arguments
 	/// * ``image_path`` - A string slice that contains the url of the image you wish to look up.
-	/// * ``num_results`` - An Option containing a u32 to specify the number of results you wish to get for this specific search.  If this is None, it will default to whatever was originally set in the Handler when it was initalized.
+	/// * ``num_results`` - An Option containing a u32 to specify the number of results you wish to get for this specific search.  If this is None, it will default to whatever was originally set in the Handler when it was initalized.  This can be at most 999.
 	/// * ``min_similarity`` - An Option containing a f64 to specify the minimum similarity you wish to meet for a result to show up for this specific search.  If this is None, it will default to whatever was originally set in the Handler when it was initalized.
 	/// 
 	/// ## Example
@@ -309,6 +309,25 @@ impl Handler {
 	/// If there was a problem forming a URL, reading a file, making a request, or parsing the returned JSON, an error will be returned.
 	/// Furthermore, if you pass a link in which SauceNAO returns an error code, an error containing the code and message will be returned.
 	pub fn get_sauce(&self, image_path : &str, num_results : Option<u32>, min_similarity : Option<f64>) -> Result<Vec<Sauce>> {
+
+		// Check passed in values.
+		match num_results {
+			Some(num_results) => {
+				if num_results > 999 {
+					return Err(Error::invalid_parameter("num_results must be less than 999.".to_string()));
+				}
+			}
+			None => (),
+		}
+		match min_similarity {
+			Some(min_similarity) => {
+				if min_similarity > 100.0 || min_similarity < 0.0 {
+					return Err(Error::invalid_parameter("min_similarity must be less 100.0 and greater than 0.0.".to_string()));
+				}
+			}
+			None => (),
+		}
+
 		let url_string = self.generate_url(image_path, num_results)?;
 		let mut form_param = reqwest::multipart::Form::new();
 		if !(image_path.starts_with("https://") || image_path.starts_with("http://")) {
