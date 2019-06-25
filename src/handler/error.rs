@@ -1,6 +1,6 @@
 //! Error components for the library.
-//! Much thanks to Andrew Gallant for the basis of this part of the library... followed the following
-//! code for this: https://github.com/BurntSushi/imdb-rename/blob/master/imdb-index/src/error.rs.
+// Much thanks to Andrew Gallant for the basis of this part of the library... followed the following
+// code for this: https://github.com/BurntSushi/imdb-rename/blob/master/imdb-index/src/error.rs.
 
 use std::fmt;
 use std::result;

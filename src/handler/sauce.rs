@@ -6,7 +6,7 @@ use std::fmt;
 /// ```
 /// use rustnao::{Sauce, Handler};
 /// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
-/// let result : rustnao::Result<Vec<Sauce>> = handle.get_sauce("https://i.pximg.net/img-master/img/2019/02/10/03/11/39/73095123_p0_master1200.jpg");
+/// let result : rustnao::Result<Vec<Sauce>> = handle.get_sauce("https://i.pximg.net/img-master/img/2019/02/10/03/11/39/73095123_p0_master1200.jpg", None, None);
 /// ```
 #[derive(Serialize)]
 pub struct Sauce {
@@ -50,7 +50,7 @@ impl Sauce {
 	/// let file = "https://i.imgur.com/W42kkKS.jpg";
 	///	let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
 	///	handle.set_min_similarity(45);
-	///	let result = handle.get_sauce(file);
+	///	let result = handle.get_sauce(file, None, None);
 	///	if result.is_ok() {
 	///		let res : Vec<Sauce> = result.unwrap().into_iter().filter(|sauce| sauce.has_empty_url()).collect();
 	///		for i in res {

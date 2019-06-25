@@ -5,7 +5,7 @@ use rustnao::{Handler, Result};
 
 fn get_source(file : &str) -> Result<String> {
 	let handle = Handler::new("", Some(0), None, None, Some(999), Some(999));
-	handle.get_sauce_as_pretty_json(file)
+	handle.get_sauce_as_pretty_json(file, None, None)
 }
 
 fn get_source_string(file : &str) -> String {

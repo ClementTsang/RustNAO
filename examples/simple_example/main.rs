@@ -12,7 +12,7 @@ fn main() {
 	match api_key {
 		Some(key) => {
 			let handle = Handler::new(key, None, None, None, None, None);
-			let result : Vec<Sauce> = handle.get_sauce(file).unwrap();
+			let result : Vec<Sauce> = handle.get_sauce(file, None, None).unwrap();
 			for i in result {
 				println!("{:?}", i);
 			}
