@@ -197,8 +197,6 @@ impl Handler {
 		Ok(request_url.into_string())
 	}
 
-	// TODO: Make min similarity a field in new... this will break so let's move this to v1?
-
 	/// Creates a new Handler object.  By default, the short limit is set to 30 seconds, and the long limit is set to 24 hours.
 	/// ## Arguments
 	/// * `api_key` - A string slice holding your api key.
@@ -216,7 +214,7 @@ impl Handler {
 	pub fn new(api_key : &str, testmode : Option<i32>, db_mask : Option<Vec<u32>>, db_mask_i : Option<Vec<u32>>, db : Option<u32>, num_results : Option<i32>) -> Handler {
 		Handler {
 			api_key : api_key.to_string(),
-			output_type : 2,
+			output_type : 2,	// This is set to 2 by default, as we need a JSON reply
 			testmode : testmode,
 			num_results : num_results,
 			db_mask : db_mask,
@@ -442,6 +440,9 @@ impl Handler {
 		Ok(serde_json::to_string(&ret_sauce)?)
 	}
 
+
+	// TODO: and build in filtering for empty URL'd Sauce vecs
+
 	/* TODO: Async
 	///
 	async fn get_sauce_async(&self, url : &str) -> Result<Sauce, SauceError> {
@@ -452,7 +453,41 @@ impl Handler {
 	async fn get_sauce_as_json_async(&self, url : &str) -> Result<String, SauceError> {
 
 	}*/
-
-    // TODO: Tests documentation
 }
 
+/// A trait to convert to JSON and pretty JSON strings.
+pub trait ToJSON {
+	/// Converts to a Result containing a JSON string.
+	/// ### Errors
+	/// There may be a problem converting the object to a JSON string.
+	fn to_json(&self) -> Result<String>;
+
+	/// Converts to a Result containing a pretty JSON string.
+	/// ### Errors
+	/// There may be a problem converting the object to a JSON string.
+	fn to_json_pretty(&self) -> Result<String>;
+}
+
+impl ToJSON for Vec<Sauce> {
+	/// Converts a Sauce vector into a pretty JSON string.
+	/// 
+	/// ```
+	/// use rustnao::Handler;
+	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// handle.get_sauce("./tests/test.jpg", None, None).to_json_pretty();
+	/// ```
+	fn to_json_pretty(&self) -> Result<String> {
+		Ok(serde_json::to_string_pretty(self)?)
+	}
+
+	/// Converts a Sauce vector into a JSON string.
+	/// 
+	/// ```
+	/// use rustnao::Handler;
+	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// handle.get_sauce("./tests/test.jpg", None, None).to_json();
+	/// ```
+	fn to_json(&self) -> Result<String> {
+		Ok(serde_json::to_string(self)?)
+	}
+}

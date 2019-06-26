@@ -59,4 +59,5 @@ pub use handler::{
 	Result,
 	Error,
 	ErrType,
+	ToJSON
 };
