@@ -8,7 +8,7 @@ A Rust implementation of a wrapper for the SauceNAO API.
 Add the following to your ``Cargo.toml`` file:
 ```
 [dependencies]
-rustnao = "0.2-rc.1"
+rustnao = "0.2.0-rc.1"
 ```
 
 Then, add the following to your ``main.rs`` file:
