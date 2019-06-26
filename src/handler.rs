@@ -112,6 +112,7 @@ impl Handler {
 		result
 	}
 
+	// TODO: Test bitmask further!
 	/// Generates a bitmask from a given vector.
 	fn generate_bitmask(&self, mask : Vec<u32>) -> u32 {
 		let mut res : u32 = 0;
@@ -324,8 +325,7 @@ impl Handler {
 	/// If there was a problem forming a URL, reading a file, making a request, or parsing the returned JSON, an error will be returned.
 	/// Furthermore, if you pass a link in which SauceNAO returns an error code, an error containing the code and message will be returned.
 	pub fn get_sauce(&self, image_path : &str, num_results : Option<u32>, min_similarity : Option<f64>) -> Result<Vec<Sauce>> {
-
-		// Check passed in values.
+		// Check passed in values first to see if they're valid!
 		match num_results {
 			Some(num_results) => {
 				if num_results > 999 {
@@ -457,7 +457,7 @@ impl Handler {
 		Ok(serde_json::to_string(&ret_sauce)?)
 	}
 
-	/* TODO: Async
+	/* TODO: Async (wait till Rust pushes them officially)
 	async fn get_sauce_async(&self, url : &str) -> Result<Sauce, SauceError> {
 
 	}
@@ -468,35 +468,19 @@ impl Handler {
 }
 
 /// A trait to convert to JSON and pretty JSON strings.
+/// ### Example
+/// Implementing for a Sauce Vector into a pretty JSON string:
+/// ```
+/// use rustnao::{Handler, ToJSON};
+/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+/// let result = handle.get_sauce("./tests/test.jpg", None, None);
+/// if result.is_ok() {
+/// 	result.unwrap().to_json_pretty();
+/// }
+/// ```
 pub trait ToJSON {
 	/// Converts to a Result containing a JSON string.
-	/// ### Errors
-	/// There may be a problem converting the object to a JSON string.
-	fn to_json(&self) -> Result<String>;
-
-	/// Converts to a Result containing a pretty JSON string.
-	/// ### Errors
-	/// There may be a problem converting the object to a JSON string.
-	fn to_json_pretty(&self) -> Result<String>;
-}
-
-impl ToJSON for Vec<Sauce> {
-	/// Converts a Sauce vector into a pretty JSON string.
-	/// 
-	/// ```
-	/// use rustnao::{Handler, ToJSON};
-	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
-	/// let result = handle.get_sauce("./tests/test.jpg", None, None);
-	/// if result.is_ok() {
-	/// 	result.unwrap().to_json_pretty();
-	/// }
-	/// ```
-	fn to_json_pretty(&self) -> Result<String> {
-		Ok(serde_json::to_string_pretty(self)?)
-	}
-
-	/// Converts a Sauce vector into a JSON string.
-	/// 
+	/// ### Example
 	/// ```
 	/// use rustnao::{Handler, ToJSON};
 	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
@@ -505,6 +489,32 @@ impl ToJSON for Vec<Sauce> {
 	/// 	result.unwrap().to_json();
 	/// }
 	/// ```
+	/// ### Errors
+	/// There may be a problem converting the object to a JSON string, so this will throw an Error if that is encountered.
+	fn to_json(&self) -> Result<String>;
+
+	/// Converts to a Result containing a pretty JSON string.
+	/// ### Example
+	/// ```
+	/// use rustnao::{Handler, ToJSON};
+	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// let result = handle.get_sauce("./tests/test.jpg", None, None);
+	/// if result.is_ok() {
+	/// 	result.unwrap().to_json_pretty();
+	/// }
+	/// ```
+	/// ### Errors
+	/// There may be a problem converting the object to a JSON string, so this will throw an Error if that is encountered.
+	fn to_json_pretty(&self) -> Result<String>;
+}
+
+impl ToJSON for Vec<Sauce> {
+	/// Converts a Sauce vector into a pretty JSON string.
+	fn to_json_pretty(&self) -> Result<String> {
+		Ok(serde_json::to_string_pretty(self)?)
+	}
+
+	/// Converts a Sauce vector into a JSON string.
 	fn to_json(&self) -> Result<String> {
 		Ok(serde_json::to_string(self)?)
 	}
