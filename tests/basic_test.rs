@@ -5,6 +5,7 @@ use rustnao::{Handler, Sauce};
 const FILE : &str = "https://i.imgur.com/W42kkKS.jpg";
 const LOCAL_FILE: &str = "./tests/test.jpg";
 
+/// Creates a handler for testing purposes
 fn create_handler(dbmask : Vec<u32>, dbmaski : Vec<u32>, db : Option<u32>, numres : i32) -> Handler {
 	let data = std::fs::read_to_string("config.json");
 	if data.is_ok() {
@@ -26,11 +27,13 @@ fn create_handler(dbmask : Vec<u32>, dbmaski : Vec<u32>, db : Option<u32>, numre
 	}
 }
 
+/// Tests handler creation
 #[test]
 fn test_check_handler_creation() {
 	create_handler([].to_vec(), [].to_vec(), Some(999), 999);
 }
 
+/// Testsshort and long limit checks (which should change after a search)
 #[test]
 fn test_get_short_and_long_limits() {
 	let handle = create_handler([].to_vec(), [].to_vec(), Some(999), 999);
@@ -43,6 +46,7 @@ fn test_get_short_and_long_limits() {
 	}
 }
 
+/// Tests searching for filtering empty sourced URLs
 #[test]
 fn test_filter_empty_sauce() {
 	let handle = create_handler([].to_vec(), [].to_vec(), Some(999), 999);
@@ -55,6 +59,7 @@ fn test_filter_empty_sauce() {
 	}
 }
 
+/// Tests local searching (local file)
 #[test]
 fn test_local() {
 	let handle = create_handler([].to_vec(), [].to_vec(), Some(999), 2);
@@ -65,6 +70,7 @@ fn test_local() {
 	}
 }
 
+/// Tests setting a max number of results 
 #[test]
 fn test_limiting() {
 	let handle = create_handler([].to_vec(), [].to_vec(), Some(999), 2);
@@ -74,6 +80,7 @@ fn test_limiting() {
 	}
 }
 
+/// Tests db bit masks
 #[test]
 fn test_db_bit_mask() {
 	let handle = create_handler([27].to_vec(), [].to_vec(), None, 999);
@@ -84,6 +91,8 @@ fn test_db_bit_mask() {
 		}
 	}
 }
+
+/// Tests db bit mask for exclusion
 #[test]
 fn test_db_bit_mask_i() {
 	let handle = create_handler([].to_vec(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].to_vec(), None, 999);
@@ -95,6 +104,7 @@ fn test_db_bit_mask_i() {
 	}
 }
 
+/// Tests min similarity and capping the number of results
 #[test]
 fn test_min_similarity_and_num_results() {
 	let handle = create_handler([].to_vec(), [].to_vec(), Some(999), 2);

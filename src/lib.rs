@@ -6,7 +6,7 @@
 //! Add the following to your ``Cargo.toml`` file:
 //! ```toml
 //! [dependencies]
-//! rustnao = "0.1"
+//! rustnao = "0.2"
 //! ```
 //!
 //! Then, add the following to your ``main.rs`` file:
@@ -59,4 +59,5 @@ pub use handler::{
 	Result,
 	Error,
 	ErrType,
+	ToJSON
 };

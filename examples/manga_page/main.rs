@@ -1,7 +1,7 @@
 //! A simple example, assuming you had a config.json file that had your api key.
 
 extern crate rustnao;
-use rustnao::{Handler, Sauce};
+use rustnao::{Handler, Sauce, ToJSON};
 
 fn main() {
 	let data = std::fs::read_to_string("config.json").expect("Couldn't read file.");
@@ -12,10 +12,9 @@ fn main() {
 	match api_key {
 		Some(key) => {
 			let handle = Handler::new(key, Some(0), None, None, Some(999), Some(999));
+			handle.set_empty_filter(true);
 			let result : Vec<Sauce> = handle.get_sauce(file, None, None).unwrap();
-			for i in result {
-				println!("{:?}", i);
-			}
+			println!("{}", result.to_json_pretty().unwrap());
 		},
 		None => (),
 	}
