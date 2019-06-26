@@ -34,6 +34,7 @@ pub struct Handler {
 	short_left : Cell<u32>,
 	long_left : Cell<u32>,
 	min_similarity : Cell<f64>,
+	filter_empty : Cell<bool>,
 }
 
 impl Handler {
@@ -197,7 +198,8 @@ impl Handler {
 		Ok(request_url.into_string())
 	}
 
-	/// Creates a new Handler object.  By default, the short limit is set to 30 seconds, and the long limit is set to 24 hours.
+	/// Creates a new Handler object.  By default, SauceNAO sets the short limit is set to 30 seconds, and the long limit is set to 24 hours.
+	/// Furthermore, by default on all ``get_sauce`` searches, the minimum simliarity is 0.0, and empty URL searches are not filtered out.
 	/// ## Arguments
 	/// * `api_key` - A string slice holding your api key.
 	/// * `testmode` - An Option for a i32, either 0 or 1.  Causes each index which has to output at most 1 for testing.  If this is None, this is by default 0.
@@ -225,10 +227,11 @@ impl Handler {
 			short_left : Cell::new(12),
 			long_left: Cell::new(200),
 			min_similarity : Cell::new(0.0),
+			filter_empty : Cell::new(false),
 		}
 	}
 
-	/// Sets the minimum similarity threshold for ``get_sauce``.  
+	/// Sets the minimum similarity threshold for ``get_sauce``.  By default this is 0.0. 
 	/// ## Arguments
 	/// * `similarity` - Represents the minimum similarity threshold (in percent) you wish to set.  It can be any value that can convert to a f64.  This includes f32s, i16s, i32s, and i8s.
 	/// 
@@ -240,6 +243,20 @@ impl Handler {
 	/// ```
 	pub fn set_min_similarity<T : Into<f64>>(&self, similarity : T) {
 		self.min_similarity.set(similarity.into());
+	}
+
+	/// Sets the whether empty URL results should be automatically filtered for ``get_sauce``.  
+	/// ## Arguments
+	/// * `enabled` - Represents whether filter should be enabled or not.  By default, this is disabled.
+	/// 
+	/// ## Example
+	/// ```
+	/// use rustnao::Handler;
+	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	/// handle.set_empty_filter(true);
+	/// ```
+	pub fn set_empty_filter(&self, enabled : bool) {
+		self.filter_empty.set(enabled);
 	}
 
 	/// Gets the current short limit as an i32.  By default this is 12.
@@ -352,7 +369,7 @@ impl Handler {
 					}
 					for sauce in res {
 						let sauce_min_sim : f64 = sauce.header.similarity.parse().unwrap();
-						if sauce_min_sim >= actual_min_sim {
+						if (sauce_min_sim >= actual_min_sim) && ((self.filter_empty.get() && sauce.data.ext_urls.len() > 0) || !self.filter_empty.get()){
 							let actual_index : u32 = sauce.header.index_name.split(":").collect::<Vec<&str>>()[0].to_string().split("#").collect::<Vec<&str>>()[1].to_string().parse::<u32>().unwrap();
 							let source : Option<constants::Source> = self.get_source(actual_index);
 							
@@ -440,16 +457,11 @@ impl Handler {
 		Ok(serde_json::to_string(&ret_sauce)?)
 	}
 
-
-	// TODO: and build in filtering for empty URL'd Sauce vecs
-
 	/* TODO: Async
-	///
 	async fn get_sauce_async(&self, url : &str) -> Result<Sauce, SauceError> {
 
 	}
 
-	///
 	async fn get_sauce_as_json_async(&self, url : &str) -> Result<String, SauceError> {
 
 	}*/
@@ -472,9 +484,12 @@ impl ToJSON for Vec<Sauce> {
 	/// Converts a Sauce vector into a pretty JSON string.
 	/// 
 	/// ```
-	/// use rustnao::Handler;
+	/// use rustnao::{Handler, ToJSON};
 	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
-	/// handle.get_sauce("./tests/test.jpg", None, None).to_json_pretty();
+	/// let result = handle.get_sauce("./tests/test.jpg", None, None);
+	/// if result.is_ok() {
+	/// 	result.unwrap().to_json_pretty();
+	/// }
 	/// ```
 	fn to_json_pretty(&self) -> Result<String> {
 		Ok(serde_json::to_string_pretty(self)?)
@@ -483,9 +498,12 @@ impl ToJSON for Vec<Sauce> {
 	/// Converts a Sauce vector into a JSON string.
 	/// 
 	/// ```
-	/// use rustnao::Handler;
+	/// use rustnao::{Handler, ToJSON};
 	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
-	/// handle.get_sauce("./tests/test.jpg", None, None).to_json();
+	/// let result = handle.get_sauce("./tests/test.jpg", None, None);
+	/// if result.is_ok() {
+	/// 	result.unwrap().to_json();
+	/// }
 	/// ```
 	fn to_json(&self) -> Result<String> {
 		Ok(serde_json::to_string(self)?)

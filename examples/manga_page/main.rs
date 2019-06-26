@@ -12,6 +12,7 @@ fn main() {
 	match api_key {
 		Some(key) => {
 			let handle = Handler::new(key, Some(0), None, None, Some(999), Some(999));
+			handle.set_empty_filter(true);
 			let result : Vec<Sauce> = handle.get_sauce(file, None, None).unwrap();
 			println!("{}", result.to_json_pretty().unwrap());
 		},
