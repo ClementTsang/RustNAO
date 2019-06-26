@@ -232,6 +232,34 @@ impl Handler {
 		}
 	}
 
+	/// Creates a new Handler object with all default values - identical to ``Handler::new(api_key, None, None, None, None, None)``.  By default, SauceNAO sets the short limit is set to 30 seconds, and the long limit is set to 24 hours.
+	/// Furthermore, by default on all ``get_sauce`` searches, the minimum simliarity is 0.0, and empty URL searches are not filtered out.
+	/// ## Arguments
+	/// * `api_key` - A string slice holding your api key.
+	///
+	/// ## Example
+	/// ```
+	/// use rustnao::Handler;
+	/// let handle = Handler::default("your_saucenao_api_key");
+	/// ```
+	pub fn default(api_key : &str) -> Handler {
+		Handler {
+			api_key : api_key.to_string(),
+			output_type : 2,	// This is set to 2 by default, as we need a JSON reply
+			testmode : Some(0),
+			num_results : Some(999),
+			db_mask : None,
+			db_mask_i : None,
+			db : Some(999),
+			short_limit : Cell::new(12),
+			long_limit: Cell::new(200),
+			short_left : Cell::new(12),
+			long_left: Cell::new(200),
+			min_similarity : Cell::new(0.0),
+			filter_empty : Cell::new(false),
+		}
+	}
+
 	/// Sets the minimum similarity threshold for ``get_sauce``.  By default this is 0.0. 
 	/// ## Arguments
 	/// * `similarity` - Represents the minimum similarity threshold (in percent) you wish to set.  It can be any value that can convert to a f64.  This includes f32s, i16s, i32s, and i8s.
