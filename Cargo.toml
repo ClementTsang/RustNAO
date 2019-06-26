@@ -1,6 +1,6 @@
 [package]
 name = "rustnao"
-version = "0.2.0"
+version = "0.2.0-rc.1"
 authors = ["Clement Tsang <clementjhtsang@gmail.com>"]
 edition = "2018"
 readme = "README.md"
