@@ -324,7 +324,7 @@ impl Handler {
 		for m in mask {
 			let mut offset = 0;
 			if m >= 18 {
-				offset = 1; // This seems to be some required fix...
+				offset = 1; // TODO: This seems to be some required fix... look into!
 			}
 			res ^= u32::pow(2, m - offset);
 		}
