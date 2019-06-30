@@ -85,12 +85,12 @@ impl HandlerBuilder {
 	/// Sets which database indices you want included on search for the Handler.  If both db and db_mask are not set, then every index is checked (db_mask_i will still apply).
 	///
 	/// ### Arguments
-	/// * db_mask - A Vector of u32s representing the database indices you wish to have included in your search.
+	/// * db_mask - A vector of u32s representing the database indices you wish to have included in your search.
 	///
 	/// ### Examples
 	/// ```
-	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().db_mask([1, 2, 5].to_vec()).build();
+	/// use rustnao::{Handler, HandlerBuilder};
+	/// let handle = HandlerBuilder::new().db_mask([1, 2, Handler::PIXIV].to_vec()).build();
 	/// ```
 	pub fn db_mask(&mut self, db_mask: Vec<u32>) -> &mut HandlerBuilder {
 		self.db_mask = Some(db_mask);
@@ -100,12 +100,12 @@ impl HandlerBuilder {
 	/// Sets which database indices you want excluded on search for the Handler.
 	///
 	/// ### Arguments
-	/// * db_mask_i - A Vector of u32s representing the database indices you wish to have excluded in your search.
+	/// * db_mask_i - A vector of u32s representing the database indices you wish to have excluded in your search.
 	///
 	/// ### Examples
 	/// ```
-	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().db_mask_i([1, 2, 5].to_vec()).build();
+	/// use rustnao::{Handler, HandlerBuilder};
+	/// let handle = HandlerBuilder::new().db_mask_i([1, 2, Handler::PIXIV].to_vec()).build();
 	/// ```
 	pub fn db_mask_i(&mut self, db_mask_i: Vec<u32>) -> &mut HandlerBuilder {
 		self.db_mask_i = Some(db_mask_i);
@@ -119,15 +119,15 @@ impl HandlerBuilder {
 	///
 	/// ### Examples
 	/// ```
-	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().db(5).build();
+	/// use rustnao::{Handler, HandlerBuilder};
+	/// let handle = HandlerBuilder::new().db(Handler::PIXIV).build();
 	/// ```
 	pub fn db(&mut self, db: u32) -> &mut HandlerBuilder {
 		self.db = Some(db);
 		self
 	}
 
-	/// Sets the maximum number of results you want returned on search for the Handler.  You can change this number per-search.  If this is not set, by default this is set to return 999 results at most.
+	/// Sets the maximum number of results you want returned on search for the Handler.  You can change this number per-search.  If this is not set, by default this is set to return at most 999 results.
 	///
 	/// ### Arguments
 	/// * num_results - A u32 value representing how many results you want returned.
@@ -142,7 +142,7 @@ impl HandlerBuilder {
 		self
 	}
 
-	/// Sets he minimum similarity for results by default for the Handler.  You can change this number per-search.  If this is not set, by default it is 0.0.
+	/// Sets he minimum similarity for results by default for the Handler.  You can change this number per-search.  If this is not set, by default it is 0.0 (no minimum similarity).
 	///
 	/// ### Arguments
 	/// * min_similarity : A number that can be cast into a f64 representing the minimum similarity (in percent) of a result to be returned.
@@ -666,7 +666,7 @@ impl Handler {
 
 /// A trait to convert to JSON and pretty JSON strings.
 /// ### Example
-/// Implementing for a Sauce Vector into a pretty JSON string:
+/// Implementing for a Sauce vector into a pretty JSON string:
 /// ```
 /// use rustnao::{HandlerBuilder, ToJSON};
 /// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();

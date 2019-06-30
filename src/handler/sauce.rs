@@ -4,8 +4,8 @@ use std::fmt;
 /// A Sauce struct contains one result from a API call made by the Handler.  
 /// ## Example
 /// ```
-/// use rustnao::{Sauce, Handler};
-/// let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+/// use rustnao::{Sauce, HandlerBuilder};
+/// let mut handle = HandlerBuilder::new().api_key("your_api_key").build();
 /// let result : rustnao::Result<Vec<Sauce>> = handle.get_sauce("https://i.pximg.net/img-master/img/2019/02/10/03/11/39/73095123_p0_master1200.jpg", None, None);
 /// ```
 #[derive(Serialize)]
@@ -55,9 +55,9 @@ impl Sauce {
 	/// Returns whether the Sauce struct contains an empty ext_url field.
 	/// ## Example
 	/// ```
-	/// use rustnao::{Handler, Sauce};
+	/// use rustnao::{HandlerBuilder, Sauce};
 	/// let file = "https://i.imgur.com/W42kkKS.jpg";
-	///	let mut handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
+	///	let mut handle = HandlerBuilder::new().api_key("your_api_key").build();
 	///	handle.set_min_similarity(45);
 	///	let result = handle.get_sauce(file, None, None);
 	///	if result.is_ok() {
