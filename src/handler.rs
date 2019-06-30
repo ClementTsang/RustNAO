@@ -32,7 +32,7 @@ pub struct HandlerBuilder {
 }
 
 impl HandlerBuilder {
-	/// Creates a new HandlerBuilder, which is to be used to make a Handler for RustNAO.
+	/// Creates a new HandlerBuilder, which is to be used to build a Handler for RustNAO.
 	///
 	/// ### Examples
 	/// ```
@@ -52,7 +52,7 @@ impl HandlerBuilder {
 		}
 	}
 
-	/// Sets the API key used for searches for the Handler.
+	/// Sets the API key used for searches for the Handler.  If this is not set then a blank API key is used, instead of your personal one.
 	///
 	/// ### Arguments
 	/// * api_key - A string reference representing your API key.
@@ -67,7 +67,7 @@ impl HandlerBuilder {
 		self
 	}
 
-	/// Sets whether testmode should be enabled on searches for the Handler.
+	/// Sets whether testmode should be enabled on searches for the Handler.  If this is on, then each index will output at most one result.  If this is unset then it is set to off by default.
 	///
 	/// ### Arguments
 	/// * testmode - A boolean representing whether you want testmode to be set to on (true) or off (false).
@@ -82,7 +82,7 @@ impl HandlerBuilder {
 		self
 	}
 
-	/// Sets which database indices you want included on search for the Handler.
+	/// Sets which database indices you want included on search for the Handler.  If both db and db_mask are not set, then every index is checked (db_mask_i will still apply).
 	///
 	/// ### Arguments
 	/// * db_mask - A Vector of u32s representing the database indices you wish to have included in your search.
@@ -112,7 +112,7 @@ impl HandlerBuilder {
 		self
 	}
 
-	/// Sets a database index to be searched for the Handler.
+	/// Sets a database index to be searched for the Handler.  If both db and db_mask are not set, then every index is checked (db_mask_i will still apply).
 	///
 	/// ### Arguments
 	/// * db - A u32 representing which database index you want included.  Set it to 999 to include every index.
@@ -127,10 +127,10 @@ impl HandlerBuilder {
 		self
 	}
 
-	/// Sets the maximum number of results you want returned on search for the Handler.
+	/// Sets the maximum number of results you want returned on search for the Handler.  You can change this number per-search.  If this is not set, by default this is set to return 999 results at most.
 	///
 	/// ### Arguments
-	/// * num_results - A u32 value representing how many results you want returned.  By default this is 999.
+	/// * num_results - A u32 value representing how many results you want returned.
 	///
 	/// ### Examples
 	/// ```
@@ -142,10 +142,10 @@ impl HandlerBuilder {
 		self
 	}
 
-	/// Sets he minimum similarity for results by default for the Handler.
+	/// Sets he minimum similarity for results by default for the Handler.  You can change this number per-search.  If this is not set, by default it is 0.0.
 	///
 	/// ### Arguments
-	/// * min_similarity : A number that can be cast into a f64 representing the minimum similarity (in percent) of a result you by default.  If this is not set, by default it is 0.0.
+	/// * min_similarity : A number that can be cast into a f64 representing the minimum similarity (in percent) of a result to be returned.
 	///
 	/// ### Examples
 	/// ```
@@ -157,10 +157,10 @@ impl HandlerBuilder {
 		self
 	}
 
-	/// Sets whether to enable an empty filter by default for the Handler.
+	/// Sets whether to enable an empty filter by default for the Handler.  If this is not set, by default it is false.
 	///
 	/// ### Arguments
-	/// * empty_filter_enabled : A boolean representing whether you want empty URL searche results to be filtered out by default.  If this is not set, by default it is false.
+	/// * empty_filter_enabled : A boolean representing whether you want empty URL search results to be filtered out by default.
 	///
 	/// ### Examples
 	/// ```
@@ -218,12 +218,13 @@ impl HandlerBuilder {
 }
 
 // TODO: 0.3.0 - Change Handler num_results to a u32, testmode can stay as a i32 techincally but should change in the future if we keep Handler::new() (probably not)
-/// A handler struct to make SauceNAO API calls.
+/// A handler struct to make SauceNAO API calls with.
 ///
 /// ## Example
 /// ```
 /// use rustnao::HandlerBuilder;
 /// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
+/// handle.get_sauce("https://i.imgur.com/W42kkKS.jpg", None, None);
 /// ```
 #[derive(Debug, Clone)]
 pub struct Handler {
@@ -348,17 +349,9 @@ impl Handler {
 			Some(val) => {
 				if val.len() > 0 {
 					request_url.query_pairs_mut().append_pair("dbmask", self.generate_bitmask(val.clone()).to_string().as_str());
-				} else if self.db.is_none() {
-					// Set to 999.
-					request_url.query_pairs_mut().append_pair("db", "999");
 				}
 			}
-			None => {
-				if self.db.is_none() {
-					// Set to 999.
-					request_url.query_pairs_mut().append_pair("db", "999");
-				}
-			}
+			None => (),
 		}
 		match &self.db_mask_i {
 			Some(val) => {
