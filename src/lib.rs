@@ -18,7 +18,7 @@
 //! Here's a simple example:
 //! ```
 //! extern crate rustnao;
-//! use rustnao::{Handler, HandlerBuilder, Sauce};
+//! use rustnao::{Handler, HandlerBuilder, Sauce, Result};
 //!
 //! fn main() {
 //! 	let api_key = "your_api_key";
@@ -31,13 +31,13 @@
 //! 	handle.set_min_similarity(45);
 //!
 //! 	// Returns a vector of Sauce objects if successful
-//! 	let result = handle.get_sauce(file, None, None);
+//! 	let result : Result<Vec<Sauce>> = handle.get_sauce(file, None, None);
 //!
 //! 	// Or perhaps you prefer a JSON output
-//! 	let result_json = handle.get_sauce_as_pretty_json(file, None, None);
+//! 	let result_json : Result<String> = handle.get_sauce_as_pretty_json(file, None, None);
 //!
 //! 	// Or maybe you wish to only get 5 results with a min similarity of 50.0
-//! 	let result_json_filtered = handle.get_sauce_as_pretty_json(file, Some(5), Some(50 as f64));
+//! 	let result_json_filtered : Result<String> = handle.get_sauce_as_pretty_json(file, Some(5), Some(50 as f64));
 //! }
 //! ```
 
