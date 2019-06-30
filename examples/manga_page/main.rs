@@ -5,7 +5,7 @@ use rustnao::{HandlerBuilder, Sauce, ToJSON};
 
 fn main() {
 	let data = std::fs::read_to_string("config.json").expect("Couldn't read file.");
-	let json: serde_json::Value = serde_json::from_str(data.as_str()).expect("JSON not well formatted.");
+	let json : serde_json::Value = serde_json::from_str(data.as_str()).expect("JSON not well formatted.");
 	let api_key = json["api_key"].as_str();
 	let file = "https://s5.mangadex.org/data/f2cf04ff9fbd5374c20d1cd5a555efed/x2.png";
 
