@@ -18,7 +18,7 @@
 //! Here's a simple example:
 //! ```no_run
 //! extern crate rustnao;
-//! use rustnao::{HandlerBuilder, Sauce};
+//! use rustnao::{Handler, HandlerBuilder, Sauce};
 //!
 //! fn main() {
 //! 	let api_key = "your_api_key";

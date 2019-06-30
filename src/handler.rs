@@ -32,7 +32,7 @@ pub struct HandlerBuilder {
 }
 
 impl HandlerBuilder {
-	/// Creates a new HandlerBuilder, to be used to make a Handler for RustNAO.
+	/// Creates a new HandlerBuilder, which is to be used to make a Handler for RustNAO.
 	///
 	/// ### Examples
 	/// ```
