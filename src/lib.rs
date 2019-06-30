@@ -16,7 +16,7 @@
 //!
 //! ## Examples
 //! Here's a simple example:
-//! ```no_run
+//! ```
 //! extern crate rustnao;
 //! use rustnao::{Handler, HandlerBuilder, Sauce};
 //!
