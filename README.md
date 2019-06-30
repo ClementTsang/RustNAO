@@ -38,13 +38,13 @@ fn main() {
 	handle.set_min_similarity(45);
 
 	// Returns a vector of Sauce objects if successful
-	let result : Vec<Sauce> = handle.get_sauce(file, None, None).unwrap();
+	let result: Vec<Sauce> = handle.get_sauce(file, None, None).unwrap();
 
 	// Or perhaps you prefer a JSON output
-	let result_json : String = handle.get_sauce_as_pretty_json(file, None, None).unwrap();
+	let result_json: String = handle.get_sauce_as_pretty_json(file, None, None).unwrap();
 
 	// Or maybe you wish to only get 5 results with a min similarity of 50.0
-	let result_json_filtered : String = handle.get_sauce_as_pretty_json(file, Some(5), Some(50 as f64)).unwrap();
+	let result_json_filtered: String = handle.get_sauce_as_pretty_json(file, Some(5), Some(50 as f64)).unwrap();
 }
 ```
 

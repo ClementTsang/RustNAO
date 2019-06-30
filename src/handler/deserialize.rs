@@ -6,11 +6,10 @@ use std::collections::HashMap;
 #[derive(Deserialize, Debug, Default, Clone)]
 pub struct Header {
 	pub similarity: String,
-	pub thumbnail : String,
+	pub thumbnail: String,
 	pub index_id: u32,
-	pub index_name : String,
+	pub index_name: String,
 }
-
 
 #[derive(Deserialize, Debug, Default, Clone)]
 pub struct Data {
@@ -19,7 +18,7 @@ pub struct Data {
 	pub title: Option<String>,
 
 	#[serde(flatten, skip_serializing_if = "HashMap::is_empty")]
-	pub additional_fields: HashMap<String, serde_json::Value>
+	pub additional_fields: HashMap<String, serde_json::Value>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -52,4 +51,3 @@ pub struct SauceResult {
 	#[serde(default)]
 	pub results: Option<Vec<SauceJSON>>,
 }
-

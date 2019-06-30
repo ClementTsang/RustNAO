@@ -28,17 +28,26 @@ pub struct Sauce {
 	pub additional_fields: Option<serde_json::Value>,
 }
 
-/// Creates a new Sauce object. 
-pub(in crate::handler) fn new_sauce(ext_urls : Vec<String>, title : Option<String>, site : String, index : u32, index_id : u32, similarity : f32, thumbnail : String, additional_fields : Option<serde_json::Value>) -> Sauce {
+/// Creates a new Sauce object.
+pub(in crate::handler) fn new_sauce(
+	ext_urls: Vec<String>,
+	title: Option<String>,
+	site: String,
+	index: u32,
+	index_id: u32,
+	similarity: f32,
+	thumbnail: String,
+	additional_fields: Option<serde_json::Value>,
+) -> Sauce {
 	Sauce {
-		ext_urls : ext_urls,
+		ext_urls: ext_urls,
 		title: title,
-		site : site,
-		index : index,
-		index_id : index_id,
-		similarity : similarity,
-		thumbnail : thumbnail,
-		additional_fields : additional_fields,
+		site: site,
+		index: index,
+		index_id: index_id,
+		similarity: similarity,
+		thumbnail: thumbnail,
+		additional_fields: additional_fields,
 	}
 }
 
@@ -60,7 +69,7 @@ impl Sauce {
 	///	else {
 	///		println!("Failed to make a query.");
 	///	}
-	///	
+	///
 	/// ```
 	pub fn has_empty_url(&self) -> bool {
 		self.ext_urls.len() <= 0
@@ -69,7 +78,7 @@ impl Sauce {
 
 impl fmt::Debug for Sauce {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		let mut result : String = String::new();
+		let mut result: String = String::new();
 		result.push_str("ext_urls: ");
 		for i in self.ext_urls.clone() {
 			result.push_str(format!("\"{}\"", i.as_str()).as_str());
@@ -96,8 +105,8 @@ impl fmt::Debug for Sauce {
 		match self.additional_fields.clone() {
 			Some(author) => {
 				result.push_str(author.to_string().as_str());
-			},
-			None =>(),
+			}
+			None => (),
 		}
 
 		write!(f, "{}", result)
