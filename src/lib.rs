@@ -18,14 +18,14 @@
 //! Here's a simple example:
 //! ```no_run
 //! extern crate rustnao;
-//! use rustnao::{Handler, Sauce};
+//! use rustnao::{HandlerBuilder, Sauce};
 //! 
 //! fn main() {
 //! 	let api_key = "your_api_key";
 //! 	let file = "https://i.imgur.com/W42kkKS.jpg";
 //! 
 //! 	// Specifying our key, only want to see Pixiv and Sankaku using a mask, and 15 results at most
-//! 	let handle = Handler::new(api_key, None, Some([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()), None, None, Some(15));
+//! 	let handle = HandlerBuilder::new().api_key(api_key).db_mask([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()).num_results(15).build();
 //! 
 //!		// Set the minimum similiarity to 45.
 //! 	handle.set_min_similarity(45);
@@ -54,6 +54,7 @@ extern crate url;
 
 mod handler;
 pub use handler::{
+	HandlerBuilder,
 	Handler,
 	Sauce,
 	Result,

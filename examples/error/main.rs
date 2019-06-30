@@ -1,10 +1,10 @@
 //! Example where errors are caught
 
 extern crate rustnao;
-use rustnao::{Handler, Result};
+use rustnao::{HandlerBuilder, Result};
 
 fn get_source(file : &str) -> Result<String> {
-	let handle = Handler::new("", Some(0), None, None, Some(999), Some(999));
+	let handle = HandlerBuilder::new().api_key("").db(999).num_results(99).build();
 	handle.get_sauce_as_pretty_json(file, None, None)
 }
 

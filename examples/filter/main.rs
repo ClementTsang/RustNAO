@@ -1,7 +1,7 @@
 //! Now, we wish to filter out our results such that we have a minimum similarity and we reject any empty sources
 
 extern crate rustnao;
-use rustnao::{Handler, Sauce};
+use rustnao::{HandlerBuilder, Sauce};
 
 fn main() {
 	let data = std::fs::read_to_string("config.json").expect("Couldn't read file.");
@@ -11,7 +11,7 @@ fn main() {
 
 	match api_key {
 		Some(key) => {
-			let handle = Handler::new(key, Some(0), None, None, Some(999), Some(999));
+			let handle = HandlerBuilder::new().api_key(key).build();
 			handle.set_min_similarity(61.31);
 			let result : Vec<Sauce> = handle.get_sauce(file, None, None).unwrap().into_iter().filter(|sauce| !sauce.has_empty_url()).collect();  // Remove empty results
 			for i in result {

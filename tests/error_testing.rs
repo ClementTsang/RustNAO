@@ -1,30 +1,36 @@
 extern crate rustnao;
 
-use rustnao::{Handler};
+use rustnao::{Handler, HandlerBuilder};
 
 const FILE : &str = "https://i.imgur.com/W42kkKS.jpg";
 const INVALID_URL : &str = "https://j.jmgur.com";
 const INVALID_FILE : &str = "./fake_file.png";
 
 /// Creates a handler for testing purposes
-fn create_handler(dbmask : Vec<u32>, dbmaski : Vec<u32>, db : Option<u32>, numres : i32) -> Handler {
+fn create_handler(dbmask : Vec<u32>, dbmaski : Vec<u32>, db_option : Option<u32>, numres : u32) -> Handler {
+	let mut api_key = "".to_string();
+
 	let data = std::fs::read_to_string("config.json");
 	if data.is_ok() {
 		match data.ok() {
 			Some(val) => {
 				let json : serde_json::Value = serde_json::from_str(val.as_str()).expect("JSON not well formatted.");
-				let api_key = json["api_key"].as_str();
+				let json_api_key = json["api_key"].as_str();
 
-				match api_key {
-					Some(key) => Handler::new(key, Some(0), Some(dbmask), Some(dbmaski), db, Some(numres)),
-					None => Handler::new("", Some(0), Some(dbmask), Some(dbmaski), db, Some(numres)),
+				match json_api_key {
+					Some(key) => {
+						api_key = key.to_string();
+					}
+					None => (),
 				}
 			}
-			None => Handler::new("", Some(0), Some(dbmask), Some(dbmaski), db, Some(numres)),
+			None => (),
 		}
 	}
-	else {
-		return Handler::new("", Some(0), Some(dbmask), Some(dbmaski), db, Some(numres));
+
+	match db_option {
+		Some(db) => HandlerBuilder::new().db_mask(dbmask).db_mask_i(dbmaski).db(db).num_results(numres).api_key(api_key.as_str()).build(),
+		None => HandlerBuilder::new().db_mask(dbmask).db_mask_i(dbmaski).num_results(numres).api_key(api_key.as_str()).build(),
 	}
 }
 
