@@ -145,7 +145,7 @@ impl HandlerBuilder {
 	/// Sets he minimum similarity for results by default for the Handler.
 	///
 	/// ### Arguments
-	/// * min_similarity : A number that can be cast into a f64 representing the minimum similarity of a result you by default.  If this is not set, by default it is 0.
+	/// * min_similarity : A number that can be cast into a f64 representing the minimum similarity (in percent) of a result you by default.  If this is not set, by default it is 0.0.
 	///
 	/// ### Examples
 	/// ```
@@ -160,7 +160,7 @@ impl HandlerBuilder {
 	/// Sets whether to enable an empty filter by default for the Handler.
 	///
 	/// ### Arguments
-	/// * empty_filter_enabled : A boolean representing whether you want empty URL searches to be filtered out by default.  If this is not set, by default it is false.
+	/// * empty_filter_enabled : A boolean representing whether you want empty URL searche results to be filtered out by default.  If this is not set, by default it is false.
 	///
 	/// ### Examples
 	/// ```
@@ -195,7 +195,7 @@ impl HandlerBuilder {
 			None => (),
 		}
 
-		// TODO: We can get rid of this later when we move to 0.3.0 and change num_results to a u32 like it should be
+		// TODO: 0.3.0 - We can get rid of this later when we move to 0.3.0 and change num_results to a u32 like it should be
 		let mut num_results = None;
 		match self.num_results {
 			Some(x) => num_results = Some(x as i32),
@@ -217,7 +217,7 @@ impl HandlerBuilder {
 	}
 }
 
-// TODO: Change Handler num_results to a u32, testmode can stay as a i32 techincally but should change in the future if we keep Handler::new() (probably not)
+// TODO: 0.3.0 - Change Handler num_results to a u32, testmode can stay as a i32 techincally but should change in the future if we keep Handler::new() (probably not)
 /// A handler struct to make SauceNAO API calls.
 ///
 /// ## Example
