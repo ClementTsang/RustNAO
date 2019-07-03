@@ -20,6 +20,7 @@ use url::Url;
 /// use rustnao::HandlerBuilder;
 /// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
 /// ```
+#[derive(Debug, Clone)]
 pub struct HandlerBuilder {
 	api_key : Option<String>,
 	testmode : Option<bool>,
@@ -179,7 +180,7 @@ impl HandlerBuilder {
 	/// use rustnao::HandlerBuilder;
 	/// let handle = HandlerBuilder::new().api_key("your_api_key").db(999).num_results(50).build();
 	/// ```
-	pub fn build(&mut self) -> Handler {
+	pub fn build(&self) -> Handler {
 		let mut api_key = "";
 		match &self.api_key {
 			Some(x) => api_key = x.as_str(),
