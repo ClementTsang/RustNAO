@@ -18,7 +18,7 @@ use url::Url;
 /// ## Example
 /// ```
 /// use rustnao::HandlerBuilder;
-/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
+/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
 /// ```
 #[derive(Default, Debug, Clone)]
 pub struct HandlerBuilder {
@@ -41,7 +41,7 @@ impl HandlerBuilder {
 	/// ### Examples
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().api_key("your_api_key").build();
+	/// let handle = HandlerBuilder::default().api_key("your_api_key").build();
 	/// ```
 	pub fn api_key(&mut self, api_key: &str) -> &mut HandlerBuilder {
 		self.api_key = Some(api_key.to_string());
@@ -56,7 +56,7 @@ impl HandlerBuilder {
 	/// ### Examples
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().testmode(true).build();
+	/// let handle = HandlerBuilder::default().testmode(true).build();
 	/// ```
 	pub fn testmode(&mut self, testmode: bool) -> &mut HandlerBuilder {
 		self.testmode = Some(testmode);
@@ -71,7 +71,7 @@ impl HandlerBuilder {
 	/// ### Examples
 	/// ```
 	/// use rustnao::{Handler, HandlerBuilder};
-	/// let handle = HandlerBuilder::new().db_mask([1, 2, Handler::PIXIV].to_vec()).build();
+	/// let handle = HandlerBuilder::default().db_mask([1, 2, Handler::PIXIV].to_vec()).build();
 	/// ```
 	pub fn db_mask(&mut self, db_mask: Vec<u32>) -> &mut HandlerBuilder {
 		self.db_mask = Some(db_mask);
@@ -86,7 +86,7 @@ impl HandlerBuilder {
 	/// ### Examples
 	/// ```
 	/// use rustnao::{Handler, HandlerBuilder};
-	/// let handle = HandlerBuilder::new().db_mask_i([1, 2, Handler::PIXIV].to_vec()).build();
+	/// let handle = HandlerBuilder::default().db_mask_i([1, 2, Handler::PIXIV].to_vec()).build();
 	/// ```
 	pub fn db_mask_i(&mut self, db_mask_i: Vec<u32>) -> &mut HandlerBuilder {
 		self.db_mask_i = Some(db_mask_i);
@@ -101,7 +101,7 @@ impl HandlerBuilder {
 	/// ### Examples
 	/// ```
 	/// use rustnao::{Handler, HandlerBuilder};
-	/// let handle = HandlerBuilder::new().db(Handler::PIXIV).build();
+	/// let handle = HandlerBuilder::default().db(Handler::PIXIV).build();
 	/// ```
 	pub fn db(&mut self, db: u32) -> &mut HandlerBuilder {
 		self.db = Some(db);
@@ -116,7 +116,7 @@ impl HandlerBuilder {
 	/// ### Examples
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().num_results(10).build();
+	/// let handle = HandlerBuilder::default().num_results(10).build();
 	/// ```
 	pub fn num_results(&mut self, num_results: u32) -> &mut HandlerBuilder {
 		self.num_results = Some(num_results);
@@ -131,7 +131,7 @@ impl HandlerBuilder {
 	/// ### Examples
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().min_similarity(50.5).build();
+	/// let handle = HandlerBuilder::default().min_similarity(50.5).build();
 	/// ```
 	pub fn min_similarity<T: Into<f64>>(&mut self, min_similarity: T) -> &mut HandlerBuilder {
 		self.min_similarity = Some(min_similarity.into());
@@ -146,7 +146,7 @@ impl HandlerBuilder {
 	/// ### Examples
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().empty_filter_enabled(true).build();
+	/// let handle = HandlerBuilder::default().empty_filter_enabled(true).build();
 	/// ```
 	pub fn empty_filter_enabled(&mut self, empty_filter_enabled: bool) -> &mut HandlerBuilder {
 		self.empty_filter_enabled = Some(empty_filter_enabled);
@@ -158,7 +158,7 @@ impl HandlerBuilder {
 	/// ### Examples
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().api_key("your_api_key").db(999).num_results(50).build();
+	/// let handle = HandlerBuilder::default().api_key("your_api_key").db(999).num_results(50).build();
 	/// ```
 	pub fn build(&self) -> Handler {
 		let mut api_key = "";
@@ -196,7 +196,7 @@ impl HandlerBuilder {
 /// ## Example
 /// ```
 /// use rustnao::HandlerBuilder;
-/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
+/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
 /// handle.get_sauce("https://i.imgur.com/W42kkKS.jpg", None, None);
 /// ```
 #[derive(Debug, Clone)]
@@ -382,7 +382,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
+	/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
 	/// handle.set_min_similarity(50);
 	/// ```
 	pub fn set_min_similarity<T: Into<f64>>(&self, min_similarity: T) {
@@ -396,7 +396,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
+	/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
 	/// handle.set_empty_filter(true);
 	/// ```
 	pub fn set_empty_filter(&self, enabled: bool) {
@@ -408,7 +408,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
+	/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
 	/// println!("{}", handle.get_short_limit());
 	/// ```
 	pub fn get_short_limit(&self) -> u32 {
@@ -420,7 +420,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
+	/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
 	/// println!("{}", handle.get_long_limit());
 	/// ```
 	pub fn get_long_limit(&self) -> u32 {
@@ -432,7 +432,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
+	/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
 	/// println!("{}", handle.get_current_short_limit());
 	/// ```
 	pub fn get_current_short_limit(&self) -> u32 {
@@ -444,7 +444,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
+	/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
 	/// println!("{}", handle.get_current_long_limit());
 	/// ```
 	pub fn get_current_long_limit(&self) -> u32 {
@@ -480,7 +480,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
+	/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
 	/// handle.get_sauce("./tests/test.jpg", None, None);
 	/// ```
 	///
@@ -576,7 +576,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
+	/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
 	/// handle.get_sauce_as_pretty_json("https://i.imgur.com/W42kkKS.jpg", None, None);
 	/// ```
 	///
@@ -597,7 +597,7 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
+	/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
 	/// handle.get_sauce_as_json("https://i.imgur.com/W42kkKS.jpg", None, None);
 	/// ```
 	///
@@ -610,7 +610,7 @@ impl Handler {
 	}
 
 	/// Asynchronously returns a Result of either a vector of Sauce objects, which contain potential sources for the input path, or a SauceError.
-	/// **Note that currently, async does not support files, only URLs --- this is due to reqwest not being ready!**
+	/// **Note that currently, async does not support files, only URLs --- this is due to reqwest not being ready!  This will throw an error if you pass a file!**
 	/// ## Arguments
 	/// * ``image_path`` - A string slice that contains the url of the image you wish to look up.
 	/// * ``num_results`` - An Option containing a u32 to specify the number of results you wish to get for this specific search.  If this is None, it will default to whatever was originally set in the Handler when it was initalized.  This can be at most 999.
@@ -619,8 +619,8 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
-	/// handle.get_sauce("./tests/test.jpg", None, None);
+	/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
+	/// handle.async_get_sauce("./tests/test.jpg", None, None).await;
 	/// ```
 	///
 	/// ## Errors
@@ -715,6 +715,7 @@ impl Handler {
 	}
 
 	/// Asynchronously returns a string representing a vector of Sauce objects as a serialized JSON, or an error.  Otherwise identical to ``async_get_sauce(...)``
+	/// **Note that currently, async does not support files, only URLs --- this is due to reqwest not being ready!  This will throw an error if you pass a file!**
 	/// ## Arguments
 	/// * ``image_path`` - A string slice that contains the url of the image you wish to look up.
 	/// * ``num_results`` - An Option containing a u32 to specify the number of results you wish to get for this specific search.  If this is None, it will default to whatever was originally set in the Handler when it was initialized.
@@ -723,8 +724,8 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
-	/// handle.get_sauce_as_json_async("https://i.imgur.com/W42kkKS.jpg", None, None).await;
+	/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
+	/// handle.async_get_sauce_as_json("https://i.imgur.com/W42kkKS.jpg", None, None).await;
 	/// ```
 	///
 	/// ## Errors
@@ -736,6 +737,7 @@ impl Handler {
 	}
 
 	/// Asynchronously returns a string representing a vector of Sauce objects as a serialized JSON, or an error.  Otherwise identical to ``async_get_sauce(...)``
+	/// **Note that currently, async does not support files, only URLs --- this is due to reqwest not being ready!  This will throw an error if you pass a file!**
 	/// ## Arguments
 	/// * ``image_path`` - A string slice that contains the url of the image you wish to look up.
 	/// * ``num_results`` - An Option containing a u32 to specify the number of results you wish to get for this specific search.  If this is None, it will default to whatever was originally set in the Handler when it was initialized.
@@ -744,8 +746,8 @@ impl Handler {
 	/// ## Example
 	/// ```
 	/// use rustnao::HandlerBuilder;
-	/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
-	/// handle.get_sauce_as_json_async("https://i.imgur.com/W42kkKS.jpg", None, None).await;
+	/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
+	/// handle.async_get_sauce_as_pretty_json("https://i.imgur.com/W42kkKS.jpg", None, None).await;
 	/// ```
 	///
 	/// ## Errors
@@ -762,7 +764,7 @@ impl Handler {
 /// Implementing for a Sauce vector into a pretty JSON string:
 /// ```
 /// use rustnao::{HandlerBuilder, ToJSON};
-/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
+/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
 /// let result = handle.get_sauce("./tests/test.jpg", None, None);
 /// if result.is_ok() {
 /// 	result.unwrap().to_json_pretty();
@@ -773,7 +775,7 @@ pub trait ToJSON {
 	/// ### Example
 	/// ```
 	/// use rustnao::{HandlerBuilder, ToJSON};
-	/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
+	/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
 	/// let result = handle.get_sauce("./tests/test.jpg", None, None);
 	/// if result.is_ok() {
 	/// 	result.unwrap().to_json();
@@ -787,7 +789,7 @@ pub trait ToJSON {
 	/// ### Example
 	/// ```
 	/// use rustnao::{HandlerBuilder, ToJSON};
-	/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
+	/// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
 	/// let result = handle.get_sauce("./tests/test.jpg", None, None);
 	/// if result.is_ok() {
 	/// 	result.unwrap().to_json_pretty();
