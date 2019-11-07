@@ -17,10 +17,9 @@ fn main() {
 				.num_results(999)
 				.db_mask([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec())
 				.build();
+
+			// TODO: Finish this
 			//let result = handle.async_get_sauce_as_pretty_json(file, None, None);
-
-			// TODO: Finish
-
 			//println!("{}", result);
 		}
 		None => (),

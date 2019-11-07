@@ -138,6 +138,18 @@ impl From<url::ParseError> for Error {
 	}
 }
 
+impl From<std::num::ParseIntError> for Error {
+	fn from(err: std::num::ParseIntError) -> Self {
+		Error::invalid_parse(err.to_string())
+	}
+}
+
+impl From<std::num::ParseFloatError> for Error {
+	fn from(err: std::num::ParseFloatError) -> Self {
+		Error::invalid_parse(err.to_string())
+	}
+}
+
 impl From<std::io::Error> for Error {
 	fn from(err: std::io::Error) -> Self {
 		Error::invalid_path(err.to_string())
