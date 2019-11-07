@@ -6,7 +6,7 @@
 //! Add the following to your ``Cargo.toml`` file:
 //! ```toml
 //! [dependencies]
-//! rustnao = "0.2"
+//! rustnao = "0.3"
 //! ```
 //!
 //! Then, add the following to your ``main.rs`` file:
@@ -25,9 +25,9 @@
 //! 	let file = "https://i.imgur.com/W42kkKS.jpg";
 //!
 //! 	// Specifying our key, only want to see Pixiv and Sankaku using a mask, and 15 results at most
-//! 	let handle = HandlerBuilder::new().api_key(api_key).db_mask([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()).num_results(15).build();
+//! 	let handle = HandlerBuilder::default().api_key(api_key).db_mask([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()).num_results(15).build();
 //!
-//!		// Set the minimum similiarity to 45.
+//!		// Set the minimum similarity to 45.
 //! 	handle.set_min_similarity(45);
 //!
 //! 	// Returns a vector of Sauce objects if successful

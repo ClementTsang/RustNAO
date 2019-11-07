@@ -11,7 +11,7 @@ pub type Result<T> = result::Result<T, Error>;
 /// An error that can occur while interacting to the SauceNAO API.
 #[derive(Debug)]
 pub struct Error {
-	context : Context<ErrType>,
+	context: Context<ErrType>,
 }
 
 impl Error {
@@ -20,33 +20,33 @@ impl Error {
 		self.context.get_context()
 	}
 
-	pub(crate) fn invalid_url<T : AsRef<str>>(unk : T) -> Error {
-		Error::from(ErrType::InvalidURL(unk.as_ref().to_string()))
+	pub(crate) fn invalid_parse<T: AsRef<str>>(unk: T) -> Error {
+		Error::from(ErrType::InvalidParse(unk.as_ref().to_string()))
 	}
 
-	pub(crate) fn invalid_path<T : AsRef<str>>(unk : T) -> Error {
+	pub(crate) fn invalid_path<T: AsRef<str>>(unk: T) -> Error {
 		Error::from(ErrType::InvalidFile(unk.as_ref().to_string()))
 	}
 
-	pub(crate) fn invalid_serde<T : AsRef<str>>(unk : T) -> Error {
+	pub(crate) fn invalid_serde<T: AsRef<str>>(unk: T) -> Error {
 		Error::from(ErrType::InvalidSerde(unk.as_ref().to_string()))
 	}
 
-	pub(crate) fn invalid_code(code : i32, message : String) -> Error {
+	pub(crate) fn invalid_code(code: i32, message: String) -> Error {
 		Error::from(ErrType::InvalidCode { code, message })
 	}
 
-	pub(crate) fn invalid_request<T : AsRef<str>>(unk : T) -> Error {
+	pub(crate) fn invalid_request<T: AsRef<str>>(unk: T) -> Error {
 		Error::from(ErrType::InvalidRequest(unk.as_ref().to_string()))
 	}
 
-	pub(crate) fn invalid_parameter(message : String) -> Error {
+	pub(crate) fn invalid_parameter(message: String) -> Error {
 		Error::from(ErrType::InvalidParameters(message))
 	}
 }
 
 impl Fail for Error {
-	fn cause(&self) -> Option<&Fail> {
+	fn cause(&self) -> Option<&dyn Fail> {
 		self.context.cause()
 	}
 
@@ -56,7 +56,7 @@ impl Fail for Error {
 }
 
 impl fmt::Display for Error {
-	fn fmt(&self, f : &mut fmt::Formatter) -> fmt::Result {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		self.context.fmt(f)
 	}
 }
@@ -67,7 +67,7 @@ pub enum ErrType {
 	/// An error when forming the URL for the API.  
 	///
 	/// The data provided is the error found.
-	InvalidURL(String),
+	InvalidParse(String),
 	/// An error when getting the file path of a file for the API.  
 	///
 	/// The data provided is the error found.
@@ -81,9 +81,9 @@ pub enum ErrType {
 	/// The data provided is the error code and message.
 	InvalidCode {
 		/// The error code from SauceNAO
-		code : i32,
+		code: i32,
 		/// The message showing the cause of the error from SauceNAO
-		message : String,
+		message: String,
 	},
 	/// An error when trying to send an invalid request to the API.
 	///
@@ -96,9 +96,9 @@ pub enum ErrType {
 }
 
 impl fmt::Display for ErrType {
-	fn fmt(&self, f : &mut fmt::Formatter) -> fmt::Result {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		match self {
-			ErrType::InvalidURL(ref unk) => write!(f, "ERROR: URL was invalid, error was due to: {}", unk),
+			ErrType::InvalidParse(ref unk) => write!(f, "ERROR: URL was invalid, error was due to: {}", unk),
 			ErrType::InvalidFile(ref unk) => write!(f, "ERROR: File path was invalid, error was due to: {}", unk),
 			ErrType::InvalidSerde(ref unk) => write!(f, "ERROR: Could not properly serde results: {}", unk),
 			ErrType::InvalidCode { code, message } => write!(f, "ERROR: Recieved an invalid status code {} after API call with message: \"{}\"", code, message),
@@ -109,37 +109,37 @@ impl fmt::Display for ErrType {
 }
 
 impl From<ErrType> for Error {
-	fn from(err_type : ErrType) -> Error {
+	fn from(err_type: ErrType) -> Error {
 		Error::from(Context::new(err_type))
 	}
 }
 
 impl From<Context<ErrType>> for Error {
-	fn from(context : Context<ErrType>) -> Error {
+	fn from(context: Context<ErrType>) -> Error {
 		Error { context }
 	}
 }
 
 impl From<serde_json::Error> for Error {
-	fn from(err : serde_json::Error) -> Self {
+	fn from(err: serde_json::Error) -> Self {
 		Error::invalid_serde(err.to_string())
 	}
 }
 
 impl From<reqwest::Error> for Error {
-	fn from(err : reqwest::Error) -> Self {
+	fn from(err: reqwest::Error) -> Self {
 		Error::invalid_request(err.to_string())
 	}
 }
 
-impl From<reqwest::UrlError> for Error {
-	fn from(err : reqwest::UrlError) -> Self {
-		Error::invalid_url(err.to_string())
+impl From<url::ParseError> for Error {
+	fn from(err: url::ParseError) -> Self {
+		Error::invalid_parse(err.to_string())
 	}
 }
 
 impl From<std::io::Error> for Error {
-	fn from(err : std::io::Error) -> Self {
+	fn from(err: std::io::Error) -> Self {
 		Error::invalid_path(err.to_string())
 	}
 }

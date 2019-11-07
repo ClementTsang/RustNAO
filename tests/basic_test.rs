@@ -2,18 +2,18 @@ extern crate rustnao;
 
 use rustnao::{Handler, HandlerBuilder, Sauce};
 
-const FILE : &str = "https://i.imgur.com/W42kkKS.jpg";
-const LOCAL_FILE : &str = "./tests/test.jpg";
+const FILE: &str = "https://i.imgur.com/W42kkKS.jpg";
+const LOCAL_FILE: &str = "./tests/test.jpg";
 
 /// Creates a handler for testing purposes
-fn create_handler(dbmask : Vec<u32>, dbmaski : Vec<u32>, db_option : Option<u32>, numres : u32) -> Handler {
+fn create_handler(dbmask: Vec<u32>, dbmaski: Vec<u32>, db_option: Option<u32>, numres: u32) -> Handler {
 	let mut api_key = "".to_string();
 
 	let data = std::fs::read_to_string("config.json");
 	if data.is_ok() {
 		match data.ok() {
 			Some(val) => {
-				let json : serde_json::Value = serde_json::from_str(val.as_str()).expect("JSON not well formatted.");
+				let json: serde_json::Value = serde_json::from_str(val.as_str()).expect("JSON not well formatted.");
 				let json_api_key = json["api_key"].as_str();
 
 				match json_api_key {
@@ -28,8 +28,14 @@ fn create_handler(dbmask : Vec<u32>, dbmaski : Vec<u32>, db_option : Option<u32>
 	}
 
 	match db_option {
-		Some(db) => HandlerBuilder::new().db_mask(dbmask).db_mask_i(dbmaski).db(db).num_results(numres).api_key(api_key.as_str()).build(),
-		None => HandlerBuilder::new().db_mask(dbmask).db_mask_i(dbmaski).num_results(numres).api_key(api_key.as_str()).build(),
+		Some(db) => HandlerBuilder::default()
+			.db_mask(dbmask)
+			.db_mask_i(dbmaski)
+			.db(db)
+			.num_results(numres)
+			.api_key(api_key.as_str())
+			.build(),
+		None => HandlerBuilder::default().db_mask(dbmask).db_mask_i(dbmaski).num_results(numres).api_key(api_key.as_str()).build(),
 	}
 }
 
@@ -59,9 +65,9 @@ fn test_get_short_and_long_limits() {
 #[test]
 fn test_filter_empty_sauce() {
 	let handle = create_handler([].to_vec(), [].to_vec(), Some(999), 999);
-	let vec : rustnao::Result<Vec<Sauce>> = handle.get_sauce(FILE, None, None);
+	let vec: rustnao::Result<Vec<Sauce>> = handle.get_sauce(FILE, None, None);
 	if !vec.is_err() {
-		let only_empty : Vec<Sauce> = vec.unwrap().into_iter().filter(|sauce| !sauce.has_empty_url()).collect();
+		let only_empty: Vec<Sauce> = vec.unwrap().into_iter().filter(|sauce| !sauce.has_empty_url()).collect();
 		for o in only_empty {
 			assert!(o.ext_urls.len() > 0);
 		}

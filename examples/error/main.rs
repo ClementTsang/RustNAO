@@ -4,7 +4,7 @@ extern crate rustnao;
 use rustnao::{HandlerBuilder, Result};
 
 fn get_source(file : &str) -> Result<String> {
-	let handle = HandlerBuilder::new().api_key("").db(999).num_results(99).build();
+	let handle = HandlerBuilder::default().api_key("").db(999).num_results(99).build();
 	handle.get_sauce_as_pretty_json(file, None, None)
 }
 

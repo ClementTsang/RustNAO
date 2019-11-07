@@ -11,7 +11,7 @@ fn main() {
 
 	match api_key {
 		Some(key) => {
-			let handle = HandlerBuilder::new().api_key(key).db_mask([Handler::PIXIV].to_vec()).build();
+			let handle = HandlerBuilder::default().api_key(key).db_mask([Handler::PIXIV].to_vec()).build();
 			let result: Vec<Sauce> = handle.get_sauce(file, None, None).unwrap();
 			for i in result {
 				println!("{:?}", i);

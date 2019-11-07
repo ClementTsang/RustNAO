@@ -8,14 +8,14 @@ A Rust implementation of a wrapper for the SauceNAO API.
 
 Add the following to your `Cargo.toml` file:
 
-```
+```toml
 [dependencies]
-rustnao = "0.2"
+rustnao = "0.3"
 ```
 
 Then, add the following to your `main.rs` file:
 
-```
+```rust
 extern crate rustnao;
 ```
 
@@ -28,23 +28,23 @@ extern crate rustnao;
 use rustnao::{HandlerBuilder, Sauce};
 
 fn main() {
-	let api_key = "your_api_key";
-	let file = "https://i.imgur.com/W42kkKS.jpg";
+ let api_key = "your_api_key";
+ let file = "https://i.imgur.com/W42kkKS.jpg";
 
-	// Specifying our key, testmode set to 0, only want to see Pixiv and Sankaku using a mask, nothing excluded, no one specific source, and 15 results at most
-	let handle = HandlerBuilder::new().api_key(api_key).db_mask([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()).num_results(15).build();
+ // Specifying our key, testmode set to 0, only want to see Pixiv and Sankaku using a mask, nothing excluded, no one specific source, and 15 results at most
+ let handle = HandlerBuilder::default().api_key(api_key).db_mask([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()).num_results(15).build();
 
-	// Set the minimum similiarity to 45.
-	handle.set_min_similarity(45);
+ // Set the minimum similarity to 45.
+ handle.set_min_similarity(45);
 
-	// Returns a vector of Sauce objects if successful
-	let result: Vec<Sauce> = handle.get_sauce(file, None, None).unwrap();
+ // Returns a vector of Sauce objects if successful
+ let result: Vec<Sauce> = handle.get_sauce(file, None, None).unwrap();
 
-	// Or perhaps you prefer a JSON output
-	let result_json: String = handle.get_sauce_as_pretty_json(file, None, None).unwrap();
+ // Or perhaps you prefer a JSON output
+ let result_json: String = handle.get_sauce_as_pretty_json(file, None, None).unwrap();
 
-	// Or maybe you wish to only get 5 results with a min similarity of 50.0
-	let result_json_filtered: String = handle.get_sauce_as_pretty_json(file, Some(5), Some(50 as f64)).unwrap();
+ // Or maybe you wish to only get 5 results with a min similarity of 50.0
+ let result_json_filtered: String = handle.get_sauce_as_pretty_json(file, Some(5), Some(50 as f64)).unwrap();
 }
 ```
 
@@ -62,4 +62,4 @@ Interested in helping? Found a problem/bug? Let me know!
 
 I was inspired by [Sagiri](https://github.com/ClarityCafe/Sagiri), so a huge shoutout to that project. Furthermore, thanks to [SauceNAO](https://saucenao.com/) which provides this amazing functionality for free.
 
-Also, credit to Pixiv user [リン☆ユウ＠1日目 西れ44b](https://www.pixiv.net/member.php?id=4754550) for [this image](https://www.pixiv.net/member_illust.php?mode=medium&illust_id=61477678) I used frequently for examples and tests.  I couldn't seem to find the image I used for local testing (SauceNAO failed me), if anyone knows let me know so I can credit them.
+Also, credit to Pixiv user [リン ☆ ユウ＠1 日目 西れ 44b](https://www.pixiv.net/member.php?id=4754550) for [this image](https://www.pixiv.net/member_illust.php?mode=medium&illust_id=61477678) I used frequently for examples and tests. I couldn't seem to find the image I used for local testing (SauceNAO failed me), if anyone knows let me know so I can credit them.

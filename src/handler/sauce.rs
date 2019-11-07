@@ -5,7 +5,7 @@ use std::fmt;
 /// ## Example
 /// ```
 /// use rustnao::{Sauce, HandlerBuilder};
-/// let mut handle = HandlerBuilder::new().api_key("your_api_key").build();
+/// let mut handle = HandlerBuilder::default().api_key("your_api_key").build();
 /// let result : rustnao::Result<Vec<Sauce>> = handle.get_sauce("https://i.pximg.net/img-master/img/2019/02/10/03/11/39/73095123_p0_master1200.jpg", None, None);
 /// ```
 #[derive(Serialize)]
@@ -52,7 +52,7 @@ impl Sauce {
 	/// ```
 	/// use rustnao::{HandlerBuilder, Sauce};
 	/// let file = "https://i.imgur.com/W42kkKS.jpg";
-	///	let mut handle = HandlerBuilder::new().api_key("your_api_key").build();
+	///	let mut handle = HandlerBuilder::default().api_key("your_api_key").build();
 	///	handle.set_min_similarity(45);
 	///	let result = handle.get_sauce(file, None, None);
 	///	if result.is_ok() {

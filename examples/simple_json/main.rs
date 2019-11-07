@@ -12,7 +12,11 @@ fn main() {
 	match api_key {
 		Some(key) => {
 			// Specifying our key, testmode set to 0, only want to see Pixiv and Sankaku using a mask, nothing excluded, no one specific source, and 999 results at most
-			let handle = HandlerBuilder::new().api_key(key).num_results(999).db_mask([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()).build();
+			let handle = HandlerBuilder::default()
+				.api_key(key)
+				.num_results(999)
+				.db_mask([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec())
+				.build();
 			let result = handle.get_sauce_as_pretty_json(file, None, None).unwrap();
 			println!("{}", result);
 		}

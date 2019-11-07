@@ -175,7 +175,7 @@ impl HandlerBuilder {
 		// TODO: 0.3.0 - We can get rid of this later when we move to 0.3.0 and change num_results to a u32 like it should be
 		let mut num_results = None;
 		if let Some(x) = self.num_results {
-			num_results = Some(x as i32);
+			num_results = Some(x as u32);
 		}
 
 		let result = Handler::new(api_key, testmode, self.db_mask.clone(), self.db_mask_i.clone(), self.db, num_results);
@@ -191,7 +191,6 @@ impl HandlerBuilder {
 	}
 }
 
-// TODO: 0.3.0 - Change Handler num_results to a u32, testmode can stay as a i32 techincally but should change in the future if we keep Handler::new() (probably not)
 /// A handler struct to make SauceNAO API calls with.
 ///
 /// ## Example
@@ -204,11 +203,11 @@ impl HandlerBuilder {
 pub struct Handler {
 	api_key: String,
 	output_type: i32,
-	testmode: Option<i32>,
+	testmode: Option<u32>,
 	db_mask: Option<Vec<u32>>,
 	db_mask_i: Option<Vec<u32>>,
 	db: Option<u32>,
-	num_results: Option<i32>,
+	num_results: Option<u32>,
 	short_limit: Cell<u32>,
 	long_limit: Cell<u32>,
 	short_left: Cell<u32>,
@@ -358,25 +357,7 @@ impl Handler {
 		Ok(request_url.into_string())
 	}
 
-	/// **NOTE**: May likely be deprecated in version 0.3.  Preferably, use the builder pattern instead.
-	///
-	/// Creates a new Handler object.  By default, SauceNAO sets the short limit is set to 30 seconds, and the long limit is set to 24 hours.
-	/// Furthermore, by default on all ``get_sauce`` searches, the minimum similarity is 0.0, and empty URL searches are not filtered out.
-	///
-	/// ## Arguments
-	/// * `api_key` - A string slice holding your api key.
-	/// * `testmode` - An Option for a i32, either 0 or 1.  Causes each index which has to output at most 1 for testing.  If this is None, this is by default 0.
-	/// * `db_mask` - A Option for a vector of u32 values representing a mask for which database indices you wish to have enabled.
-	/// * `db_mask_i` - A Option for a vector of u32 values representing a mask for which database indices you wish to have disabled.
-	/// * `db` - An Option for a u32 value to search for a specific index.  Set to 999 for all.  If this and ``db_mask`` are both empty/None, by default it searches all before ``dbmaski`` is applied.
-	/// * `num_results` - An Option for a i32 representing the default number of results you wish returned (you can change this number per-search if you want).  If this is None, this is by default 999.
-	///
-	/// ## Example
-	/// ```
-	/// use rustnao::Handler;
-	/// let handle = Handler::new("your_saucenao_api_key", Some(0), None, None, Some(999), Some(999));
-	/// ```
-	pub fn new(api_key: &str, testmode: Option<i32>, db_mask: Option<Vec<u32>>, db_mask_i: Option<Vec<u32>>, db: Option<u32>, num_results: Option<i32>) -> Handler {
+	fn new(api_key: &str, testmode: Option<u32>, db_mask: Option<Vec<u32>>, db_mask_i: Option<Vec<u32>>, db: Option<u32>, num_results: Option<u32>) -> Handler {
 		Handler {
 			api_key: api_key.to_string(),
 			output_type: 2, // This is set to 2 by default, as we need a JSON reply
@@ -490,7 +471,7 @@ impl Handler {
 		true
 	}
 
-	/// Returns a Result of either a vector of Sauce objects, which contain potential sources for the input ``file``, or a SauceError.
+	/// Returns a Result of either a vector of Sauce objects, which contain potential sources for the input file, or a SauceError.
 	/// ## Arguments
 	/// * ``image_path`` - A string slice that contains the url of the image you wish to look up.
 	/// * ``num_results`` - An Option containing a u32 to specify the number of results you wish to get for this specific search.  If this is None, it will default to whatever was originally set in the Handler when it was initalized.  This can be at most 999.
@@ -517,12 +498,12 @@ impl Handler {
 
 		let url_string = self.generate_url(image_path, num_results)?;
 		let form_param = if !(image_path.starts_with("https://") || image_path.starts_with("http://")) {
-			reqwest::multipart::Form::new().file("file", image_path)?
+			reqwest::blocking::multipart::Form::new().file("file", image_path)?
 		} else {
-			reqwest::multipart::Form::new()
+			reqwest::blocking::multipart::Form::new()
 		};
 
-		let client = reqwest::Client::new();
+		let client = reqwest::blocking::Client::new();
 		let returned_sauce: SauceResult = client.post(&url_string).multipart(form_param).send()?.json()?;
 		let mut ret_sauce: Vec<Sauce> = Vec::new();
 		if returned_sauce.header.status >= 0 {
@@ -628,7 +609,8 @@ impl Handler {
 		Ok(serde_json::to_string(&ret_sauce)?)
 	}
 
-	/// Asynchronously returns a Result of either a vector of Sauce objects, which contain potential sources for the input ``file``, or a SauceError.
+	/// Asynchronously returns a Result of either a vector of Sauce objects, which contain potential sources for the input path, or a SauceError.
+	/// **Note that currently, async does not support files, only URLs --- this is due to reqwest not being ready!**
 	/// ## Arguments
 	/// * ``image_path`` - A string slice that contains the url of the image you wish to look up.
 	/// * ``num_results`` - An Option containing a u32 to specify the number of results you wish to get for this specific search.  If this is None, it will default to whatever was originally set in the Handler when it was initalized.  This can be at most 999.
@@ -644,7 +626,7 @@ impl Handler {
 	/// ## Errors
 	/// If there was a problem forming a URL, reading a file, making a request, or parsing the returned JSON, an error will be returned.
 	/// Furthermore, if you pass a link in which SauceNAO returns an error code, an error containing the code and message will be returned.
-	pub async fn get_sauce_async(&self, image_path: &str, num_results: Option<u32>, min_similarity: Option<f64>) -> Result<Vec<Sauce>> {
+	pub async fn async_get_sauce(&self, image_path: &str, num_results: Option<u32>, min_similarity: Option<f64>) -> Result<Vec<Sauce>> {
 		// Check passed in values first to see if they're valid!
 
 		if !self.is_valid_min_sim(min_similarity) {
@@ -654,14 +636,22 @@ impl Handler {
 		}
 
 		let url_string = self.generate_url(image_path, num_results)?;
-		let form_param = if !(image_path.starts_with("https://") || image_path.starts_with("http://")) {
-			reqwest::multipart::Form::new().file("file", image_path)?
+
+		// TODO: Wait till reqwest pushes this!
+		/*let form_param = if !(image_path.starts_with("https://") || image_path.starts_with("http://")) {
+			reqwest::blocking::multipart::Form::new().file("file", image_path)?
 		} else {
-			reqwest::multipart::Form::new()
-		};
+			reqwest::blocking::multipart::Form::new()
+		};*/
+
+		// TODO: Remove this on reqwest
+		if !(image_path.starts_with("https://") || image_path.starts_with("http://")) {
+			return Err(Error::invalid_parameter("async does not support file searches".to_string()));
+		}
 
 		let client = reqwest::Client::new();
-		let returned_sauce: SauceResult = client.post(&url_string).multipart(form_param).send()?.json()?;
+		//let returned_sauce: SauceResult = client.post(&url_string).multipart(form_param).send().await?.json().await?;
+		let returned_sauce: SauceResult = client.post(&url_string).send().await?.json().await?;
 		let mut ret_sauce: Vec<Sauce> = Vec::new();
 		if returned_sauce.header.status >= 0 {
 			// Update non-sauce fields
@@ -740,8 +730,29 @@ impl Handler {
 	/// ## Errors
 	/// If there was a problem forming a URL, reading a file, making a request, or parsing the returned JSON, an error will be returned.
 	/// Furthermore, if you pass a link in which SauceNAO returns an error code, an error containing the code and message will be returned.
-	pub async fn get_sauce_as_json_async(&self, image_path: &str, num_results: Option<u32>, min_similarity: Option<f64>) -> Result<String> {
-		let ret_sauce = self.get_sauce_async(image_path, num_results, min_similarity).await?;
+	pub async fn async_get_sauce_as_json(&self, image_path: &str, num_results: Option<u32>, min_similarity: Option<f64>) -> Result<String> {
+		let ret_sauce = self.async_get_sauce(image_path, num_results, min_similarity).await?;
+		Ok(serde_json::to_string(&ret_sauce)?)
+	}
+
+	/// Asynchronously returns a string representing a vector of Sauce objects as a serialized JSON, or an error.  Otherwise identical to ``async_get_sauce(...)``
+	/// ## Arguments
+	/// * ``image_path`` - A string slice that contains the url of the image you wish to look up.
+	/// * ``num_results`` - An Option containing a u32 to specify the number of results you wish to get for this specific search.  If this is None, it will default to whatever was originally set in the Handler when it was initialized.
+	/// * ``min_similarity`` - An Option containing a f64 to specify the minimum similarity you wish to meet for a result to show up for this specific search.  If this is None, it will default to whatever was originally set in the Handler when it was initialized.
+	///
+	/// ## Example
+	/// ```
+	/// use rustnao::HandlerBuilder;
+	/// let handle = HandlerBuilder::new().api_key("your_api_key").num_results(999).db(999).build();
+	/// handle.get_sauce_as_json_async("https://i.imgur.com/W42kkKS.jpg", None, None).await;
+	/// ```
+	///
+	/// ## Errors
+	/// If there was a problem forming a URL, reading a file, making a request, or parsing the returned JSON, an error will be returned.
+	/// Furthermore, if you pass a link in which SauceNAO returns an error code, an error containing the code and message will be returned.
+	pub async fn async_get_sauce_as_pretty_json(&self, image_path: &str, num_results: Option<u32>, min_similarity: Option<f64>) -> Result<String> {
+		let ret_sauce = self.async_get_sauce(image_path, num_results, min_similarity).await?;
 		Ok(serde_json::to_string_pretty(&ret_sauce)?)
 	}
 }
