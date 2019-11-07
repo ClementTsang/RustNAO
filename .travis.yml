@@ -3,7 +3,15 @@ rust:
   - stable
   - beta
   - nightly
+os:
+  - windows
+  - osx
+  - linux
+env:
+  - RUST_BACKTRACE=1
 matrix:
   allow_failures:
     - rust: nightly
   fast_finish: true
+notifications:
+  email: false
