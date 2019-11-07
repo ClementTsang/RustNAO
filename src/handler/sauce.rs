@@ -11,43 +11,38 @@ use std::fmt;
 #[derive(Serialize)]
 pub struct Sauce {
 	/// A Vec of Strings representing the external URLs for the image
-	pub ext_urls : Vec<String>,
+	pub ext_urls: Vec<String>,
 	/// An optional String to represent the title of the image
-	pub title : Option<String>,
+	pub title: Option<String>,
 	/// A string to represent the site the image is from
-	pub site : String,
+	pub site: String,
 	/// The official index on SauceNAO for the index the site corresponds to
-	pub index : u32,
+	pub index: u32,
 	/// The index rerturned by the SauceNAO API.  Usually this is equal to the ``index`` but sometimes it is different (see Sankaku, for example)
-	pub index_id : u32,
+	pub index_id: u32,
 	/// The similarity the image has with the guess
-	pub similarity : f32,
+	pub similarity: f32,
 	/// A string representing the URL of the thumbnail
-	pub thumbnail : String,
+	pub thumbnail: String,
 	/// Any additional fields that are specific to the source
-	pub additional_fields : Option<serde_json::Value>,
+	pub additional_fields: Option<serde_json::Value>,
 }
+
+// TODO: Consider making the sauce object a builder...
 
 /// Creates a new Sauce object.
 pub(in crate::handler) fn new_sauce(
-	ext_urls : Vec<String>,
-	title : Option<String>,
-	site : String,
-	index : u32,
-	index_id : u32,
-	similarity : f32,
-	thumbnail : String,
-	additional_fields : Option<serde_json::Value>,
+	ext_urls: Vec<String>, title: Option<String>, site: String, index: u32, index_id: u32, similarity: f32, thumbnail: String, additional_fields: Option<serde_json::Value>,
 ) -> Sauce {
 	Sauce {
-		ext_urls : ext_urls,
-		title : title,
-		site : site,
-		index : index,
-		index_id : index_id,
-		similarity : similarity,
-		thumbnail : thumbnail,
-		additional_fields : additional_fields,
+		ext_urls,
+		title,
+		site,
+		index,
+		index_id,
+		similarity,
+		thumbnail,
+		additional_fields,
 	}
 }
 
@@ -72,13 +67,13 @@ impl Sauce {
 	///
 	/// ```
 	pub fn has_empty_url(&self) -> bool {
-		self.ext_urls.len() <= 0
+		self.ext_urls.is_empty()
 	}
 }
 
 impl fmt::Debug for Sauce {
-	fn fmt(&self, f : &mut fmt::Formatter) -> fmt::Result {
-		let mut result : String = String::new();
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		let mut result: String = String::new();
 		result.push_str("ext_urls: ");
 		for i in self.ext_urls.clone() {
 			result.push_str(format!("\"{}\"", i.as_str()).as_str());
@@ -102,11 +97,8 @@ impl fmt::Debug for Sauce {
 		result.push_str("\nthumbnail: ");
 		result.push_str(format!("\"{}\"", self.thumbnail.as_str()).as_str());
 		result.push_str("\nauthor_id: ");
-		match self.additional_fields.clone() {
-			Some(author) => {
-				result.push_str(author.to_string().as_str());
-			}
-			None => (),
+		if let Some(author) = self.additional_fields.clone() {
+			result.push_str(author.to_string().as_str());
 		}
 
 		write!(f, "{}", result)
