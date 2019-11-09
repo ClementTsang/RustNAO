@@ -2,7 +2,9 @@
 
 A Rust implementation of a wrapper for the SauceNAO API.
 
-[![Build Status](https://travis-ci.com/ClementTsang/RustNAO.svg?token=1wvzVgp94E1TZyPNs8JF&branch=master)](https://travis-ci.com/ClementTsang/RustNAO) [![crates.io link](https://img.shields.io/crates/v/rustnao.svg)](https://crates.io/crates/rustnao)
+[![Build Status](https://travis-ci.com/ClementTsang/RustNAO.svg?token=1wvzVgp94E1TZyPNs8JF&branch=master)](https://travis-ci.com/ClementTsang/RustNAO)
+[![crates.io link](https://img.shields.io/crates/v/rustnao.svg)](https://crates.io/crates/rustnao)
+[![Documentation](https://docs.rs/rustnao/badge.svg)](https://docs.rs/rustnao)
 
 ## Installation
 
@@ -10,7 +12,7 @@ Add the following to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-rustnao = "0.3"
+rustnao = "0.3.0-alpha.1"
 ```
 
 Then, add the following to your `main.rs` file:
