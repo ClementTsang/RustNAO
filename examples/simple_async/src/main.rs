@@ -13,12 +13,8 @@ async fn main() -> Result<(), Error> {
 
 	let file = "https://i.imgur.com/W42kkKS.jpg";
 
-	println!("This is before code-wise...");
-
 	let result = handle.async_get_sauce_as_pretty_json(file, None, None);
-	println!("Blocking... {}", result.await?);
-
-	println!("This is after code-wise...");
+	println!("Result... {}", result.await?);
 
 	Ok(())
 }
