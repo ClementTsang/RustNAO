@@ -1,0 +1,9 @@
+[package]
+name = "simple_async"
+version = "0.1.0"
+authors = ["Clement Tsang"]
+edition = "2018"
+
+[dependencies]
+tokio = "0.2.0-alpha.6"
+rustnao = { path = "../../" }

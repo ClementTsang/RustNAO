@@ -172,7 +172,6 @@ impl HandlerBuilder {
 			testmode = if x { Some(1) } else { Some(0) };
 		}
 
-		// TODO: 0.3.0 - We can get rid of this later when we move to 0.3.0 and change num_results to a u32 like it should be
 		let mut num_results = None;
 		if let Some(x) = self.num_results {
 			num_results = Some(x as u32);
@@ -645,10 +644,10 @@ impl Handler {
 		if !(image_path.starts_with("https://") || image_path.starts_with("http://")) {
 			return Err(Error::invalid_parameter("async does not support file searches".to_string()));
 		}
+		let form_param = reqwest::multipart::Form::new();
 
 		let client = reqwest::Client::new();
-		//let returned_sauce: SauceResult = client.post(&url_string).multipart(form_param).send().await?.json().await?;
-		let returned_sauce: SauceResult = client.post(&url_string).send().await?.json().await?;
+		let returned_sauce: SauceResult = client.post(&url_string).multipart(form_param).send().await?.json().await?;
 		self.process_results(returned_sauce, min_similarity)
 	}
 
