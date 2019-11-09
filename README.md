@@ -15,12 +15,6 @@ Add the following to your `Cargo.toml` file:
 rustnao = "0.3.0-alpha.1"
 ```
 
-Then, add the following to your `main.rs` file:
-
-```rust
-extern crate rustnao;
-```
-
 ## Examples
 
 Here's a simple example:
