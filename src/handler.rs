@@ -640,7 +640,7 @@ impl Handler {
 			reqwest::blocking::multipart::Form::new()
 		};*/
 
-		// TODO: Remove this on reqwest finishing file
+		// TODO: Remove this on reqwest finishing file, and also remove the documentation bits!
 		if !(image_path.starts_with("https://") || image_path.starts_with("http://")) {
 			return Err(Error::invalid_parameter("async does not support file searches".to_string()));
 		}
