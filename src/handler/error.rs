@@ -126,12 +126,6 @@ impl From<serde_json::Error> for Error {
 	}
 }
 
-impl From<reqwest::Error> for Error {
-	fn from(err: reqwest::Error) -> Self {
-		Error::invalid_request(err.to_string())
-	}
-}
-
 impl From<url::ParseError> for Error {
 	fn from(err: url::ParseError) -> Self {
 		Error::invalid_parse(err.to_string())
@@ -153,5 +147,17 @@ impl From<std::num::ParseFloatError> for Error {
 impl From<std::io::Error> for Error {
 	fn from(err: std::io::Error) -> Self {
 		Error::invalid_path(err.to_string())
+	}
+}
+
+impl From<reqwest::Error> for Error {
+	fn from(err: reqwest::Error) -> Self {
+		Error::invalid_request(err.to_string())
+	}
+}
+
+impl From<surf::Exception> for Error {
+	fn from(err: surf::Exception) -> Self {
+		Error::invalid_request(err.to_string())
 	}
 }

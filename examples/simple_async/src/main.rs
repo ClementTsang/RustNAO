@@ -1,4 +1,4 @@
-//! Similar to the simple example, except now it's async
+//! Similar to the simple example, except now it's async (using tokio)
 
 extern crate rustnao;
 use rustnao::{Error, Handler, HandlerBuilder};

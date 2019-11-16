@@ -10,7 +10,7 @@
 //! Add the following to your ``Cargo.toml`` file:
 //! ```toml
 //! [dependencies]
-//! rustnao = "0.3.0-alpha.1"
+//! rustnao = "0.3.1"
 //! ```
 //!
 //! ## Examples
@@ -44,10 +44,12 @@
 
 #![deny(missing_docs)]
 
+extern crate async_std;
 extern crate failure;
 extern crate reqwest;
 extern crate serde;
 extern crate serde_json;
+extern crate surf;
 extern crate url;
 
 mod handler;

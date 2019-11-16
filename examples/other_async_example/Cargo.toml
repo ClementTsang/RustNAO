@@ -1,0 +1,9 @@
+[package]
+name = "simple_async"
+version = "0.1.0"
+authors = ["Clement Tsang"]
+edition = "2018"
+
+[dependencies]
+async-std = "1.0.1"
+rustnao = { path = "../../" }

@@ -9,15 +9,12 @@ fn main() {
 	let api_key = json["api_key"].as_str();
 	let file = "https://i.imgur.com/W42kkKS.jpg";
 
-	match api_key {
-		Some(key) => {
-			let handle = HandlerBuilder::default().api_key(key).build();
-			handle.set_min_similarity(61.31);
-			let result: Vec<Sauce> = handle.get_sauce(file, None, None).unwrap().into_iter().filter(|sauce| !sauce.has_empty_url()).collect(); // Remove empty results
-			for i in result {
-				println!("{:?}", i);
-			}
+	if let Some(key) = api_key {
+		let handle = HandlerBuilder::default().api_key(key).build();
+		handle.set_min_similarity(61.31);
+		let result: Vec<Sauce> = handle.get_sauce(file, None, None).unwrap().into_iter().filter(|sauce| !sauce.has_empty_url()).collect(); // Remove empty results
+		for i in result {
+			println!("{:?}", i);
 		}
-		None => (),
 	}
 }

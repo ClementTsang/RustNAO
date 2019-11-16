@@ -613,7 +613,6 @@ impl Handler {
 	}
 
 	/// Asynchronously returns a Result of either a vector of Sauce objects, which contain potential sources for the input path, or a SauceError.
-	/// **Note that currently, async does not support files, only URLs --- this is due to reqwest not being ready!  This will throw an error if you pass a file!**
 	/// ## Arguments
 	/// * ``image_path`` - A string slice that contains the url of the image you wish to look up.
 	/// * ``num_results`` - An Option containing a u32 to specify the number of results you wish to get for this specific search.  If this is None, it will default to whatever was originally set in the Handler when it was initalized.  This can be at most 999.
@@ -633,26 +632,16 @@ impl Handler {
 
 		let url_string = self.generate_url(image_path, num_results)?;
 
-		// TODO: Wait till reqwest pushes this!
-		/*let form_param = if !(image_path.starts_with("https://") || image_path.starts_with("http://")) {
-			reqwest::blocking::multipart::Form::new().file("file", image_path)?
+		let returned_sauce: SauceResult = if !(image_path.starts_with("https://") || image_path.starts_with("http://")) {
+			surf::post(&url_string).body_file(image_path)?.await?.body_json().await?
 		} else {
-			reqwest::blocking::multipart::Form::new()
-		};*/
+			surf::post(&url_string).await?.body_json().await?
+		};
 
-		// TODO: Remove this on reqwest finishing file, and also remove the documentation bits!
-		if !(image_path.starts_with("https://") || image_path.starts_with("http://")) {
-			return Err(Error::invalid_parameter("async does not support file searches".to_string()));
-		}
-		let form_param = reqwest::multipart::Form::new();
-
-		let client = reqwest::Client::new();
-		let returned_sauce: SauceResult = client.post(&url_string).multipart(form_param).send().await?.json().await?;
 		self.process_results(returned_sauce, min_similarity)
 	}
 
 	/// Asynchronously returns a string representing a vector of Sauce objects as a serialized JSON, or an error.  Otherwise identical to ``async_get_sauce(...)``
-	/// **Note that currently, async does not support files, only URLs --- this is due to reqwest not being ready!  This will throw an error if you pass a file!**
 	/// ## Arguments
 	/// * ``image_path`` - A string slice that contains the url of the image you wish to look up.
 	/// * ``num_results`` - An Option containing a u32 to specify the number of results you wish to get for this specific search.  If this is None, it will default to whatever was originally set in the Handler when it was initialized.
@@ -667,7 +656,6 @@ impl Handler {
 	}
 
 	/// Asynchronously returns a string representing a vector of Sauce objects as a serialized JSON, or an error.  Otherwise identical to ``async_get_sauce(...)``
-	/// **Note that currently, async does not support files, only URLs --- this is due to reqwest not being ready!  This will throw an error if you pass a file!**
 	/// ## Arguments
 	/// * ``image_path`` - A string slice that contains the url of the image you wish to look up.
 	/// * ``num_results`` - An Option containing a u32 to specify the number of results you wish to get for this specific search.  If this is None, it will default to whatever was originally set in the Handler when it was initialized.

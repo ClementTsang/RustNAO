@@ -9,14 +9,11 @@ fn main() {
 	let api_key = json["api_key"].as_str();
 	let file = "./examples/local/test.jpg";
 
-	match api_key {
-		Some(key) => {
-			let handle = HandlerBuilder::default().api_key(key).build();
-			let result: Vec<Sauce> = handle.get_sauce(file, None, None).unwrap();
-			for i in result {
-				println!("{:?}", i);
-			}
+	if let Some(key) = api_key {
+		let handle = HandlerBuilder::default().api_key(key).build();
+		let result: Vec<Sauce> = handle.get_sauce(file, None, None).unwrap();
+		for i in result {
+			println!("{:?}", i);
 		}
-		None => (),
 	}
 }
