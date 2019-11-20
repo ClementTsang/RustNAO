@@ -56,6 +56,6 @@ Interested in helping? Found a problem/bug? Let me know!
 
 ## Thanks/Credits
 
-I was inspired by [Sagiri](https://github.com/ClarityCafe/Sagiri), so a huge shoutout to that project. Furthermore, thanks to [SauceNAO](https://saucenao.com/) which provides this amazing functionality for free.
+I was inspired by [Sagiri](https://github.com/ClarityCafe/Sagiri), so I have to give a shoutout that project. Furthermore, thanks to [SauceNAO](https://saucenao.com/) which provides this amazing functionality for free.
 
 Also, credit to Pixiv user [リン ☆ ユウ＠1 日目 西れ 44b](https://www.pixiv.net/member.php?id=4754550) for [this image](https://www.pixiv.net/member_illust.php?mode=medium&illust_id=61477678) I used frequently for examples and tests. I couldn't seem to find the image I used for local testing (SauceNAO failed me), if anyone knows let me know so I can credit them.
