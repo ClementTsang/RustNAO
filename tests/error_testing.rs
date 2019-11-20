@@ -12,19 +12,13 @@ fn create_handler(dbmask: Vec<u32>, dbmaski: Vec<u32>, db_option: Option<u32>, n
 
 	let data = std::fs::read_to_string("config.json");
 	if data.is_ok() {
-		match data.ok() {
-			Some(val) => {
-				let json: serde_json::Value = serde_json::from_str(val.as_str()).expect("JSON not well formatted.");
-				let json_api_key = json["api_key"].as_str();
+		if let Ok(val) = data {
+			let json: serde_json::Value = serde_json::from_str(val.as_str()).expect("JSON not well formatted.");
+			let json_api_key = json["api_key"].as_str();
 
-				match json_api_key {
-					Some(key) => {
-						api_key = key.to_string();
-					}
-					None => (),
-				}
+			if let Some(key) = json_api_key {
+				api_key = key.to_string();
 			}
-			None => (),
 		}
 	}
 

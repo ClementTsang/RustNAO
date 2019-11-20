@@ -550,24 +550,8 @@ impl Handler {
 	/// If there was a problem forming a URL, reading a file, making a request, or parsing the returned JSON, an error will be returned.
 	/// Furthermore, if you pass a link in which SauceNAO returns an error code, an error containing the code and message will be returned.
 	pub fn get_sauce(&self, image_path: &str, num_results: Option<u32>, min_similarity: Option<f64>) -> Result<Vec<Sauce>> {
-		// Check passed in values first to see if they're valid!
-
-		if !self.is_valid_min_sim(min_similarity) {
-			return Err(Error::invalid_parameter("min_similarity must be less 100.0 and greater than 0.0.".to_string()));
-		} else if !self.is_valid_num_res(num_results) {
-			return Err(Error::invalid_parameter("num_results must be less than 999.".to_string()));
-		}
-
-		let url_string = self.generate_url(image_path, num_results)?;
-		let form_param = if !(image_path.starts_with("https://") || image_path.starts_with("http://")) {
-			reqwest::blocking::multipart::Form::new().file("file", image_path)?
-		} else {
-			reqwest::blocking::multipart::Form::new()
-		};
-
-		let client = reqwest::blocking::Client::new();
-		let returned_sauce: SauceResult = client.post(&url_string).multipart(form_param).send()?.json()?;
-		self.process_results(returned_sauce, min_similarity)
+		// This is essentially just a blocking version of the async call... thank you, code reuse
+		async_std::task::block_on(async { self.async_get_sauce(image_path, num_results, min_similarity).await })
 	}
 
 	/// Returns a string representing a vector of Sauce objects as a serialized JSON, or an error.  Otherwise identical to ``get_sauce(...)``

@@ -150,12 +150,6 @@ impl From<std::io::Error> for Error {
 	}
 }
 
-impl From<reqwest::Error> for Error {
-	fn from(err: reqwest::Error) -> Self {
-		Error::invalid_request(err.to_string())
-	}
-}
-
 impl From<surf::Exception> for Error {
 	fn from(err: surf::Exception) -> Self {
 		Error::invalid_request(err.to_string())

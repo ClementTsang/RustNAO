@@ -1,6 +1,5 @@
 //! Similar to the simple example, except now it's JSON
 
-extern crate rustnao;
 use rustnao::{Handler, HandlerBuilder};
 
 fn main() {
