@@ -40,7 +40,7 @@
 //! }
 //! ```
 
-// TODO: further docs on use-case (see sagiri)
+// TODO: further docs on use-case (see Sagiri)
 
 #![deny(missing_docs)]
 

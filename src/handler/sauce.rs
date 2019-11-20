@@ -31,8 +31,10 @@ pub struct Sauce {
 // TODO: Consider making the sauce object a builder...
 
 /// Creates a new Sauce object.
+#[allow(clippy::too_many_arguments)]
 pub(in crate::handler) fn new_sauce(
-	ext_urls: Vec<String>, title: Option<String>, site: String, index: u32, index_id: u32, similarity: f32, thumbnail: String, additional_fields: Option<serde_json::Value>,
+	ext_urls: Vec<String>, title: Option<String>, site: String, index: u32, index_id: u32, similarity: f32, thumbnail: String,
+	additional_fields: Option<serde_json::Value>,
 ) -> Sauce {
 	Sauce {
 		ext_urls,
