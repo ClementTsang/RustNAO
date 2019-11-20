@@ -20,7 +20,6 @@ rustnao = "0.3.1"
 Here's a simple example:
 
 ```rust
-extern crate rustnao;
 use rustnao::{HandlerBuilder, Sauce};
 
 fn main() {
@@ -41,6 +40,9 @@ fn main() {
 
  // Or maybe you wish to only get 5 results with a min similarity of 50.0
  let result_json_filtered: String = handle.get_sauce_as_pretty_json(file, Some(5), Some(50 as f64)).unwrap();
+
+ // Or perhaps you need this async
+ async_std::task::block_on(async { self.async_get_sauce(image_path, num_results, min_similarity).await.unwrap(); })
 }
 ```
 

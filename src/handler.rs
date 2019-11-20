@@ -309,7 +309,9 @@ impl Handler {
 	fn generate_url(&self, image_path: &str, num_results: Option<u32>) -> Result<String> {
 		let mut request_url = Url::parse(constants::API_URL)?;
 		request_url.query_pairs_mut().append_pair("api_key", self.api_key.as_str());
-		request_url.query_pairs_mut().append_pair("output_type", self.output_type.to_string().as_str());
+		request_url
+			.query_pairs_mut()
+			.append_pair("output_type", self.output_type.to_string().as_str());
 
 		if let Some(val) = self.db {
 			request_url.query_pairs_mut().append_pair("db", val.to_string().as_str());
@@ -317,12 +319,16 @@ impl Handler {
 
 		if let Some(val) = &self.db_mask {
 			if !val.is_empty() {
-				request_url.query_pairs_mut().append_pair("dbmask", self.generate_bitmask(val.clone()).to_string().as_str());
+				request_url
+					.query_pairs_mut()
+					.append_pair("dbmask", self.generate_bitmask(val.clone()).to_string().as_str());
 			}
 		}
 		if let Some(val) = &self.db_mask_i {
 			if !val.is_empty() {
-				request_url.query_pairs_mut().append_pair("dbmaski", self.generate_bitmask(val.clone()).to_string().as_str());
+				request_url
+					.query_pairs_mut()
+					.append_pair("dbmaski", self.generate_bitmask(val.clone()).to_string().as_str());
 			}
 		}
 
@@ -356,7 +362,9 @@ impl Handler {
 		Ok(request_url.into_string())
 	}
 
-	fn new(api_key: &str, testmode: Option<u32>, db_mask: Option<Vec<u32>>, db_mask_i: Option<Vec<u32>>, db: Option<u32>, num_results: Option<u32>) -> Handler {
+	fn new(
+		api_key: &str, testmode: Option<u32>, db_mask: Option<Vec<u32>>, db_mask_i: Option<Vec<u32>>, db: Option<u32>, num_results: Option<u32>,
+	) -> Handler {
 		Handler {
 			api_key: api_key.to_string(),
 			output_type: 2, // This is set to 2 by default, as we need a JSON reply
@@ -489,8 +497,13 @@ impl Handler {
 				}
 				for sauce in res {
 					let sauce_min_sim: f64 = sauce.header.similarity.parse()?;
-					if (sauce_min_sim >= actual_min_sim) && ((self.empty_filter_enabled.get() && !sauce.data.ext_urls.is_empty()) || !self.empty_filter_enabled.get()) {
-						let actual_index: u32 = sauce.header.index_name.split(':').collect::<Vec<&str>>()[0].to_string().split('#').collect::<Vec<&str>>()[1]
+					if (sauce_min_sim >= actual_min_sim)
+						&& ((self.empty_filter_enabled.get() && !sauce.data.ext_urls.is_empty()) || !self.empty_filter_enabled.get())
+					{
+						let actual_index: u32 = sauce.header.index_name.split(':').collect::<Vec<&str>>()[0]
+							.to_string()
+							.split('#')
+							.collect::<Vec<&str>>()[1]
 							.to_string()
 							.parse::<u32>()?;
 						let source: Option<constants::Source> = self.get_source(actual_index);
@@ -551,6 +564,8 @@ impl Handler {
 	/// Furthermore, if you pass a link in which SauceNAO returns an error code, an error containing the code and message will be returned.
 	pub fn get_sauce(&self, image_path: &str, num_results: Option<u32>, min_similarity: Option<f64>) -> Result<Vec<Sauce>> {
 		// This is essentially just a blocking version of the async call... thank you, code reuse
+
+		// TODO: Considering phasing this out, and also may need async versions of other helper functions... probably not though
 		async_std::task::block_on(async { self.async_get_sauce(image_path, num_results, min_similarity).await })
 	}
 
@@ -609,7 +624,9 @@ impl Handler {
 		// Check passed in values first to see if they're valid!
 
 		if !self.is_valid_min_sim(min_similarity) {
-			return Err(Error::invalid_parameter("min_similarity must be less 100.0 and greater than 0.0.".to_string()));
+			return Err(Error::invalid_parameter(
+				"min_similarity must be less 100.0 and greater than 0.0.".to_string(),
+			));
 		} else if !self.is_valid_num_res(num_results) {
 			return Err(Error::invalid_parameter("num_results must be less than 999.".to_string()));
 		}
