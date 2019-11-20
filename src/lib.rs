@@ -19,26 +19,26 @@
 //! use rustnao::{Handler, HandlerBuilder, Sauce, Result};
 //!
 //! fn main() {
-//! 	let api_key = "your_api_key";
-//! 	let file = "https://i.imgur.com/W42kkKS.jpg";
+//!     let api_key = "your_api_key";
+//!     let file = "https://i.imgur.com/W42kkKS.jpg";
 //!
-//! 	// Specifying our key, only want to see Pixiv and Sankaku using a mask, and 15 results at most
-//! 	let handle = HandlerBuilder::default().api_key(api_key).db_mask([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()).num_results(15).build();
+//!     // Specifying our key, only want to see Pixiv and Sankaku using a mask, and 15 results at most
+//!     let handle = HandlerBuilder::default().api_key(api_key).db_mask([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()).num_results(15).build();
 //!
-//!		// Set the minimum similarity to 45.
-//! 	handle.set_min_similarity(45);
+//!     // Set the minimum similarity to 45.
+//!     handle.set_min_similarity(45);
 //!
-//! 	// Returns a vector of Sauce objects if successful
-//! 	let result : Result<Vec<Sauce>> = handle.get_sauce(file, None, None);
+//!     // Returns a vector of Sauce objects if successful
+//!     let result : Result<Vec<Sauce>> = handle.get_sauce(file, None, None);
 //!
-//! 	// Or perhaps you prefer a JSON output
-//! 	let result_json : Result<String> = handle.get_sauce_as_pretty_json(file, None, None);
+//!     // Or perhaps you prefer a JSON output
+//!     let result_json : Result<String> = handle.get_sauce_as_pretty_json(file, None, None);
 //!
-//! 	// Or maybe you wish to only get 5 results with a min similarity of 50.0
-//! 	let result_json_filtered : Result<String> = handle.get_sauce_as_pretty_json(file, Some(5), Some(50 as f64));
+//!     // Or maybe you wish to only get 5 results with a min similarity of 50.0
+//!     let result_json_filtered : Result<String> = handle.get_sauce_as_pretty_json(file, Some(5), Some(50 as f64));
 //!
 //!     // Or perhaps you need this async
-//!     async_std::task::block_on(async { self.async_get_sauce(image_path, num_results, min_similarity).await.unwrap(); })
+//!     async_std::task::block_on(async { async_get_sauce(file, Some(5), Some(50 as f64)).await; });
 //! }
 //! ```
 

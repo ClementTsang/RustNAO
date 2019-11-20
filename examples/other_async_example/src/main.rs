@@ -18,5 +18,8 @@ fn main() {
 		let blocking_result = handle.get_sauce_as_pretty_json(file, None, None).unwrap();
 		println!("Blocking result... {}", blocking_result);
 		println!("Result... {}", result.await.unwrap());
-	})
+	});
+
+	let second_blocking_result = handle.get_sauce_as_pretty_json(file, None, None).unwrap();
+	println!("Second blocking result... {}", second_blocking_result);
 }

@@ -42,7 +42,7 @@ fn main() {
  let result_json_filtered: String = handle.get_sauce_as_pretty_json(file, Some(5), Some(50 as f64)).unwrap();
 
  // Or perhaps you need this async
- async_std::task::block_on(async { self.async_get_sauce(image_path, num_results, min_similarity).await.unwrap(); })
+ async_std::task::block_on(async { async_get_sauce(file, Some(5), Some(50 as f64)).await; });
 }
 ```
 
