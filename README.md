@@ -43,7 +43,7 @@ fn main() {
 }
 ```
 
-See more examples [here](./examples/). Or to see an actual project where it's used, you can look at [this Discord bot](https://github.com/ClementTsang/elementaru-bot) that uses it.
+See more examples [here](./examples/).
 
 ## Documentation
 
