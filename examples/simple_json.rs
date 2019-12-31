@@ -9,7 +9,7 @@ fn main() {
 	let file = "https://i.imgur.com/W42kkKS.jpg";
 
 	if let Some(key) = api_key {
-		// Specifying our key, testmode set to 0, only want to see Pixiv and Sankaku using a mask, nothing excluded, no one specific source, and 999 results at most
+		// Specifying our key, test_mode set to 0, only want to see Pixiv and Sankaku using a mask, nothing excluded, no one specific source, and 999 results at most
 		let handle = HandlerBuilder::default()
 			.api_key(key)
 			.num_results(999)

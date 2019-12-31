@@ -26,7 +26,7 @@ fn main() {
  let api_key = "your_api_key";
  let file = "https://i.imgur.com/W42kkKS.jpg";
 
- // Specifying our key, testmode set to 0, only want to see Pixiv and Sankaku using a mask, nothing excluded, no one specific source, and 15 results at most
+ // Specifying our key, test_mode set to 0, only want to see Pixiv and Sankaku using a mask, nothing excluded, no one specific source, and 15 results at most
  let handle = HandlerBuilder::default().api_key(api_key).db_mask([Handler::PIXIV, Handler::SANKAKU_CHANNEL].to_vec()).num_results(15).build();
 
  // Set the minimum similarity to 45.

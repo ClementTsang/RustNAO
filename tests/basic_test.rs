@@ -25,7 +25,12 @@ fn create_handler(dbmask: Vec<u32>, dbmaski: Vec<u32>, db_option: Option<u32>, n
 			.num_results(numres)
 			.api_key(api_key.as_str())
 			.build(),
-		None => HandlerBuilder::default().db_mask(dbmask).db_mask_i(dbmaski).num_results(numres).api_key(api_key.as_str()).build(),
+		None => HandlerBuilder::default()
+			.db_mask(dbmask)
+			.db_mask_i(dbmaski)
+			.num_results(numres)
+			.api_key(api_key.as_str())
+			.build(),
 	}
 }
 
@@ -47,7 +52,10 @@ fn test_get_short_and_long_limits() {
 			cur_short_before > handle.get_current_short_limit(),
 			format!("{} vs {}", cur_short_before, handle.get_current_short_limit())
 		);
-		assert!(cur_long_before > handle.get_current_long_limit(), format!("{} vs {}", cur_long_before, handle.get_current_long_limit()));
+		assert!(
+			cur_long_before > handle.get_current_long_limit(),
+			format!("{} vs {}", cur_long_before, handle.get_current_long_limit())
+		);
 	}
 }
 
