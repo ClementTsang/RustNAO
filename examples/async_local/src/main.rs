@@ -12,10 +12,8 @@ fn main() {
 		.build();
 
 	task::block_on(async {
-		let file = "https://i.imgur.com/W42kkKS.jpg";
+		let file = "./test.jpg";
 		let result = handle.async_get_sauce_as_pretty_json(file, None, None);
-		let blocking_result = handle.get_sauce_as_pretty_json(file, None, None).unwrap();
-		println!("Blocking result... {}", blocking_result);
-		println!("Result... {}", result.await.unwrap());
+		println!("File Result... {}", result.await.unwrap());
 	});
 }

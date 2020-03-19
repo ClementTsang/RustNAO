@@ -45,8 +45,10 @@
 
 extern crate async_std;
 extern crate failure;
+extern crate mime_guess;
 extern crate serde;
 extern crate serde_json;
+extern crate serde_urlencoded;
 extern crate surf;
 extern crate url;
 

@@ -634,7 +634,15 @@ impl Handler {
 		let url_string = self.generate_url(image_path, num_results)?;
 
 		let returned_sauce: SauceResult = if !(image_path.starts_with("https://") || image_path.starts_with("http://")) {
-			surf::post(&url_string).body_file(image_path)?.await?.body_json().await?
+			let mime = mime_guess::from_path(&image_path).first_or_octet_stream();
+
+			let image = std::fs::read(image_path)?;
+			let data = serde_json::json!({ "path": image });
+			let bd = surf::post(&url_string).body_json(&data)?.set_mime(mime);
+
+			println!("BD: {:?}", bd);
+
+			bd.await?.body_json().await?
 		} else {
 			surf::post(&url_string).await?.body_json().await?
 		};

@@ -101,7 +101,11 @@ impl fmt::Display for ErrType {
 			ErrType::InvalidParse(ref unk) => write!(f, "ERROR: URL was invalid, error was due to: {}", unk),
 			ErrType::InvalidFile(ref unk) => write!(f, "ERROR: File path was invalid, error was due to: {}", unk),
 			ErrType::InvalidSerde(ref unk) => write!(f, "ERROR: Could not properly serde results: {}", unk),
-			ErrType::InvalidCode { code, message } => write!(f, "ERROR: Recieved an invalid status code {} after API call with message: \"{}\"", code, message),
+			ErrType::InvalidCode { code, message } => write!(
+				f,
+				"ERROR: Received an invalid status code {} after API call with message: \"{}\"",
+				code, message
+			),
 			ErrType::InvalidRequest(ref unk) => write!(f, "ERROR: Failed to make the request, error was due to: {}", unk),
 			ErrType::InvalidParameters(message) => write!(f, "ERROR: An invalid parameter was passed, error was due to: {}", message),
 		}
@@ -123,6 +127,12 @@ impl From<Context<ErrType>> for Error {
 impl From<serde_json::Error> for Error {
 	fn from(err: serde_json::Error) -> Self {
 		Error::invalid_serde(err.to_string())
+	}
+}
+
+impl From<serde_urlencoded::ser::Error> for Error {
+	fn from(err: serde_urlencoded::ser::Error) -> Self {
+		Error::invalid_request(err.to_string())
 	}
 }
 

@@ -1,5 +1,5 @@
 [package]
-name = "other_async_example"
+name = "async_local"
 version = "0.1.0"
 authors = ["Clement Tsang"]
 edition = "2018"
