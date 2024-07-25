@@ -81,7 +81,7 @@ fn test_local() {
         Ok(result) => println!("Passed, {}", result),
         Err(result) => println!(
             "
-		 out, {}",
+         out, {}",
             result
         ),
     }

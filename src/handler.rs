@@ -174,7 +174,7 @@ impl HandlerBuilder {
 
         let mut num_results = None;
         if let Some(x) = self.num_results {
-            num_results = Some(x as u32);
+            num_results = Some(x);
         }
 
         let result = Handler::new(
@@ -480,7 +480,7 @@ impl Handler {
 
     fn is_valid_min_sim(&self, min_similarity: Option<f64>) -> bool {
         if let Some(min_similarity) = min_similarity {
-            if min_similarity > 100.0 || min_similarity < 0.0 {
+            if !(0.0..=100.0).contains(&min_similarity) {
                 return false;
             }
         }
@@ -514,11 +514,11 @@ impl Handler {
 
             // Actual "returned" value:
             if let Some(res) = returned_sauce.results {
-                let actual_min_sim: f64;
-                match min_similarity {
-                    Some(min_sim) => actual_min_sim = min_sim,
-                    None => actual_min_sim = self.min_similarity.get(),
-                }
+                let actual_min_sim = match min_similarity {
+                    Some(min_sim) => min_sim,
+                    None => self.min_similarity.get(),
+                };
+
                 for sauce in res {
                     let sauce_min_sim: f64 = sauce.header.similarity.parse()?;
                     if (sauce_min_sim >= actual_min_sim)
@@ -527,10 +527,8 @@ impl Handler {
                     {
                         let actual_index: u32 =
                             sauce.header.index_name.split(':').collect::<Vec<&str>>()[0]
-                                .to_string()
                                 .split('#')
                                 .collect::<Vec<&str>>()[1]
-                                .to_string()
                                 .parse::<u32>()?;
                         let source: Option<constants::Source> = self.get_source(actual_index);
 
@@ -734,7 +732,7 @@ impl Handler {
 /// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
 /// let result = handle.get_sauce("./tests/test.jpg", None, None);
 /// if result.is_ok() {
-/// 	result.unwrap().to_json_pretty();
+///     result.unwrap().to_json_pretty();
 /// }
 /// ```
 pub trait ToJSON {
@@ -745,7 +743,7 @@ pub trait ToJSON {
     /// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
     /// let result = handle.get_sauce("./tests/test.jpg", None, None);
     /// if result.is_ok() {
-    /// 	result.unwrap().to_json();
+    ///     result.unwrap().to_json();
     /// }
     /// ```
     /// ### Errors
@@ -759,7 +757,7 @@ pub trait ToJSON {
     /// let handle = HandlerBuilder::default().api_key("your_api_key").num_results(999).db(999).build();
     /// let result = handle.get_sauce("./tests/test.jpg", None, None);
     /// if result.is_ok() {
-    /// 	result.unwrap().to_json_pretty();
+    ///     result.unwrap().to_json_pretty();
     /// }
     /// ```
     /// ### Errors

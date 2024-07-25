@@ -54,18 +54,18 @@ impl Sauce {
     /// ```
     /// use rustnao::{HandlerBuilder, Sauce};
     /// let file = "https://i.imgur.com/W42kkKS.jpg";
-    ///	let mut handle = HandlerBuilder::default().api_key("your_api_key").build();
-    ///	handle.set_min_similarity(45);
-    ///	let result = handle.get_sauce(file, None, None);
-    ///	if result.is_ok() {
-    ///		let res : Vec<Sauce> = result.unwrap().into_iter().filter(|sauce| sauce.has_empty_url()).collect();
-    ///		for i in res {
-    ///			println!("{:?}", i);
-    ///		}
-    ///	}
-    ///	else {
-    ///		println!("Failed to make a query.");
-    ///	}
+    ///    let mut handle = HandlerBuilder::default().api_key("your_api_key").build();
+    ///    handle.set_min_similarity(45);
+    ///    let result = handle.get_sauce(file, None, None);
+    ///    if result.is_ok() {
+    ///        let res : Vec<Sauce> = result.unwrap().into_iter().filter(|sauce| sauce.has_empty_url()).collect();
+    ///        for i in res {
+    ///            println!("{:?}", i);
+    ///        }
+    ///    }
+    ///    else {
+    ///        println!("Failed to make a query.");
+    ///    }
     ///
     /// ```
     pub fn has_empty_url(&self) -> bool {
