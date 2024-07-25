@@ -43,12 +43,5 @@
 
 #![deny(missing_docs)]
 
-extern crate async_std;
-extern crate failure;
-extern crate serde;
-extern crate serde_json;
-extern crate surf;
-extern crate url;
-
 mod handler;
 pub use handler::{ErrType, Error, Handler, HandlerBuilder, Result, Sauce, ToJSON};

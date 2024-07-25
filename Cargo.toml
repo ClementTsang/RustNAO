@@ -1,6 +1,6 @@
 [package]
 name = "rustnao"
-version = "0.3.2"
+version = "0.3.3"
 authors = ["Clement Tsang <cjhtsang@uwaterloo.ca>"]
 edition = "2018"
 readme = "README.md"
@@ -14,7 +14,7 @@ exclude = [".github", "rustfmt.toml"]
 
 [dependencies]
 serde = { version = "1.0.102", features = ["derive"] }
-surf = { version = "1.0", features = ["default"] }
+surf = { version = "2.3.2", features = ["default"] }
 async-std = "1.0.1"
 serde_json = "1.0"
 url = "2.1.0"
