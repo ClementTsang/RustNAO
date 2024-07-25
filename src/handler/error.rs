@@ -1,6 +1,6 @@
 //! Error components for the library.
-// Much thanks to Andrew Gallant for the basis of this part of the library... followed the following
-// code for this: https://github.com/BurntSushi/imdb-rename/blob/master/imdb-index/src/error.rs.
+//! Much thanks to Andrew Gallant for the basis of this part of the library... followed [the following
+//! code for this](https://github.com/BurntSushi/imdb-rename/blob/master/imdb-index/src/error.rs).
 
 use failure::{Backtrace, Context, Fail};
 use std::{fmt, result};
@@ -168,8 +168,8 @@ impl From<std::io::Error> for Error {
     }
 }
 
-impl From<surf::Exception> for Error {
-    fn from(err: surf::Exception) -> Self {
+impl From<surf::Error> for Error {
+    fn from(err: surf::Error) -> Self {
         Error::invalid_request(err.to_string())
     }
 }

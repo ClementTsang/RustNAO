@@ -673,16 +673,18 @@ impl Handler {
 
         let url_string = self.generate_url(image_path, num_results)?;
 
-        let returned_sauce: SauceResult =
+        let mut returned_response =
             if !(image_path.starts_with("https://") || image_path.starts_with("http://")) {
                 surf::post(&url_string)
-                    .body_file(image_path)?
+                    .body_file(image_path)
                     .await?
-                    .body_json()
+                    .send()
                     .await?
             } else {
-                surf::post(&url_string).await?.body_json().await?
+                surf::post(&url_string).await?
             };
+
+        let returned_sauce = returned_response.body_json().await?;
 
         self.process_results(returned_sauce, min_similarity)
     }

@@ -85,3 +85,12 @@ jobs:
           cross-version: 0.2.5
         env:
           RUST_BACKTRACE: full
+
+      - name: Build docs
+        uses: ClementTsang/cargo-action@v0.0.5
+        with:
+          command: doc
+          args: --locked
+          cross-version: 0.2.5
+        env:
+          RUST_BACKTRACE: full
