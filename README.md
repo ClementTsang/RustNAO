@@ -11,7 +11,7 @@ Add the following to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-rustnao = "0.3.3"
+rustnao = "0.3.4"
 ```
 
 ## Examples
