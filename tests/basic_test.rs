@@ -48,14 +48,8 @@ fn test_get_short_and_long_limits() {
 	let cur_long_before = handle.get_current_long_limit();
 	let result = handle.get_sauce(FILE, None, None);
 	if result.is_ok() {
-		assert!(
-			cur_short_before > handle.get_current_short_limit(),
-			format!("{} vs {}", cur_short_before, handle.get_current_short_limit())
-		);
-		assert!(
-			cur_long_before > handle.get_current_long_limit(),
-			format!("{} vs {}", cur_long_before, handle.get_current_long_limit())
-		);
+		assert!(cur_short_before > handle.get_current_short_limit());
+		assert!(cur_long_before > handle.get_current_long_limit());
 	}
 }
 

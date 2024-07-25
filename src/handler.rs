@@ -359,7 +359,7 @@ impl Handler {
 			request_url.query_pairs_mut().append_pair("url", image_path);
 		}
 
-		Ok(request_url.into_string())
+		Ok(request_url.to_string())
 	}
 
 	fn new(
