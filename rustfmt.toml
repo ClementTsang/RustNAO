@@ -1,12 +1,7 @@
-max_width = 150
-newline_style = "Unix"
 reorder_imports = true
-control_brace_style = "ClosingNextLine"
-fn_args_layout = "Compressed"
-empty_item_single_line = false
-hard_tabs = true
-merge_imports = true
-merge_derives = true
 reorder_modules = true
-space_before_colon = true
+merge_derives = true
+fn_params_layout = "Compressed"
+use_field_init_shorthand = true
 tab_spaces = 4
+max_width = 100
