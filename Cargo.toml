@@ -10,6 +10,7 @@ description = "A Rust implementation of a wrapper for the SauceNAO API."
 categories = ["api-bindings"]
 keywords = ["saucenao", "saucenao-api", "wrapper"]
 documentation = "https://docs.rs/rustnao/"
+exclude = [".github", "rustfmt.toml"]
 
 [dependencies]
 serde = { version = "1.0.102", features = ["derive"] }
