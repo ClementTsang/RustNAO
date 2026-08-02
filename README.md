@@ -1,6 +1,6 @@
 # RustNAO
 
-A Rust implementation of a wrapper for the SauceNAO API.
+A Rust wrapper for the SauceNAO API.
 
 [![crates.io link](https://img.shields.io/crates/v/rustnao.svg)](https://crates.io/crates/rustnao)
 [![Documentation](https://docs.rs/rustnao/badge.svg)](https://docs.rs/rustnao)
