@@ -13,8 +13,8 @@ fn create_handler(
     let mut api_key = "".to_string();
 
     let data = std::fs::read_to_string("config.json");
-    if data.is_ok() {
-        if let Ok(val) = data {
+    if data.is_ok()
+        && let Ok(val) = data {
             let json: serde_json::Value =
                 serde_json::from_str(val.as_str()).expect("JSON not well formatted.");
             let json_api_key = json["api_key"].as_str();
@@ -23,7 +23,6 @@ fn create_handler(
                 api_key = key.to_string();
             }
         }
-    }
 
     match db_option {
         Some(db) => HandlerBuilder::default()
