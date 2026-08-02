@@ -83,12 +83,9 @@ impl fmt::Debug for Sauce {
         }
         result.push_str("\nsite: ");
         result.push_str(self.site.as_str());
-        match &self.title {
-            Some(x) => {
-                result.push_str("\ntitle: ");
-                result.push_str(x.as_str());
-            }
-            None => (),
+        if let Some(x) = &self.title {
+            result.push_str("\ntitle: ");
+            result.push_str(x.as_str());
         }
         result.push_str("\nindex: ");
         result.push_str(self.index.to_string().as_str());
