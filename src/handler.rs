@@ -162,7 +162,9 @@ impl HandlerBuilder {
     /// ```
     pub fn build(&self) -> Handler {
         let mut api_key = "";
-        if let Some(x) = &self.api_key { api_key = x.as_str() }
+        if let Some(x) = &self.api_key {
+            api_key = x.as_str()
+        }
 
         let mut testmode = None;
         if let Some(x) = self.testmode {
@@ -326,19 +328,21 @@ impl Handler {
         }
 
         if let Some(val) = &self.db_mask
-            && !val.is_empty() {
-                request_url.query_pairs_mut().append_pair(
-                    "dbmask",
-                    self.generate_bitmask(val.clone()).to_string().as_str(),
-                );
-            }
+            && !val.is_empty()
+        {
+            request_url.query_pairs_mut().append_pair(
+                "dbmask",
+                self.generate_bitmask(val.clone()).to_string().as_str(),
+            );
+        }
         if let Some(val) = &self.db_mask_i
-            && !val.is_empty() {
-                request_url.query_pairs_mut().append_pair(
-                    "dbmaski",
-                    self.generate_bitmask(val.clone()).to_string().as_str(),
-                );
-            }
+            && !val.is_empty()
+        {
+            request_url.query_pairs_mut().append_pair(
+                "dbmaski",
+                self.generate_bitmask(val.clone()).to_string().as_str(),
+            );
+        }
 
         match self.testmode {
             Some(val) => {
@@ -475,18 +479,20 @@ impl Handler {
 
     fn is_valid_min_sim(&self, min_similarity: Option<f64>) -> bool {
         if let Some(min_similarity) = min_similarity
-            && !(0.0..=100.0).contains(&min_similarity) {
-                return false;
-            }
+            && !(0.0..=100.0).contains(&min_similarity)
+        {
+            return false;
+        }
 
         true
     }
 
     fn is_valid_num_res(&self, num_results: Option<u32>) -> bool {
         if let Some(num_results) = num_results
-            && num_results > 999 {
-                return false;
-            }
+            && num_results > 999
+        {
+            return false;
+        }
 
         true
     }
