@@ -98,13 +98,13 @@ pub enum ErrType {
 impl fmt::Display for ErrType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            ErrType::InvalidParse(ref unk) => {
+            ErrType::InvalidParse(unk) => {
                 write!(f, "ERROR: URL was invalid, error was due to: {}", unk)
             }
-            ErrType::InvalidFile(ref unk) => {
+            ErrType::InvalidFile(unk) => {
                 write!(f, "ERROR: File path was invalid, error was due to: {}", unk)
             }
-            ErrType::InvalidSerde(ref unk) => {
+            ErrType::InvalidSerde(unk) => {
                 write!(f, "ERROR: Could not properly serde results: {}", unk)
             }
             ErrType::InvalidCode { code, message } => write!(
@@ -112,7 +112,7 @@ impl fmt::Display for ErrType {
                 "ERROR: Recieved an invalid status code {} after API call with message: \"{}\"",
                 code, message
             ),
-            ErrType::InvalidRequest(ref unk) => write!(
+            ErrType::InvalidRequest(unk) => write!(
                 f,
                 "ERROR: Failed to make the request, error was due to: {}",
                 unk
